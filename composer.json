@@ -1,0 +1,10 @@
+{
+    "require": {
+        "twig/twig": "~1.0",
+        "slim/slim": "2.*",
+        "slim/views": "0.1.*",
+        "3rdpartyeve/phealng": "2.1.0"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
