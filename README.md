@@ -16,4 +16,6 @@ Install and use [Composer](http://getcomposer.org/) to meet the requirements:
 
     php composer.phar install
 
-_to be completed ..._
+Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
+
+_to be continued ..._
