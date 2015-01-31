@@ -3,8 +3,7 @@
 /*
 **  DAO - based upon the easyCRUD class by Vivek Wicky Aswal
 **  https://github.com/indieteq/PHP-MySQL-PDO-Database-Class/blob/master/easyCRUD/easyCRUD.class.php
-**
-**
+*/
 
 require_once(__DIR__ . '/Db.php');
 
