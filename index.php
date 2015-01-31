@@ -1,21 +1,16 @@
 <?php
-require_once 'vendor/autoload.php';
 
-//import namespace
-use Pheal\Pheal;
+require_once('vendor/autoload.php');
 
-// create pheal object with default values
-// so far this will not use caching, and since no key is supplied
-// only allow access to the public parts of the EVE API
-$pheal = new Pheal();
+// By default, not in debug mode
+$BR_DEBUGMODE = false;
 
-// requests /server/ServerStatus.xml.aspx
-$response = $pheal->serverScope->ServerStatus();
+require_once('config.php');
 
-echo sprintf(
-  "Hello Visitor! The EVE Online Server is: %s!, current amount of online players: %s",
-  $response->serverOpen ? "open" : "closed",
-  $response->onlinePlayers
-);
+require_once('init.php');
+
+require_once('routes.php');
+
+$app->run();
 
 ?>
