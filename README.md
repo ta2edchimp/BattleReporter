@@ -11,6 +11,7 @@ __Requirements:__
 - [Slim Framework](http://slimframework.com/)
 - [Whoops](https://github.com/filp/whoops)
 - [Whoops Middleware for Slim](https://github.com/zeuxisoo/php-slim-whoops)
+- [phpFastCache](http://www.phpfastcache.com/)
 
 Install and use [Composer](http://getcomposer.org/) to meet the requirements:
 
