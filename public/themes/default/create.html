@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Create New BR' %}
+
+{% block content %}
+    <h1>Create New BattleReport</h1>
+    <div class="panel panel-{% if battleTimespan is defined %}default{% else %}primary{% endif %}">
+        <div class="panel-heading">
+            <h3 class="panel-title">Specify Time of Battle</h3>
+        </div>
+        <div class="panel-body">
+            {% if battleTimespan is not defined %}
+            {% if battleTimespanError == true %}
+            <div class="alert alert-danger">
+                <strong>Oh snap!</strong> Please correct the timespan according to the shown pattern and try submitting again.
+            </div>
+            {% endif %}
+            <form method="post" action="/create">
+                <div class="form-group{% if battleTimespanError == true %} has-error{% endif %}">
+                    <label for="battleTimespan" class="control-label">Timespan:</label>
+                    <div class="input-group">
+                        <input class="form-control" id="battleTimespan" name="battleTimespan" placeholder="YYYY-MM-DD HH:MM - HH:MM" pattern="[0-9]{4}-([0-1][0-2]|0[1-9])-[0-3][0-9] [0-2][0-9]:[0-5][0-9] - [0-2][0-9]:[0-5][0-9]">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit">Detect</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+            <label class="control-label">Timespan:</label>
+            <div>{{ battleTimespan }}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-{% if battleTimespan is defined and battledSolarSystem is not defined %}primary{% else %}default{% endif %}">
+        <div class="panel-heading">
+            <h3 class="panel-title">Select Location of Battle</h3>
+        </div>
+        {% if battleTimespan is defined %}
+        <div class="panel-body">
+            {% if battlesFetchingError == true %}
+            <div class="alert alert-danger">
+                <strong>Oh snap!</strong> Something went wrong, please try again later.
+            </div>
+            {% else %}
+            {% if battledSolarSystem is not defined %}
+            {% if battlesFound == false %}
+            <div class="alert alert-warning">
+                <h4>No Battle Found</h4>
+                <p>No battles of your corporation could be detected within the given timestamp.</p>
+                <p><a href="/create" class="alert-link">Maybe try another timespan</a> or wait a moment, if <a href="https://zkillboard.com/" target="_blank" class="alert-link">zKillboard</a> has not yet fetched any related kills.</p>
+            </div>
+            {% else %}
+            {% if battledSolarSystems is defined %}
+            <form method="post" action="/create">
+                <input type="hidden" name="battleTimespan" value="{{ battleTimespan }}">
+                <div class="lead">{{ battledSolarSystems|length }} systems found:</div>
+                {% for solarSystem in battledSolarSystems %}
+                <div class="radio">
+                    <label>
+                        <input type="radio" id="battledSolarSystem{{ solarSystem.id }}" name="battledSolarSystem" value="{{ solarSystem.id }}" checked="">
+                        {{ solarSystem.name }} ({{ solarSystem.kills }} kills)
+                    </label>
+                </div>
+                {% endfor %}
+                <div class="text-right">
+                    <button class="btn btn-primary" type="submit">Select</button>
+                </div>
+            </form>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <label class="control-label">Solar System:</label>
+            <div>{{ battledSolarSystem.name }} ({{ battledSolarSystem.kills }} kills) selected</div>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="panel panel-{% if battleTimespan is defined and battledSolarSystem is defined and battleReport is not defined %}primary{% else %}default{% endif %}">
+        <div class="panel-heading">
+            <h3 class="panel-title">Assign Battle-Parties</h3>
+        </div>
+        {% if battleTimespan is defined and battledSolarSystem is defined %}
+        <div class="panel-body">
+            <div class="alert alert-info">
+                <strong>There's much to do left!</strong> This all still has to be done :/
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter{% if pageTitle is defined %} - {{ pageTitle }}{% endif %}</title>
+    
+    <!-- Bootstrap -->
+    <link href="/themes/default/css/bootstrap-superhero.min.css" rel="stylesheet">
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body style="padding-top:70px">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <a href="/" class="navbar-brand">{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter</a>
+            <ul class="nav navbar-nav pull-right">
+                <li><a href="/">Home</a></li>
+                {% if BR_USER_LOGGEDIN %}
+                {% if BR_USER_CAN_CREATE %}
+                <li><a href="/create">Create New BR</a></li>
+                {% endif %}
+                {% endif %}
+                <li><a href="/info"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        {% block content %}Hello, fellow capsuleer o/{% endblock %}
+    </div>
+    <div>&nbsp;</div>
+    <div class="container">
+        <div class="footer text-center">
+            <p><small>BattleReporter &copy; <a href="http://andreaswindt.de/">Andreas Windt</a> (aka <a href="http://gate.eveonline.com/Profile/Erwin%20Krym'L" target="_blank">Erwin Krym'L</a> of <a href="http://blog.bitslix.net" target="_blank">[BSLIX]</a>). Made with <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>, <a href="http://jquery.com" target="_blank">jQuery</a>, <a href="http://slimframework.com/" target="_blank">SlimFramework</a> and <a href="http://twig.sensiolabs.org/" target="_blank">Twig</a>.<br>
+            All <a id="legal-ccp" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to EVE::Hangar to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, EVE::Hangar. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website." data-original-title="CCP Legal Notice">EVE related materials</a> are property of <a href="http://ccpgames.com" target="_blank">CCP Games</a>. EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights reserved.</small></p>
+        </div>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/themes/default/js/bootstrap.min.js"></script>
+    <script>
+        $('a[data-toggle=popover]').popover();
+    </script>
+</body>
+</html>
