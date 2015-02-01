@@ -5,7 +5,8 @@
         "slim/views": "0.1.*",
         "filp/whoops": "1.*",
 		"zeuxisoo/slim-whoops": "0.*",
-        "3rdpartyeve/phealng": "2.*"
+        "3rdpartyeve/phealng": "2.*",
+        "phpfastcache/phpfastcache": "dev-Release_2.4"
     },
     "minimum-stability": "stable",
     "prefer-stable": true
