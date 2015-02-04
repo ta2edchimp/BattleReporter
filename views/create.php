@@ -1,45 +1,5 @@
 <?php
 
-function getZKBStartTime($timespan) {
-    // YmdHi
-    return preg_replace(
-        '/^([0-9]{4})-([0-1][0-2]|0[1-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]) - ([0-2][0-9]:[0-5][0-9])$/',
-        '$1$2$3$4$5',
-        $timespan
-    );
-}
-
-function getZKBEndTime($timespan) {
-    // YmdHi
-    return preg_replace(
-        '/^([0-9]{4})-([0-1][0-2]|0[1-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]) - ([0-2][0-9]:[0-5][0-9])$/',
-        '$1$2$3$6$7',
-        $timespan
-    );
-}
-
-function parseSystems($kills) {
-    
-    $systems = array();
-    
-    if (count($kills) == 0)
-        return $systems;
-    
-    foreach ($kills as $kill) {
-        if (isset($kill["solarSystemID"])) {
-            $id = $kill["solarSystemID"];
-            if (!isset($systems[$kill["solarSystemID"]])) {
-                $systems[$id]["id"] = $id;
-                $systems[$id]["name"] = $id;
-                $systems[$id]["kills"] = 0;
-            }
-            $systems[$id]["kills"] = $systems[$id]["kills"] + 1;
-        }
-    }
-    
-    return $systems;
-}
-
 
 if (!User::can('create'))
     $app->redirect('/');
@@ -52,68 +12,57 @@ $parameters = $app->request->post();
 if ($parameters != null) {
     
     $battleTimespan         = null;
-    $fetchedKills           = null;
-    $battledSolarSystems    = null;
+    $battleSolarSystem      = null;
     
     /*
-     *  1 - Specify Timespan
+     *  Interpret specified timespan
      */
     if (isset($parameters["battleTimespan"])) {
-        $inpBattleTimespan = $parameters["battleTimespan"];
-        $didMatch = preg_match('/^[0-9]{4}-([0-1][0-2]|0[1-9])-[0-3][0-9] [0-2][0-9]:[0-5][0-9] - [0-2][0-9]:[0-5][0-9]$/', $inpBattleTimespan, $reMatches, PREG_OFFSET_CAPTURE);
+        $inputBattleTimespan = $parameters["battleTimespan"];
         
-        if ($didMatch === FALSE)
-            throw new Exception("Something bad happened when trying to check the given battleTimespan.");
-        if ($didMatch == 1) {
-            $battleTimespan = $inpBattleTimespan;
-            $output["battleTimespan"] = $inpBattleTimespan;
+        $output["inputBattleTimespan"] = $inputBattleTimespan;
+        
+        if (KBFetch::testTimespanPattern($inputBattleTimespan)) {
+            $battleTimespan = $inputBattleTimespan;
+            $output["battleTimespan"] = $inputBattleTimespan;
         } else {
             $output["battleTimespanError"] = true;
         }
     }
     
     /*
-     *  2 - Specify Solar System
+     *  Interpret specified system
      */
-    
-    if ($battleTimespan != null) {
-        $output["battlesFound"] = false;
+    if (isset($parameters["battleSolarSystemName"])) {
+        $inputBattleSolarSystemName = $parameters["battleSolarSystemName"];
         
-        $startTimeZKB   = getZKBStartTime($battleTimespan);
-        $endTimeZKB     = getZKBEndTime($battleTimespan);
+        $battleSolarSystem = SolarSystem::getByName($inputBattleSolarSystemName);
         
-        $fetchedKills = Utils::curl(
-            "https://zkillboard.com/api",
-            array(
-                "corporationID" => "98270080",
-                "startTime" => $startTimeZKB,
-                "endTime" => $endTimeZKB
-            ),
-            array(
-                "queryParams" => false,
-                "caching" => "auto",
-                "cachePath" => __DIR__ . '/../cache'
-            )
-        );
+        $output["inputBattleSolarSystemName"] = $inputBattleSolarSystemName;
         
-        // Must not be an empty string
-        if (empty($fetchedKills)) {
-            $output["battlesFetchingError"] = true;
+        if ($battleSolarSystem == null) {
+            $output["battleSolarSystemError"] = true;
         } else {
-            $fetchedKills = json_decode($fetchedKills, true);
-            $battledSolarSystems = parseSystems($fetchedKills);
+            $output["battleSolarSystem"] = $battleSolarSystem;
         }
     }
     
-    if ($battledSolarSystems == null || !isset($parameters["battledSolarSystem"]) || empty($parameters["battledSolarSystem"])) {
-        //echo "<p>" . count($fetchedKills) . "<br>" . json_encode($fetchedKills) . "</p>";
+    /*
+     *  Fetch corresponding kills ... if existing ...
+     */
+    if ($battleTimespan != null && $battleSolarSystem != null) {
         
-        if (count($battledSolarSystems) > 0) {
-            $output["battledSolarSystems"] = $battledSolarSystems;
-            $output["battlesFound"] = true;
-        }
-    } else {
-        $output["battledSolarSystem"] = $battledSolarSystems[$parameters["battledSolarSystem"]];
+        $battle = KBFetch::fetchBattle(
+            array(
+                "corporationID" => BR_OWNERCORP_ID,
+                "solarSystemID" => $battleSolarSystem["id"],
+                "startTime"     => KBFetch::getZKBStartTime($battleTimespan),
+                "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
+            )
+        );
+        
+        $output["battleReport"] = $battle;
+        
     }
 
 }
