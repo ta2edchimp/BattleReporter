@@ -21,7 +21,6 @@ class Db {
     
     public function __construct($dbname, $user, $password, $host) {
         $this->connect($dbname, $user, $password, $host);
-        $this->parameters = array();
     }
     
     private function connect($dbname, $user, $password, $host = "127.0.0.1") {
@@ -44,6 +43,9 @@ class Db {
     private function init($query, $parameters = "") {
         if (!$this->bConnected)
             $this->connect();
+        
+        $this->parameters = array();
+        
         try {
             $this->sQuery = $this->pdo->prepare($query);
             $this->bindMore($parameters);
@@ -59,11 +61,11 @@ class Db {
         }
     }
     
-    public function bind($param, $value) {
+    private function bind($param, $value) {
         $this->parameters[sizeof($this->parameters)] = ":" . $param . "\x7F" . utf8_encode($value);
     }
     
-    public function bindMore($parray) {
+    private function bindMore($parray) {
         if (empty($this->parameters) && is_array($parray)) {
             $columns = array_keys($parray);
             foreach ($columns as $i => &$column) {
@@ -107,7 +109,7 @@ class Db {
         return $column;
     }
     
-    public function row($query, $param = null, $fetchmode = PDO::FETCH_ASSOC) {
+    public function row($query, $params = null, $fetchmode = PDO::FETCH_ASSOC) {
         $this->init($query, $params);
         return $this->sQuery->fetch($fetchmode);
     }
