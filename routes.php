@@ -39,16 +39,4 @@ $app->post('/autocomplete/solarSystems', function () use ($app, $db) {
 });
 
 
-/*
- *  Routings, only available in Debug Mode
- */
-if ($BR_DEBUGMODE == true) {
-    // Testing playground
-    $app->get('/test', function () {
-        
-        include("views/test.php");
-        
-    });
-}
-
 ?>
