@@ -70,7 +70,7 @@ class BattleParty {
         foreach ($otherParties as $otherParty)
             $totalLost += $otherParty->totalLost;
         
-        if ($totalLost > 0.0)
+        if ($totalLost > 0.0 && $this->uniquePilots > 0)
             $this->efficiency = 1.0 - $this->totalLost / $totalLost;
         else
             $this->efficiency = 0.0;
