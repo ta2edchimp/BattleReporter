@@ -25,11 +25,18 @@ $app->get('/', function () use ($app) {
 });
 
 // Creating new battlereports
-$app->map('/create', function () use ($app, $db) {
+$app->map('/create', function () use ($app) {
     
     include("views/create.php");
     
 })->via('GET', 'POST');
+
+// Posting edited (and newly created) battlereports
+$app->post('/edit/:brid', function ($brID) use ($app) {
+    
+    include("views/edit.php");
+    
+});
 
 // Fetching solar systems for input suggestions
 $app->post('/autocomplete/solarSystems', function () use ($app, $db) {
