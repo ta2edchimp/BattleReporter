@@ -93,7 +93,7 @@
                     Please try again later.</p>
             </div>
             {% else %}
-            <form method="post" action="/edit">
+            <form method="post" action="/edit/{{ battleReport.battleReportID }}">
                 <div class="form-group">
                     <label for="battleTitle" class="control-label">Title:</label>
                     <input class="form-control" id="battleTitle" name="battleTitle" value="{{ battleReport.title }}">
@@ -234,7 +234,7 @@
                         el.removeClass('hidden-on-br');
                     break;
                 case "trash":
-                    combatant.brDelete = true;
+                    combatant.brDeleted = true;
                     el.detach();
                     break;
             }

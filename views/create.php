@@ -60,6 +60,7 @@ if ($parameters != null) {
                     "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
                 )
             );
+            $battle->savePreparation();
             
             $output["battleReport"] = $battle;
         } catch (Exception $e) {
