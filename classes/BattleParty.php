@@ -2,6 +2,7 @@
 
 class BattleParty {
     
+    public $brBattlePartyID = 0;
     public $name = "";
     
     public $members = array();
@@ -93,6 +94,46 @@ class BattleParty {
     
     public function sort() {
         usort($this->members, 'Combatant::sorter');
+    }
+    
+    public function save($brID = 0) {
+        
+        if ($brID <= 0)
+            throw new Exception("Cannot save a battle party to a non existent battle report!");
+        
+        global $db;
+        
+        // Save basic battle report properties
+        if ($this->brBattlePartyID <= 0) {
+            $result = $db->query(
+                "insert into brBattleParties ".
+                "(battleReportID, brTeamName) " .
+                "values " .
+                "(:battleReportID, :brTeamName)",
+                array(
+                    "battleReportID" => $brID,
+                    "brTeamName" => $this->name
+                )
+            );
+            if ($result != NULL)
+                $this->brBattlePartyID = $db->lastInsertId();
+        } else {
+            $result = $db->query(
+                "update brBattleParties " .
+                "set battleReportID = :battleReportID, brTeamName = :brTeamName " .
+                "where brBattlePartyID = :brBattlePartyID",
+                array(
+                    "battleReportID" => $brID,
+                    "brTeamName" => $this->name,
+                    "brBattlePartyID" => $this->brBattlePartyID
+                )
+            );
+        }
+        
+        // Save the combatants properly assigned to this battle party
+        foreach ($this->members as $combatant)
+            $combatant->save($this->brBattlePartyID);
+        
     }
     
     

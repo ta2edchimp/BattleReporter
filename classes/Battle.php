@@ -2,9 +2,9 @@
 
 class Battle {
     
-    public $battleReportID;
+    public $battleReportID = 0;
     
-    public $title;
+    public $title = "";
     
     public $killsTotal = 0;
     
@@ -19,6 +19,8 @@ class Battle {
     public $teamB;
     public $teamC;
     
+    public $published = false;
+    
     
     public function __construct($id = 0) {
         
@@ -31,6 +33,57 @@ class Battle {
         }
         
         $this->battleReportID = $id;
+    }
+    
+    
+    public function save() {
+        
+        global $db;
+        
+        // Save basic battle report properties
+        if ($this->battleReportID <= 0) {
+            $result = $db->query(
+                "insert into brBattles ".
+                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished) " .
+                "values " .
+                "(:title, :startTime, :endTime, :solarSystemID, :published)",
+                array(
+                    "title" => $this->title,
+                    "startTime" => $this->startTime,
+                    "endTime" => $this->endTime,
+                    "solarSystemID" => $this->solarSystemID,
+                    "published" => $this->published ? 1 : 0
+                )
+            );
+            if ($result != NULL)
+                $this->battleReportID = $db->lastInsertId();
+        } else {
+            $result = $db->query(
+                "update brBattles " .
+                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, SolarSystemID = :solarSystemID, brPublished = :published " .
+                "where battleReportID = :battleReportID",
+                array(
+                    "title" => $this->title,
+                    "startTime" => $this->startTime,
+                    "endTime" => $this->endTime,
+                    "solarSystemID" => $this->solarSystemID,
+                    "published" => $this->published ? 1 : 0,
+                    "battleReportID" => $this->battleReportID
+                )
+            );
+        }
+        
+        // Save the battle parties
+        $this->teamA->save($this->battleReportID);
+        $this->teamB->save($this->battleReportID);
+        $this->teamC->save($this->battleReportID);
+        
+    }
+    
+    
+    public function savePreparation() {
+        $this->published = false;
+        $this->save();
     }
     
     

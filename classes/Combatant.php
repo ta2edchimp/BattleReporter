@@ -4,8 +4,9 @@ class Combatant {
     
     public $brCombatantID = 0;
     public $brHidden = false;
-    public $brDelete = false;
+    public $brDeleted = false;
     public $brTeam = "";
+    public $brBattlePartyID = 0;
     
     public $characterID;
     public $characterName;
@@ -21,11 +22,12 @@ class Combatant {
     
     public $died = false;
     public $killID = "";
+    public $killTime = 0;
     public $priceTag = 0.0;
     
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("brCombatantID", "brHidden", "brDelete", "brTeam", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died", "killID", "priceTag");
+    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died", "killID", "killTime", "priceTag");
     
     public function __construct($props, $killID = "") {
         foreach ($this->requiredProps as $key) {
@@ -50,6 +52,51 @@ class Combatant {
             $this->died = true;
             $this->killID = $killID;
         }
+    }
+    
+    
+    public function save($partyID = 0) {
+        
+        if ($partyID <= 0)
+            throw new Exception("Houston, we got a problem: The database has absolutely no idea, where to put the pilot " . $this->characterName . " (" . $this->characterID . ").");
+        
+        global $db;
+        
+        $params = array(
+            "characterID" => $this->characterID,
+            "characterName" => $this->characterName,
+            "corporationID" => $this->corporationID,
+            "corporationName" => $this->corporationName,
+            "allianceID" => $this->allianceID,
+            "allianceName" => $this->allianceName,
+            "brHidden" => $this->brHidden ? 1 : 0,
+            "brBattlePartyID" => $partyID,
+            "shipTypeID" => $this->shipTypeID,
+            "died" => $this->died ? 1 : 0,
+            "killID" => $this->killID,
+            "killTime" => $this->killTime,
+            "priceTag" => $this->priceTag
+        );
+        if ($this->brCombatantID <= 0) {
+            $result = $db->query(
+                "insert into brCombatants ".
+                "(characterID, characterName, corporationID, corporationName, allianceID, allianceName, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag) " .
+                "values " .
+                "(:characterID, :characterName, :corporationID, :corporationName, :allianceID, :allianceName, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag)",
+                $params
+            );
+            if ($result != NULL)
+                $this->brCombatantID = $db->lastInsertId();
+        } else {
+            $params["brCombatantID"] = $this->brCombatantID;
+            $result = $db->query(
+                "update brCombatants " .
+                "set characterID = :characterID, characterName = :characterName, corporationID = :corporationID, corporationName = :corporationName, allianceID = :allianceID, allianceName = :allianceName, brHidden = :brHidden, brBattlePartyID = :brBattlePartyID, shipTypeID = :shipTypeID, died = :died, killID = :killID, killTime = :killTime, priceTag = :priceTag " .
+                "where brCombatantID = :brCombatantID",
+                $params
+            );
+        }
+        
     }
     
     
