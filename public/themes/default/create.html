@@ -58,11 +58,11 @@
             {% else %}
                 <div class="col-xs-6">
                     <label class="control-label">Timespan:</label>
-                    <div>{% if battleReport is defined %}{{ battleReport.timeSpan }}{% else %}{{ battleTimespan }}{% endif %}</div>
+                    <div>{% if battleReport is defined and battleReport.timeSpan != '' %}{{ battleReport.timeSpan }}{% else %}{{ battleTimespan }}{% endif %}</div>
                 </div>
                 <div class="col-xs-6">
                     <label class="control-label">Solar System:</label>
-                    <div>{% if battleReport is defined %}{{ battleReport.solarSystemName }}{% else %}{{ battleSolarSystem.name }}{% endif %}</div>
+                    <div>{% if battleReport is defined and battleReport.solarSystemName != '' %}{{ battleReport.solarSystemName }}{% else %}{{ battleSolarSystem.name }}{% endif %}</div>
                 </div>
             {% endif %}
         </div>
@@ -127,7 +127,6 @@
                     {% include 'components/teamList.html' %}
                 </div>
             </div>
-            {{ battleReportRaw }}
         </div>
         <div class="panel-footer">
             <div class="row">

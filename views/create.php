@@ -51,7 +51,7 @@ if ($parameters != null) {
      *  Fetch corresponding kills ... if existing ...
      */
     if ($battleTimespan != null && $battleSolarSystem != null) {
-        //try {
+        try {
             $battle = KBFetch::fetchBattle(
                 array(
                     "corporationID" => BR_OWNERCORP_ID,
@@ -62,10 +62,9 @@ if ($parameters != null) {
             );
             
             $output["battleReport"] = $battle;
-            $output["battleReportRaw"] = json_encode($battle);
-        //} catch (Exception $e) {
-        //    $output["battleReportError"] = $e->getMessage();
-        //}
+        } catch (Exception $e) {
+            $output["battleReportError"] = $e->getMessage();
+        }
     }
 
 }
