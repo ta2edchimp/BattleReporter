@@ -51,18 +51,21 @@ if ($parameters != null) {
      *  Fetch corresponding kills ... if existing ...
      */
     if ($battleTimespan != null && $battleSolarSystem != null) {
-        
-        $battle = KBFetch::fetchBattle(
-            array(
-                "corporationID" => BR_OWNERCORP_ID,
-                "solarSystemID" => $battleSolarSystem["id"],
-                "startTime"     => KBFetch::getZKBStartTime($battleTimespan),
-                "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
-            )
-        );
-        
-        $output["battleReport"] = $battle;
-        
+        //try {
+            $battle = KBFetch::fetchBattle(
+                array(
+                    "corporationID" => BR_OWNERCORP_ID,
+                    "solarSystemID" => $battleSolarSystem["id"],
+                    "startTime"     => KBFetch::getZKBStartTime($battleTimespan),
+                    "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
+                )
+            );
+            
+            $output["battleReport"] = $battle;
+            $output["battleReportRaw"] = json_encode($battle);
+        //} catch (Exception $e) {
+        //    $output["battleReportError"] = $e->getMessage();
+        //}
     }
 
 }

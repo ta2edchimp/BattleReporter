@@ -1,4 +1,5 @@
                     <h4 class="list-group-item-heading text-center">{{ currentTeamName }}</h4>
+                    {% if battleInReview is not defined or battleInReview == false %}
                     <p class="text-center"><small>{{ currentTeam.uniquePilots }} pilots involved<br>
                         {% if currentTeam.totalLost < 1000000000000 %}
                         {% if currentTeam.totalLost < 1000000000 %}
@@ -10,16 +11,17 @@
                         {{ (currentTeam.totalLost / 1000000000000)|number_format(2, '.', ',') }} trillion
                         {% endif %} ISK lost<br>
                         {{ (currentTeam.efficiency * 100)|number_format(1, '.', ',') }}% efficiency</small></p>
-                    <table class="table table-striped table-hover">
+                    {% endif %}
+                    <table id="battlereport-{{ currentTeamID }}" class="table table-striped table-hover">
                         <tbody>
                         {% for combatant in currentTeam.members %}
-                            <tr class="{% if combatant.died %}danger{% endif %}">
+                            <tr class="combatant{% if combatant.died %} danger{% endif %}{% if combatant.brHidden %} hidden-on-br{% endif %}" data-combatant-id="{{ combatant.brCombatantID }}" data-kill-id="{{ combatant.killID }}" title="CombatantID: {{ combatant.brCombatantID }} / zkbKillID: {{ combatant.killID }}">
                                 <td><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_32.png"></td>
-                                <td>{{ combatant.characterName }}<br>
+                                <td><div class="combatant-details">{{ combatant.characterName }}<br>
                                     <small>{{ combatant.corporationName }}<br>
                                     {% if combatant.allianceID > 0 %}{{ combatant.allianceName }}<br>{% endif %}
                                     {{ combatant.shipTypeName }}
-                                    {% if combatant.priceTag > 0 %}<br>({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% endif %}</small></td>
+                                    {% if combatant.priceTag > 0 %}<br>({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% endif %}</small></div></td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -2,6 +2,11 @@
 
 class Combatant {
     
+    public $brCombatantID = 0;
+    public $brHidden = false;
+    public $brDelete = false;
+    public $brTeam = "";
+    
     public $characterID;
     public $characterName;
     
@@ -20,29 +25,26 @@ class Combatant {
     
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died");
+    private $availableProps = array("brCombatantID", "brHidden", "brDelete", "brTeam", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died", "killID", "priceTag");
     
     public function __construct($props, $killID = "") {
-        $propsCount = count($this->requiredProps);
-        $propsFitting = 0;
-        
         foreach ($this->requiredProps as $key) {
-            if (isset($props->$key)) {
-                $propsFitting++;
-            }
+            if (!isset($props->$key))
+                throw new Exception("Given properties do not meat a combatant's requirements!");
         }
         
-        if ($propsFitting != $propsCount)
-            throw new Exception("Given properties do not meat a combatant's requirements!");
-        
-        foreach ($props as $key => $prop) {
-            if (in_array($key, $this->requiredProps)) {
-                $this->$key = $prop;
-            }
+        foreach ($this->availableProps as $key) {
+            if (isset($props->$key))
+                $this->$key = $props->$key;
         }
         
-        // Detect human readable ship name from its id
-        $this->shipTypeName = Item::getNameByID($this->shipTypeID);
+        // If it's not from the db, it might have no internal combatant id
+        if ($this->brCombatantID == 0)
+            $this->brCombatantID = self::getNextCombatantID();
+        
+        // Detect ship name from its id, if not already delivered
+        if (empty($this->shiptTypeName))
+            $this->shipTypeName = Item::getNameByID($this->shipTypeID);
         
         if (!empty($killID)) {
             $this->died = true;
@@ -58,6 +60,8 @@ class Combatant {
             if (isset($this->$key))
                 $props[$key] = $this->$key;
         }
+        
+        $props["type"] = "combatant";
         
         return json_encode($props);
     }
@@ -83,6 +87,12 @@ class Combatant {
             return -1;
         // By default, sort alphabetically
         return strcmp($a->characterName, $b->characterName);
+    }
+    
+    private static $lastCombatantID = 0;
+    private static function getNextCombatantID() {
+        self::$lastCombatantID--;
+        return self::$lastCombatantID;
     }
     
 }

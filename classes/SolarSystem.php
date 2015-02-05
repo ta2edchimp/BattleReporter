@@ -2,6 +2,8 @@
 
 class SolarSystem {
     
+    private static $nameIDs = array();
+    
     public static function getByName($name = "") {
         if (empty($name))
             return null;
@@ -21,6 +23,34 @@ class SolarSystem {
             return null;
         
         return $system;
+    }
+    
+    public static function getByID($id = "") {
+        if (empty($id))
+            return "";
+        if ($id <= 0)
+            return "";
+        
+        if (isset(self::$nameIDs["id#" . $id]))
+            return self::$nameIDs["id#" . $id];
+        
+        global $db;
+        
+        $result = $db->single(
+            "select solarSystemName " .
+            "from mapSolarSystems " .
+            "where solarSystemID = :id",
+            array(
+                "id" => $id
+            )
+        );
+        
+        if ($result == NULL)
+            return "";
+        
+        self::$nameIDs["id#" . $id] = $result;
+        
+        return $result;
     }
     
     public static function getAllByPartialName($namePart = "") {

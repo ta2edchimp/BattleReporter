@@ -2,17 +2,19 @@
 
 class BattleParty {
     
+    public $name = "";
+    
     public $members = array();
     
-    public $length = 0;
-    
     public $uniquePilots = 0;
+    public $losses = 0;
     public $totalLost = 0.0;
     public $efficiency = 0.0;
     
     
-    public function __construct() {
-        
+    public function __construct($name = "") {
+        if (!empty($name))
+            $this->name = $name;
     }
     
     
@@ -55,11 +57,14 @@ class BattleParty {
         
         $pilots = array();
         $this->totalLost = 0.0;
+        $this->losses = 0;
         
         foreach ($this->members as $member) {
             if (!in_array($member->characterID, $pilots))
                 $pilots[] = $member->characterID;
             $this->totalLost += $member->priceTag;
+            if ($member->died)
+                $this->losses++;
         }
         $this->uniquePilots = count($pilots);
         
@@ -99,8 +104,8 @@ class BattleParty {
         
         return '{' .
             '"type":"party",' .
-            '"length":' . $this->length . ',' .
-            '"members":[' . implode(",", $members) . ']' . //,' .
+            '"name":"' . $this->name . '",' .
+            '"members":[' . implode(",", $members) . ']' .
         '}';
     }
     

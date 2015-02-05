@@ -6,15 +6,28 @@ class Kill {
     
     public $attackers = array();
     
+    public $solarSystemID;
+    public $killTime;
     
-    public function __construct($victim = null, $attackers = null) {
+    
+    public function __construct($victim = null, $attackers = null, $solarSystemID = 0, $killTime = 0) {
         if ($victim != null)
             $this->victim = $victim;
+        
         if ($attackers != null) {
             foreach ($attackers as $attacker)
                 $this->addAttacker($attacker);
         }
-        // ...
+        
+        if ($solarSystemID > 0)
+            $this->solarSystemID = $solarSystemID;
+        else
+            $this->solarSystemID = 0;
+        
+        if ($killTime > 0)
+            $this->killTime = $killTime;
+        else
+            $this->killTime = 0;
     }
     
     
@@ -70,8 +83,18 @@ class Kill {
                 $attackers[] = $attacker;
         }
         
+        if (isset($kill->killTime))
+            $killTime = strtotime($kill->killTime . " UTC");
+        else
+            $killTime = 0;
+        
+        if (isset($kill->solarSystemID))
+            $solarSystemID = $kill->solarSystemID;
+        else
+            $solarSystemID = 0;
+        
         if ($victim != null && count($attackers) > 0)
-            return new Kill($victim, $attackers);
+            return new Kill($victim, $attackers, $solarSystemID, $killTime);
         
         return null;
     }
