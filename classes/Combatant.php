@@ -30,9 +30,12 @@ class Combatant {
     private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died", "killID", "killTime", "priceTag");
     
     public function __construct($props, $killID = "") {
+        
+        $props = Utils::arrayToObject($props);
+        
         foreach ($this->requiredProps as $key) {
             if (!isset($props->$key))
-                throw new Exception("Given properties do not meat a combatant's requirements!");
+                throw new Exception("Given properties do not meat a combatant's requirements (\"$key\" is missing)!");
         }
         
         foreach ($this->availableProps as $key) {

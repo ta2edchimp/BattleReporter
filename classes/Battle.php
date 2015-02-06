@@ -22,17 +22,50 @@ class Battle {
     public $published = false;
     
     
-    public function __construct($id = 0) {
+    public $totalPilots = 0;
+    public $totalLost = 0.0;
+    
+    
+    public function __construct() {
         
         $this->teamA = new BattleParty("teamA");
         $this->teamB = new BattleParty("teamB");
         $this->teamC = new BattleParty("teamC");
         
-        if ($id > 0) {
-            // Load from db
-        }
+    }
+    
+    
+    public function load($id, $onlyPublished) {
         
-        $this->battleReportID = $id;
+        global $db;
+        
+        // Fetch corresponding records from database
+        $result = $db->row(
+            "select * from brBattles " .
+            "where battleReportID = :battleReportID" .
+            ($onlyPublished ? " and brPublished = 1" : ""),
+            array(
+                "battleReportID" => $id
+            )
+        );
+        if ($result == NULL)
+            return false;
+        
+        // Load battle parties ...
+        if (!$this->teamA->load($id) || !$this->teamB->load($id) || !$this->teamC->load($id))
+            return false;
+        
+        // Assign properties
+        $this->title            = $result["brTitle"];
+        $this->startTime        = $result["brStartTime"];
+        $this->endTime          = $result["brEndTime"];
+        $this->solarSystemID    = $result["solarSystemID"];
+        $this->published        = $result["brPublished"] == 1 ? true : false;
+        
+        // Update certain properties
+        $this->updateDetails();
+        return true;
+        
     }
     
     
@@ -103,6 +136,10 @@ class Battle {
             $this->timeSpan = date("Y.m.d H:i", $this->startTime) . " - " . date("H:i", $this->endTime);
         else
             $this->timeSpan = "";
+        
+        $this->totalPilots = $this->teamA->uniquePilots + $this->teamB->uniquePilots + $this->teamC->uniquePilots;
+        $this->totalLost = $this->teamA->totalLost + $this->teamB->totalLost + $this->teamC->totalLost;
+        
     }
     
     

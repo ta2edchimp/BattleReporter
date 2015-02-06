@@ -83,9 +83,10 @@ class Kill {
                 $attackers[] = $attacker;
         }
         
-        if (isset($kill->killTime))
+        if (isset($kill->killTime)) {
             $killTime = strtotime($kill->killTime . " UTC");
-        else
+            $victim->killTime = $killTime;
+        } else
             $killTime = 0;
         
         if (isset($kill->solarSystemID))

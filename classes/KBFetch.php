@@ -14,7 +14,7 @@ class KBFetch {
         }
         
         $fetchedResult = Utils::curl(
-            BR_FETCH_SOURCE_URL,
+            BR_FETCH_SOURCE_URL . "api",
             $parameters,
             array(
                 "queryParams" => false,

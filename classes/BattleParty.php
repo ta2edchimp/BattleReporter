@@ -96,6 +96,50 @@ class BattleParty {
         usort($this->members, 'Combatant::sorter');
     }
     
+    public function load($brID = 0) {
+        
+        if ($brID <= 0)
+            throw new Exception("Cannot load a battle party from a non existent battle report!");
+        
+        if (empty($this->name))
+            return false;
+        
+        global $db;
+        
+        // Fetch corresponding records from database
+        $result = $db->row(
+            "select * from brBattleParties " .
+            "where battleReportID = :battleReportID and brTeamName = :brTeamName",
+            array(
+                "battleReportID" => $brID,
+                "brTeamName" => $this->name
+            )
+        );
+        if ($result == NULL)
+            return false;
+        
+        // Assign battle party id
+        $this->brBattlePartyID = $result["brBattlePartyID"];
+        
+        // Fetch team members
+        $team = $db->query(
+            "select * from brCombatants " .
+            "where brBattlePartyID = :brBattlePartyID",
+            array(
+                "brBattlePartyID" => $this->brBattlePartyID
+            )
+        );
+        
+        foreach ($team as $memberData) {
+            $combatant = new Combatant($memberData);
+            if ($combatant != null)
+                $this->add($combatant);
+        }
+        
+        return true;
+        
+    }
+    
     public function save($brID = 0) {
         
         if ($brID <= 0)

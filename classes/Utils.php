@@ -6,6 +6,27 @@
 
 class Utils {
     
+    public static function objectToArray($d) {
+        
+        if (is_object($d))
+            $d = get_object_vars($d);
+        
+        if (is_array($d))
+            return array_map("Utils::objectToArray", $d);
+        else
+            return $d;
+        
+    }
+    
+    public static function arrayToObject($d) {
+        
+        if (is_array($d))
+            return (object) array_map("Utils::objectToArray", $d);
+        else
+            return $d;
+        
+    }
+
     public static function curl($url = "", $parameters = array(), $options = array()) {
         
         if (empty($url))
