@@ -31,19 +31,19 @@ $app->get('/show/:battleReportID', function($battleReportID) use ($app) {
     
 });
 
-// Creating new battlereports
+// Creating new battle reports
 $app->map('/create', function () use ($app) {
     
     include("views/create.php");
     
 })->via('GET', 'POST');
 
-// Posting edited (and newly created) battlereports
-$app->post('/edit/:brid', function ($brID) use ($app) {
+// Editing existing (and newly created) battle reports
+$app->map('/edit/:battleReportID', function ($battleReportID) use ($app) {
     
     include("views/edit.php");
     
-});
+})->via('GET', 'POST');
 
 // Fetching solar systems for input suggestions
 $app->post('/autocomplete/solarSystems', function () use ($app, $db) {

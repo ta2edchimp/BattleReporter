@@ -96,7 +96,7 @@ class BattleParty {
         usort($this->members, 'Combatant::sorter');
     }
     
-    public function load($brID = 0) {
+    public function load($brID = 0, $toBeEdited = false) {
         
         if ($brID <= 0)
             throw new Exception("Cannot load a battle party from a non existent battle report!");
@@ -124,7 +124,8 @@ class BattleParty {
         // Fetch team members
         $team = $db->query(
             "select * from brCombatants " .
-            "where brBattlePartyID = :brBattlePartyID",
+            "where brBattlePartyID = :brBattlePartyID" .
+            ($toBeEdited ? "" : " and brHidden = 0"),
             array(
                 "brBattlePartyID" => $this->brBattlePartyID
             )

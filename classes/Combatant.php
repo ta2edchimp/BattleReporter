@@ -63,6 +63,11 @@ class Combatant {
         if ($partyID <= 0)
             throw new Exception("Houston, we got a problem: The database has absolutely no idea, where to put the pilot " . $this->characterName . " (" . $this->characterID . ").");
         
+        // Not yet saved combatants that have been deleted
+        // are simply not saved ...
+        if ($this->brCombatantID <= 0 && $this->brDeleted == true)
+            return;
+        
         global $db;
         
         $params = array(

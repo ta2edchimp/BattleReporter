@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Edit BattleReport' %}
+{% set battleInReview = true %}
+
+{% block content %}
+    <h1>Edit BattleReport</h1>
+    {% if battleReportSavingError == true %}
+    <div class="alert alert-danger">
+        <strong>Dammit!</strong> Something bad happened while trying to save the battle report. Please try again.
+    </div>
+    {% endif %}
+    {% include 'components/brStatistics.html' %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit Battle</h3>
+        </div>
+        {% include 'components/brEditPanel.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% include 'components/brEditor.html' %}
+<script src="/js/jquery.autocomplete.min.js"></script>
+<script>
+{% include 'components/brEditor.js' %}
+</script>
+{% endblock %}

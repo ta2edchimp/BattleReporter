@@ -1,0 +1,21 @@
+<style>
+    .not-movable-left .move-left,
+    .not-movable-right .move-right,
+    .not-hideable .hide-on-br,
+    .not-showable .show-on-br,
+    .not-trashable .trash { display:none; }
+    .hidden-on-br { opacity:0.5; }
+</style>
+<div id="editor-panel" style="display:none">
+    <div  class="btn-group btn-group-sm">
+        <a href="#" class="move-left btn btn-primary"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        <a href="#" class="move-right btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+    <div  class="btn-group btn-group-sm">
+        <a href="#" class="show-on-br btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a>
+        <a href="#" class="hide-on-br btn btn-primary"><span class="glyphicon glyphicon-eye-close"></span></a>
+    </div>
+    <div  class="btn-group btn-group-sm">
+        <a href="#" class="trash btn btn-primary"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+</div>

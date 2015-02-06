@@ -35,7 +35,7 @@ class Battle {
     }
     
     
-    public function load($id, $onlyPublished) {
+    public function load($id, $onlyPublished = true, $toBeEdited = false) {
         
         global $db;
         
@@ -52,10 +52,11 @@ class Battle {
             return false;
         
         // Load battle parties ...
-        if (!$this->teamA->load($id) || !$this->teamB->load($id) || !$this->teamC->load($id))
+        if (!$this->teamA->load($id, $toBeEdited) || !$this->teamB->load($id, $toBeEdited) || !$this->teamC->load($id, $toBeEdited))
             return false;
         
         // Assign properties
+        $this->battleReportID   = $result["battleReportID"];
         $this->title            = $result["brTitle"];
         $this->startTime        = $result["brStartTime"];
         $this->endTime          = $result["brEndTime"];
@@ -140,6 +141,46 @@ class Battle {
         $this->totalPilots = $this->teamA->uniquePilots + $this->teamB->uniquePilots + $this->teamC->uniquePilots;
         $this->totalLost = $this->teamA->totalLost + $this->teamB->totalLost + $this->teamC->totalLost;
         
+    }
+    
+    
+    public function applyChanges($changes = array()) {
+        
+        foreach ($changes as $combatantID => $change) {
+            $allTeams = array("teamA", "teamB", "teamC");
+            $currentTeam = "";
+            
+            $combatant = null;
+            
+            foreach ($allTeams as $team) {
+                foreach ($this->$team->members as $key => $member) {
+                    echo "<p>" . json_encode($member) . "</p>";
+                    if (is_object($member) && $member->brCombatantID == $combatantID) {
+                        $currentTeam = $team;
+                        $combatant = $member;
+                        
+                        if (isset($change->teamName) && !empty($change->teamName) && $change->teamName != $currentTeam) {
+                            unset($this->$team->members[$key]);
+                            $currentTeam = $change->teamName;
+                            $this->$currentTeam->members[] = $combatant;
+                        }
+                        
+                        break 2;
+                    }
+                }
+            }
+            
+            if ($combatant == null)
+                continue;
+            
+            if (isset($change->brHidden))
+                $combatant->brHidden = $change->brHidden;
+            
+            if (isset($change->brDelete))
+                $combatant->brDelete = $change->brDelete;
+        }
+        
+        return true;
     }
     
     

@@ -60,7 +60,9 @@ if ($parameters != null) {
                     "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
                 )
             );
-            $battle->savePreparation();
+            // If there are kills, save the prepared battle report
+            if ($battle->killsTotal > 0)
+                $battle->savePreparation();
             
             $output["battleReport"] = $battle;
         } catch (Exception $e) {

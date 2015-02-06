@@ -1,0 +1,44 @@
+        <div class="panel-body">
+            <form id="battleReportEditor" method="post" action="/edit/{{ battleReport.battleReportID }}">
+                <div class="form-group">
+                    <label for="battleTitle" class="control-label">Title:</label>
+                    <input class="form-control" id="battleTitle" name="battleTitle" value="{{ battleReport.title }}">
+                </div>
+                <input type="hidden" id="battleReportChanges" name="battleReportChanges" value="">
+            </form>
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Assign Battle-Parties 
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-4">
+                    {% set currentTeamName = "Team A" %}
+                    {% set currentTeamID = "teamA" %}
+                    {% set currentTeam = battleReport.teamA %}
+                    {% include 'components/teamList.html' %}
+                </div>
+                <div class="col-xs-4">
+                    {% set currentTeamName = "Team B" %}
+                    {% set currentTeamID = "teamB" %}
+                    {% set currentTeam = battleReport.teamB %}
+                    {% include 'components/teamList.html' %}
+                </div>
+                <div class="col-xs-4">
+                    {% set currentTeamName = "Team C" %}
+                    {% set currentTeamID = "teamC" %}
+                    {% set currentTeam = battleReport.teamC %}
+                    {% include 'components/teamList.html' %}
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-xs-12 text-right">
+                    <a href="/" class="btn btn-default">Dismiss</a>
+                    <button class="btn btn-primary" id="save-br">Save BattleReport</button>
+                </div>
+            </div>
+        </div>

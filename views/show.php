@@ -1,6 +1,6 @@
 <?php
 
-if (empty($battleReportID)) {
+if (empty($battleReportID) || $battleReportID == 0) {
     $app->render("brNotFound.html");
     $app->stop();
 }
