@@ -98,7 +98,7 @@
                     <label for="battleTitle" class="control-label">Title:</label>
                     <input class="form-control" id="battleTitle" name="battleTitle" value="{{ battleReport.title }}">
                 </div>
-                <input type="hidden" id="battleReport" name="battleReport" value="{{ battleReport.toJSON() }}">
+                <input type="hidden" id="battleReportChanges" name="battleReportChanges" value="">
             </form>
         </div>
         <div class="panel-heading">
@@ -190,7 +190,6 @@
     {% endif %}
     {% if battleTimespan is defined and battleSolarSystem is defined and battleReport is defined and battleReport.killsTotal > 0 %}
     !function(battlereport, teamNames, combatants, editor){
-        battlereport = jQuery.parseJSON($('#battleReport').val());
         if (!battlereport) return;
         teamNames = ['teamA', 'teamB', 'teamC'];
         combatants = [];
@@ -283,7 +282,7 @@
         $('#save-br').click(function () {
            $('#battleReport').val(battlereport);
         });
-    }();
+    }({{ battleReport.toJSON()|raw }});
     {% endif %}
 </script>
 {% endblock %}

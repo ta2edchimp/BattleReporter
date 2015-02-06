@@ -24,6 +24,13 @@ $app->get('/', function () use ($app) {
     
 });
 
+// Show certain battle report
+$app->get('/show/:battleReportID', function($battleReportID) use ($app) {
+    
+    include("views/show.php");
+    
+});
+
 // Creating new battlereports
 $app->map('/create', function () use ($app) {
     

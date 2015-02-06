@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Show BR' %}
+{% if battleReport.title != '' %}
+    {% set pageTitle = ('Show "' ~ battleReport.title ~ '"') %}
+{% endif %}
+
+{% block content %}
+    <h1>
+        {% if battleReport.title == '' %}
+            {{ battleReport.title }}
+        {% else %}
+            Show BattleReport
+        {% endif %}
+    </h1>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Statistics</h3>
+        </div>
+        <div class="panel-body row">
+            <div class="col-sm-6 col-md-3">
+                <label class="control-label">Timespan:</label>
+                <div>{{ battleReport.timeSpan }}</div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <label class="control-label">Solar System:</label>
+                <div>{{ battleReport.solarSystemName }}</div>
+            </div>
+            <div class="hidden-md hidden-lg">&nbsp;</div>
+            <div class="col-sm-6 col-md-3">
+                <label class="control-label">Total Pilots Involved:</label>
+                <div>{{ battleReport.totalPilots }}</div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <label class="control-label">Total ISK Destroyed:</label>
+                <div>{% if battleReport.totalLost < 1000000000000 %}
+                    {% if battleReport.totalLost < 1000000000 %}
+                    {{ (battleReport.totalLost / 1000000)|number_format(2, '.', ',') }} million
+                    {% else %}
+                    {{ (battleReport.totalLost / 1000000000)|number_format(2, '.', ',') }} billion
+                    {% endif %}
+                    {% else %}
+                    {{ (battleReport.totalLost / 1000000000000)|number_format(2, '.', ',') }} trillion
+                    {% endif %} ISK</div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Battle Overview</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+            {% if battleReport.teamC.members|length > 0 %}
+                {% set colClsName = 'col-xs-4' %}
+            {% else %}
+                {% set colClsName = 'col-xs-6' %}
+            {% endif %}
+                <div class="{{ colClsName }}">
+                    {% set currentTeamName = "Team A" %}
+                    {% set currentTeamID = "teamA" %}
+                    {% set currentTeam = battleReport.teamA %}
+                    {% include 'components/teamList.html' %}
+                </div>
+                <div class="{{ colClsName }}">
+                    {% set currentTeamName = "Team B" %}
+                    {% set currentTeamID = "teamB" %}
+                    {% set currentTeam = battleReport.teamB %}
+                    {% include 'components/teamList.html' %}
+                </div>
+                {% if battleReport.teamC.members|length > 0 %}
+                <div class="{{ colClsName }}">
+                    {% set currentTeamName = "Team C" %}
+                    {% set currentTeamID = "teamC" %}
+                    {% set currentTeam = battleReport.teamC %}
+                    {% include 'components/teamList.html' %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('.combatant').each(function () {
+        var c = $(this),
+            kid = c.attr('data-kill-id');
+        if (!kid) return;
+        c.css({ cursor: 'pointer' }).click(function () {
+            window.open('{{ BR_FETCH_SOURCE_URL }}kill/' + kid + '/', '_blank');
+        });
+    });
+</script>
+{% endblock %}

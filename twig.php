@@ -21,4 +21,5 @@ $twigEnv->addGlobal("BR_USER_LOGGEDIN", User::isLoggedIn());
 $twigEnv->addGlobal("BR_USER_CAN_CREATE", User::can('create'));
 
 
+$twigEnv->addGlobal("BR_FETCH_SOURCE_URL", BR_FETCH_SOURCE_URL);
 $twigEnv->addGlobal("BR_FETCH_SOURCE_NAME", BR_FETCH_SOURCE_NAME);
