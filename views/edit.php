@@ -30,7 +30,7 @@ if ($app->request->isPost()) {
     $battleReport->title = $parameters["battleTitle"];
     
     if ($success) {
-        $battleReport->save();
+        $battleReport->publish();
         $app->redirect("/show/$battleReportID");
     }
     

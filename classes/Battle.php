@@ -114,6 +114,10 @@ class Battle {
         
     }
     
+    public function publish() {
+        $this->published = true;
+        $this->save();
+    }
     
     public function savePreparation() {
         $this->published = false;
