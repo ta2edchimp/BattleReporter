@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Overview' %}
+
+{% block content %}
+    <h1>{{ BR_OWNER }}'s BattleReports</h1>
+    {% if battleList|length == 0 %}
+    <div class="panel">
+        <div class="panel-body">
+            <strong>No Battles</strong> stored in {{ BR_OWNER }}'s BattleReporter yet.
+        </div>
+    </div>
+    {% else %}
+    <table class="panel-body table table-striped table-hover ">
+        <!-- thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead -->
+        <tbody>
+        {% for battle in battleList %}
+            <tr data-battle-report-id="{{ battle.battleReportID }}">
+                <td></td>
+                <td><a href="/show/{{ battle.battleReportID }}">{{ battle.title }}</a></td>
+                <td>{{ battle.solarSystemName }}</td>
+                <td>{{ battle.date }}</td>
+                <td class="text-right">{{ battle.pilotCountTeamA }}</td>
+                <td class="text-center">:</td>
+                <td class="text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
+                {% if battle.efficiency == 1 %}
+                    {% set efficiencyClsName = 'text-success' %}
+                {% elseif battle.efficiency > 0.5 %}
+                    {% set efficiencyClsName = 'text-info' %}
+                {% elseif battle.efficiency > 0.1 %}
+                    {% set efficiencyClsName = 'text-warning' %}
+                {% else %}
+                    {% set efficiencyClsName = 'text-danger' %}
+                {% endif %}
+                <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
+                <td>{{ battle.iskDestroyed }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('*[data-battle-report-id]').each(function () {
+        $(this).css({ cursor: 'pointer' });
+    }).click(function () {
+        var id = $(this).attr('data-battle-report-id');
+        if (!id) return;
+        window.location.href = '/show/' + id;
+    });
+</script>
+{% endblock %}

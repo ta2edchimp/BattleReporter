@@ -20,7 +20,7 @@ $app->error(function (\Exception $e) use ($app) {
 // Homepage
 $app->get('/', function () use ($app) {
     
-    $app->render("base.html");
+    include("views/index.php");
     
 });
 
