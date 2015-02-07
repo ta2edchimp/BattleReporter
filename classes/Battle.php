@@ -324,7 +324,7 @@ class Battle {
         if ($combatantA->killTime == $combatantB->killTime)
             return Combatant::sorter($combatantA, $combatantB);
         
-        return $combatantA->killTime > $combatantB->killTime ? -1 : 1;
+        return $combatantA->killTime < $combatantB->killTime ? -1 : 1;
     }
     
 }
