@@ -21,7 +21,7 @@
                                     <div class="combatant-details">
                                         {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                         <small>{{ combatant.corporationName }}
-                                            {% if combatant.allianceID > 0 %} / {{ combatant.allianceName }}{% endif %}</small><br>
+                                            {% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
                                         {{ combatant.shipTypeName }}<br>
                                             {% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
                                     </div>

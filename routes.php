@@ -25,7 +25,7 @@ $app->get('/', function () use ($app) {
 });
 
 // Show certain battle report
-$app->get('/show/:battleReportID', function($battleReportID) use ($app) {
+$app->get('/show/:battleReportID(/:battleReportDetail)', function($battleReportID, $battleReportDetail = "") use ($app) {
     
     include("views/show.php");
     

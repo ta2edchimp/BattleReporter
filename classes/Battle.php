@@ -188,6 +188,32 @@ class Battle {
     }
     
     
+    public function getTimeline() {
+        
+        $timeline = array();
+        
+        $teams = array("teamA", "teamB", "teamC");
+        foreach ($teams as $team) {
+            foreach ($this->$team->members as $combatant) {
+                if ($combatant->died) {
+                    $timeline[] = array(
+                        "occurredToTeamA" => ($team == "teamA"),
+                        "occurredToTeamB" => ($team == "teamB"),
+                        "occurredToTeamC" => ($team == "teamC"),
+                        "timeStamp" => $combatant->killTime,
+                        "timeStampString" => date("H:i", $combatant->killTime),
+                        "combatantEventOccuredTo" => $combatant
+                    );
+                }
+            }
+        }
+        usort($timeline, 'Battle::timelineSorter');
+        
+        return $timeline;
+        
+    }
+    
+    
     public function import($importedKills) {
         
         if (count($importedKills) <= 0)
@@ -258,6 +284,18 @@ class Battle {
             '"teamB":' . $this->teamB->toJSON() . ',' .
             '"teamC":' . $this->teamC->toJSON() .
         '}';
+    }
+    
+    
+    public static function timelineSorter($a, $b) {
+        
+        $combatantA = $a["combatantEventOccuredTo"];
+        $combatantB = $b["combatantEventOccuredTo"];
+        
+        if ($combatantA->killTime == $combatantB->killTime)
+            return Combatant::sorter($combatantA, $combatantB);
+        
+        return $combatantA->killTime > $combatantB->killTime ? -1 : 1;
     }
     
 }

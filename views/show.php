@@ -12,6 +12,25 @@ if ($battleReport->load($battleReportID) == false) {
     $app->stop();
 }
 
+$battleReportDetailTitle = "Battle Overview";
+
+$availableDetails = array("timeline");
+if (!empty($battleReportDetail)) {
+    $battleReportDetail = strtolower($battleReportDetail);
+    if (!in_array($battleReportDetail, $availableDetails))
+        $battleReportDetail = "overview";
+}
+if (empty($battleReportDetail))
+    $battleReportDetail = "overview";
+
+switch ($battleReportDetail) {
+    case "timeline":
+        $battleReportDetailTitle = "Battle Timeline";
+        break;
+}
+
 $app->render("show.html", array(
-    "battleReport" => $battleReport
+    "battleReport" => $battleReport,
+    "battleReportDetail" => $battleReportDetail,
+    "battleReportDetailTitle" => $battleReportDetailTitle
 ));
