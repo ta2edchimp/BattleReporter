@@ -223,6 +223,11 @@ class Battle {
         $latestKillTime = 0;
         
         foreach ($importedKills as $impKill) {
+            
+            $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
+            if ($existantBattleID != null)
+                throw new Exception("The fetched events are already part of an existing BattleReport.");
+            
             $kill = Kill::fromImport($impKill);
             
             if ($kill != null) {
@@ -286,6 +291,25 @@ class Battle {
         '}';
     }
     
+    
+    public static function getBattleReportIDByKillID($killID = "") {
+        if (empty($killID))
+            return null;
+        
+        global $db;
+        
+        $id = $db->single(
+            "select br.battleReportID " .
+            "from brBattleParties as br inner join brCombatants as c " .
+            "where c.killID = :killID " .
+            "limit 1",
+            array(
+                "killID" => $killID
+            )
+        );
+        
+        return $id;
+    }
     
     public static function timelineSorter($a, $b) {
         
