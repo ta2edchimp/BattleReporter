@@ -6,7 +6,7 @@ $output = array();
 global $db;
 
 $battleList = $db->query(
-    "select br.battleReportID, br.brTitle as title, br.brStartTime as startTime, br.brEndTime as endTime, " .
+    "select br.battleReportID, br.brTitle as title, br.brStartTime as startTime, br.brEndTime as endTime, br.brPublished as published, " .
         "(select count(c.brCombatantID) from brCombatants as c where c.brHidden = 0 and c.brBattlePartyID = (" .
             "select bp.brBattlePartyID from brBattleParties as bp where bp.battleReportID = br.battleReportID and bp.brTeamName = 'teamA' limit 1" .
         ")) as pilotCountTeamA, " .
@@ -28,6 +28,7 @@ $battleList = $db->query(
         "sys.solarSystemName " .
     "from brBattles as br inner join mapSolarSystems as sys " .
         "on br.solarSystemID = sys.solarSystemID " .
+    (User::isAdmin() ? "" : "where br.brPublished = 1 ") .
     "order by br.brStartTime desc"
 );
 

@@ -17,6 +17,11 @@ if ($battleReport->load($battleReportID, false, true) == false) {
     $app->stop();
 }
 
+if (User::isAdmin() && strtolower($battleReportEditAction) == "unpublish") {
+    $battleReport->unpublish();
+    $app->redirect("/");
+}
+
 // User posted changes to the current battle report
 if ($app->request->isPost()) {
     

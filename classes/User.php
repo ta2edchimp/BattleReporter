@@ -160,6 +160,16 @@ class User {
         
     }
     
+    public static function isAdmin() {
+        
+        $userInfos = self::getUserInfos();
+        if ($userInfos == NULL)
+            return false;
+        
+        return ($userInfos["isAdmin"] == 1);
+        
+    }
+    
     public static function can($right = "") {
         
         if (empty($right))

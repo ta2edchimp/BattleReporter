@@ -39,7 +39,7 @@ $app->map('/create', function () use ($app) {
 })->via('GET', 'POST');
 
 // Editing existing (and newly created) battle reports
-$app->map('/edit/:battleReportID', function ($battleReportID) use ($app) {
+$app->map('/edit/:battleReportID(/:unpublish)', function ($battleReportID, $battleReportEditAction = "") use ($app) {
     
     include("views/edit.php");
     

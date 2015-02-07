@@ -7,7 +7,7 @@ if (empty($battleReportID) || $battleReportID == 0) {
 
 // Try to fetch the specified battle report
 $battleReport = new Battle();
-if ($battleReport->load($battleReportID) == false) {
+if ($battleReport->load($battleReportID, !User::isAdmin()) == false) {
     $app->render("brNotFound.html");
     $app->stop();
 }

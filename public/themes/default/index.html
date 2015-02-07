@@ -22,7 +22,7 @@
         </thead -->
         <tbody>
         {% for battle in battleList %}
-            <tr data-battle-report-id="{{ battle.battleReportID }}">
+            <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} class="text-muted" style="BattleReport is unpublished"{% endif %}>
                 <td></td>
                 <td><a href="/show/{{ battle.battleReportID }}">{{ battle.title }}</a></td>
                 <td>{{ battle.solarSystemName }}</td>
@@ -38,6 +38,9 @@
                     {% set efficiencyClsName = 'text-warning' %}
                 {% else %}
                     {% set efficiencyClsName = 'text-danger' %}
+                {% endif %}
+                {% if battle.published == 0 %}
+                    {% set efficiencyClsName = 'text-muted' %}
                 {% endif %}
                 <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
                 <td>{{ battle.iskDestroyed }}</td>
