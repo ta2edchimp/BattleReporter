@@ -45,6 +45,18 @@ $app->map('/edit/:battleReportID', function ($battleReportID) use ($app) {
     
 })->via('GET', 'POST');
 
+// Log in and out
+$app->map('/login', function () use ($app) {
+    
+    include("views/login.php");
+    
+})->via('GET', 'POST');
+$app->get('/logout', function () use ($app) {
+    
+    include("views/logout.php");
+    
+});
+
 // Fetching solar systems for input suggestions
 $app->post('/autocomplete/solarSystems', function () use ($app, $db) {
     

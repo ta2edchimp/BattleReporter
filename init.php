@@ -11,7 +11,7 @@ $app->config('debug', $BR_DEBUGMODE);
 // Theming ...
 if (!defined('BR_THEME'))
     $theme = BR_THEME;
-if(!isset($theme))
+if(!isset($theme) || empty($theme))
     $theme = "default";
 elseif(!is_dir(__DIR__ . "/public/themes/$theme"))
     $theme = "default";
