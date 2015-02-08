@@ -134,6 +134,17 @@
         $('*[data-combatant-id]').each(function () {
             hoverCombatants($(this));
         });
+        $('.combatant-corpname').autocomplete({
+            serviceUrl: '/autocomplete/corpNames',
+            type: 'POST',
+            onSelect: function (suggestion) {
+                $(this).closest('.combatant-adding-form').find('.combatant-alliname').val(suggestion.data);
+            }
+        });
+        $('.combatant-alliname').autocomplete({
+            serviceUrl: '/autocomplete/alliNames',
+            type: 'POST'
+        });
         $('.combatant-shipname').autocomplete({
             serviceUrl: '/autocomplete/shipNames',
             type: 'POST',
@@ -155,11 +166,16 @@
                 team = tr.closest('table').attr('id').replace(/^battlereport-/, ''),
                 ship = tr.find('.combatant-shipname'),
                 shipName = ship.val(),
-                id;
+                corp = tr.find('.combatant-corpname'),
+                corpName = corp.val(),
+                alli = tr.find('.combatant-alliname'),
+                alliName = alli.val();
+            alli.val('');
+            corp.val('');
             ship.val('');
             if (!shipName)
                 return;
-            addCombatant(team, { shipTypeName: shipName });
+            addCombatant(team, { shipTypeName: shipName, corporationName: corpName, allianceName: alliName });
         });
         $('#save-br').click(function () {
             $('#battleReportChanges').val(JSON.stringify(changes));

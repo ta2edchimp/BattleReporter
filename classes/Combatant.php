@@ -47,6 +47,22 @@ class Combatant {
         if ($this->brCombatantID == 0)
             $this->brCombatantID = self::getNextCombatantID();
         
+        if ($this->corporationID == -1 && !empty($this->corporationName) && $this->corporationName != "Unknown") {
+            $corpID = self::getEntityIDByName($this->corporationName);
+            if ($corpID >= 0)
+                $this->corporationID = $corpID;
+            else
+                $this->corporationName = "Unknown";
+        }
+        
+        if ($this->allianceID == -1 && !empty($this->allianceName)) {
+            $alliID = self::getEntityIDByName($this->allianceName);
+            if ($alliID >= 0)
+                $this->allianceID = $alliID;
+            else
+                $this->allianceName = "";
+        }
+        
         // Detect ship name from its id, if not already delivered
         if (empty($this->shipTypeName))
             $this->shipTypeName = Item::getNameByID($this->shipTypeID);
@@ -153,6 +169,34 @@ class Combatant {
     private static function getNextCombatantID() {
         self::$lastCombatantID--;
         return self::$lastCombatantID;
+    }
+    
+    
+    private static $fetchedEntityNameIds = array();
+    private static function getEntityIDByName($name = "") {
+        
+        if (empty($name))
+            return -1;
+        
+        if (isset(self::$fetchedEntityNameIds["name#" . $name]))
+            return self::$fetchedEntityNameIds["name#" . $name];
+
+        $pheal = new \Pheal\Pheal();
+        $response = $pheal->eveScope->CharacterID(array("names" => $name));
+        
+        if ($response != null && $response->characters != null) {
+            foreach ($response->characters as $row) {
+                if (strtolower($row->name) == strtolower($name)) {
+                    $result = intVal($row->characterID);
+                    $result = ($result > 0 ? $result : -1);
+                    self::$fetchedEntityNameIds["name#" . $name] = $result;
+                    return $result;
+                }
+            }
+        }
+        
+        return -1;
+        
     }
     
 }

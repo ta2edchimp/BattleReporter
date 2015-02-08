@@ -187,21 +187,33 @@ class Battle {
                 if (isset($change->added) && $change->added == true
                     && isset($change->teamName) && !empty($change->teamName)
                     && isset($change->combatantInfo)) {
+                    
+                    $corpName = "Unknown";
+                    $alliName = "";
+                    
+                    if (isset($change->combatantInfo->corporationName) && !empty($change->combatantInfo->corporationName))
+                        $corpName = $change->combatantInfo->corporationName;
+                    if (isset($change->combatantInfo->allianceName) && !empty($change->combatantInfo->allianceName))
+                        $alliName = $change->combatantInfo->allianceName;
+                    
                     $combatant = new Combatant(
                         array(
                             "characterID" => -1,
                             "characterName" => "Unknown",
                             "corporationID" => -1,
-                            "corporationName" => "Unknown",
-                            "allianceID" => 0,
-                            "allianceName" => "",
+                            "corporationName" => $corpName,
+                            "allianceID" => (empty($alliName) ? 0 : -1),
+                            "allianceName" => $alliName,
                             "shipTypeID" => 0,
                             "shipTypeName" => $change->combatantInfo->shipTypeName
                         )
                     );
+                    
                     $currentTeam = $change->teamName;
+                    
                     if ($combatant != null)
                         $this->$currentTeam->members[] = $combatant;
+                    
                 }
             }
             

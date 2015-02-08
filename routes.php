@@ -69,6 +69,14 @@ $app->group('/autocomplete', function () use ($app, $db) {
     $app->post('/shipNames', function () use ($app, $db) {
         include("views/autocomplete/shipNames.php");
     });
+    
+    // Fetching known corporation and alliance names
+    $app->post('/corpNames', function () use ($app, $db) {
+        include("views/autocomplete/corpNames.php");
+    });
+    $app->post('/alliNames', function () use ($app, $db) {
+        include("views/autocomplete/alliNames.php");
+    });
         
 });
 
