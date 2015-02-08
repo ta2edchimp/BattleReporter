@@ -16,8 +16,6 @@ if (!$app->request->isPost()) {
     $output["userName"] = $userName;
     $output["autoLogin"] = $autoLogin;
     
-    echo "<p>$userName / $password</p>";
-    
     if (User::login($userName, $password, $autoLogin))
         $app->redirect("/");
     
