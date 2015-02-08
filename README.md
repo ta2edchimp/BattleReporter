@@ -6,7 +6,7 @@ Advanced editable BattleReport platform for EVE Online.
 
 `BattleReporter` requires an environment running `PHP 5.4`. Version `5.5` is recommended, though.
 
-__Requirements:__
+### Requirements:
 
 - [PhealNG](https://github.com/3rdpartyeve/phealng/)
 - [Twig](http://twig.sensiolabs.org/)
@@ -21,7 +21,7 @@ Install and use [Composer](http://getcomposer.org/) to meet the requirements:
 
 Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
 
-__Setup:__
+### Setup:
 
 As there is no setup available at the moment, one should start by setting up a new database and import the tables from the `/database` directory as well as the tables `mapSolarSystems`, `invGroups` and `invTypes` from [Steve Ronuken/fuzzysteve's EVE SDE MySQL Dump](https://www.fuzzwork.co.uk/dump/latest/).
 
