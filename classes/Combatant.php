@@ -17,7 +17,7 @@ class Combatant {
     public $allianceID;
     public $allianceName;
     
-    public $shipTypeID;
+    public $shipTypeID = 0;
     public $shipTypeName = "";
     
     public $died = false;
@@ -48,8 +48,13 @@ class Combatant {
             $this->brCombatantID = self::getNextCombatantID();
         
         // Detect ship name from its id, if not already delivered
-        if (empty($this->shiptTypeName))
+        if (empty($this->shipTypeName))
             $this->shipTypeName = Item::getNameByID($this->shipTypeID);
+        else {
+            if (empty($this->shipTypeID) || $this->shipTypeID <= 0)
+                $this->shipTypeID = Item::getIDByName($this->shipTypeName);
+        }
+            
         
         if (!empty($killID)) {
             $this->died = true;
@@ -131,7 +136,7 @@ class Combatant {
                     // If ships are the same, sort by kill id
                     strcmp($a->killID, $b->killID);
                 }
-                return strcmp($a->shipTypeName, $b->shipTypeName);
+                return strcasecmp($a->shipTypeName, $b->shipTypeName);
             }
             return ($a->died && !$b->died) ? -1 : 1;
         }
@@ -141,7 +146,7 @@ class Combatant {
         if ($b->characterID == 0)
             return -1;
         // By default, sort alphabetically
-        return strcmp($a->characterName, $b->characterName);
+        return strcasecmp($a->characterName, $b->characterName);
     }
     
     private static $lastCombatantID = 0;

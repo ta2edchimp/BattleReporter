@@ -25,7 +25,8 @@ class BattleParty {
         
         // Test, if combatant has not yet been added
         // That is having reshipped counts as being another combatant
-        if (count($this->members) > 0) {
+        // Does not include "Unknown" (manually added) pilots
+        if (count($this->members) > 0 && $combatant->characterID >= 0) {
             foreach ($this->members as &$member) {
                 if ($member->characterID == $combatant->characterID) {
                     if ($member->shipTypeID == $combatant->shipTypeID) {
@@ -61,7 +62,7 @@ class BattleParty {
         $this->losses = 0;
         
         foreach ($this->members as $member) {
-            if (!in_array($member->characterID, $pilots))
+            if (!$member->brHidden && (!in_array($member->characterID, $pilots) || $member->characterID <= 0))
                 $pilots[] = $member->characterID;
             $this->totalLost += $member->priceTag;
             if ($member->died)

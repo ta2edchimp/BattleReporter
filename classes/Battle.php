@@ -63,6 +63,11 @@ class Battle {
         $this->solarSystemID    = $result["solarSystemID"];
         $this->published        = $result["brPublished"] == 1 ? true : false;
         
+        // Sort battle parties
+        $this->teamA->sort();
+        $this->teamB->sort();
+        $this->teamC->sort();
+        
         // Update certain properties
         $this->updateDetails();
         return true;
@@ -161,21 +166,42 @@ class Battle {
             
             $combatant = null;
             
-            foreach ($allTeams as $team) {
-                foreach ($this->$team->members as $key => $member) {
-                    echo "<p>" . json_encode($member) . "</p>";
-                    if (is_object($member) && $member->brCombatantID == $combatantID) {
-                        $currentTeam = $team;
-                        $combatant = $member;
-                        
-                        if (isset($change->teamName) && !empty($change->teamName) && $change->teamName != $currentTeam) {
-                            unset($this->$team->members[$key]);
-                            $currentTeam = $change->teamName;
-                            $this->$currentTeam->members[] = $combatant;
+            if ($combatantID >= 0) {
+                foreach ($allTeams as $team) {
+                    foreach ($this->$team->members as $key => $member) {
+                        if (is_object($member) && $member->brCombatantID == $combatantID) {
+                            $currentTeam = $team;
+                            $combatant = $member;
+                            
+                            if (isset($change->teamName) && !empty($change->teamName) && $change->teamName != $currentTeam) {
+                                unset($this->$team->members[$key]);
+                                $currentTeam = $change->teamName;
+                                $this->$currentTeam->members[] = $combatant;
+                            }
+                            
+                            break 2;
                         }
-                        
-                        break 2;
                     }
+                }
+            } else {
+                if (isset($change->added) && $change->added == true
+                    && isset($change->teamName) && !empty($change->teamName)
+                    && isset($change->combatantInfo)) {
+                    $combatant = new Combatant(
+                        array(
+                            "characterID" => -1,
+                            "characterName" => "Unknown",
+                            "corporationID" => -1,
+                            "corporationName" => "Unknown",
+                            "allianceID" => 0,
+                            "allianceName" => "",
+                            "shipTypeID" => 0,
+                            "shipTypeName" => $change->combatantInfo->shipTypeName
+                        )
+                    );
+                    $currentTeam = $change->teamName;
+                    if ($combatant != null)
+                        $this->$currentTeam->members[] = $combatant;
                 }
             }
             

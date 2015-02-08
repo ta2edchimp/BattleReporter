@@ -30,7 +30,7 @@ class Item {
         return $result;
     }
     
-    private static function getIDByName($name = "") {
+    public static function getIDByName($name = "") {
         if (empty($name))
             return "";
         
@@ -54,6 +54,37 @@ class Item {
         self::$nameIDs["name#" . $name] = $result;
         
         return $result;
+    }
+    
+    public static function getAllShipsByPartialName($namePart = "") {
+        
+        if (empty($namePart))
+            return array();
+        
+        global $db;
+        
+        $ships = $db->query(
+            "select typeName as name, typeID as id " .
+            "from (select typeName, typeID from invTypes " .
+                "where typeName like :shipNameStartsWith " .
+                    "and groupID in (select groupID from invGroups where categoryID = 6) " .
+                "order by typeName) as drvdtbl1 " .
+            "union " .
+            "select typeName AS name, typeID as id " .
+                "from (select typeName, typeID from invTypes " .
+                "where typeName like :shipNameContains " .
+                    "and groupID in (select groupID from invGroups where categoryID = 6) " .
+                "order by typeName) as drvdtbl2",
+            array(
+                "shipNameStartsWith" => $namePart . '%',
+                "shipNameContains" => '%' . $namePart . '%'
+            )
+        );
+        
+        if ($ships == NULL)
+            return array();
+        
+        return $ships;
     }
     
 }

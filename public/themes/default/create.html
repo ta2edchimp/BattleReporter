@@ -93,7 +93,8 @@
             </div>
         </div>
         {% else %}
-        {% include 'components/brEditPanel.html' %}
+            {% set BR_CAN_APPEND_COMBATANTS = true %}
+            {% include 'components/brEditPanel.html' %}
         {% endif %}
         {% endif %}
         {% endif %}

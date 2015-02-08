@@ -3,6 +3,17 @@
 {% set pageTitle = 'Edit BattleReport' %}
 {% set battleInReview = true %}
 
+{% block head %}
+<style>
+    .autocomplete-suggestions { border:1px solid #999;background:#fff;overflow:auto;color:#333; }
+    .autocomplete-suggestion { padding:2px 5px;white-space:nowrap;overflow:hidden; }
+    .autocomplete-selected { background:#f0f0f0; }
+    .autocomplete-suggestions strong { font-weight:normal;color: #3399FF; }
+    .autocomplete-group { padding:2px 5px; }
+    .autocomplete-group strong { display:block;border-bottom:1px solid #000; }
+</style>
+{% endblock %}
+
 {% block content %}
     <h1>Edit BattleReport</h1>
     {% if battleReportSavingError == true %}
@@ -15,6 +26,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">Edit Battle</h3>
         </div>
+        {% set BR_CAN_APPEND_COMBATANTS = true %}
         {% include 'components/brEditPanel.html' %}
     </div>
 {% endblock %}

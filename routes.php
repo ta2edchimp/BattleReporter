@@ -57,11 +57,19 @@ $app->get('/logout', function () use ($app) {
     
 });
 
-// Fetching solar systems for input suggestions
-$app->post('/autocomplete/solarSystems', function () use ($app, $db) {
+// Autocomplete Suggestions:
+$app->group('/autocomplete', function () use ($app, $db) {
     
-    include("views/autocomplete/solarSystems.php");
+    // Fetching solar systems for input suggestions
+    $app->post('/solarSystems', function () use ($app, $db) {
+        include("views/autocomplete/solarSystems.php");
+    });
     
+    // Fetching ship names for input suggestions
+    $app->post('/shipNames', function () use ($app, $db) {
+        include("views/autocomplete/shipNames.php");
+    });
+        
 });
 
 

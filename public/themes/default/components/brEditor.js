@@ -1,10 +1,60 @@
-    !function(battlereport, teamNames, combatants, editor, changes){
+    !function(battlereport, teamNames, combatants, editor, changes, ships, custIdx){
         if (!battlereport) return;
         teamNames = ['teamA', 'teamB', 'teamC'];
         combatants = [];
         changes = {};
+        ships = {};
+        custIdx = 0;
+        function hoverCombatants(el) {
+            if (!el) return;
+            el.hover(function () {
+                var el = $(this),
+                    cmbt = getCombatant(el.attr('data-combatant-id')),
+                    cnt = el.find('.combatant-details');
+                if (!cmbt) { console.log("no combatant found"); return; }
+                cnt.css('position', 'relative');
+                editor.attr('class', '');
+                if (cmbt._team == 'teamA') editor.addClass('not-movable-left');
+                if (cmbt._team == 'teamC') editor.addClass('not-movable-right');
+                if (cmbt.brCombatantID < 0)
+                    editor.addClass('not-hideable').addClass('not-showable');
+                else
+                    editor.addClass('not-trashable').addClass(cmbt.brHidden ? 'not-hideable' : 'not-showable');
+                if (cmbt.died)
+                    editor.addClass(cmbt.brHidden ? 'not-showable' : 'not-hideable');
+                editor.appendTo(cnt).show();
+            }, function () {
+                editor.hide();
+            });
+        }
+        function addCombatant(team, combatant) {
+            if (!team || !combatant)
+                return;
+            var tbl = $('#battlereport-' + team);
+            if (!('brCombatantID' in combatant))
+                combatant.brCombatantID = (--custIdx);
+            combatant._team = team;
+            combatants.push(combatant);
+            changes[combatant.brCombatantID] = changes[combatant.brCombatantID] || {
+                added: true,
+                teamName: team,
+                combatantInfo: combatant
+            };
+            hoverCombatants($(document.createElement('tr')).addClass('combatant').attr('data-combatant-id', combatant.brCombatantID).html(
+                '<td><img src="//image.eveonline.com/InventoryType/' + (ships[combatant.shipTypeName] || 0) + '_64.png"></td>' +
+                '<td style="width:100%">' +
+                    '<div class="combatant-details">' +
+                        (!!combatant.characterName ? ('<strong>' + combatant.characterName + '</strong>') : '<em>Unknown</em>') + '<br>' +
+                        '<small>' + (combatant.corporationName || '<em>Unknown</em>') +
+                            (!!combatant.allianceName > 0 ? ('<br>' + combatant.allianceName) : '') + '</small><br>' +
+                        combatant.shipTypeName +
+                        '<br>&nbsp;' +
+                    '</div>' +
+                '</td>'
+            ).appendTo(tbl.find('tbody')));
+        }
         function getCombatant(id) {
-            if (!id) return null;
+            if (typeof id == 'undefined') return null;
             l = combatants.length;
             while (l--) {
                 if ((c = combatants[l]).brCombatantID == id) return c;
@@ -81,24 +131,35 @@
                 handle(n, $(this).closest('.combatant'));
             });
         });
-        $('*[data-combatant-id]').hover(function () {
-            var el = $(this),
-                cmbt = getCombatant(el.attr('data-combatant-id')),
-                cnt = el.find('.combatant-details');
-            if (!cmbt) return;
-            cnt.css('position', 'relative');
-            editor.attr('class', '');
-            if (cmbt._team == 'teamA') editor.addClass('not-movable-left');
-            if (cmbt._team == 'teamC') editor.addClass('not-movable-right');
-            if (cmbt.brCombatantID == 0)
-                editor.addClass('not-hideable').addClass('not-showable');
-            else
-                editor.addClass('not-trashable').addClass(cmbt.brHidden ? 'not-hideable' : 'not-showable');
-            if (cmbt.died)
-                editor.addClass(cmbt.brHidden ? 'not-showable' : 'not-hideable');
-            editor.appendTo(cnt).show();
-        }, function () {
-            editor.hide();
+        $('*[data-combatant-id]').each(function () {
+            hoverCombatants($(this));
+        });
+        $('.combatant-shipname').autocomplete({
+            serviceUrl: '/autocomplete/shipNames',
+            type: 'POST',
+            transformResult: function(response) {
+                var s = [];
+                if (!!response && !!(response = $.parseJSON(response)))
+                    s = $.map(response.ships, function(item) {
+                        if (!(item.name in ships)) ships[item.name] = item.id;
+                        return { value: item.name, data: item.id };
+                    });
+                return {
+                    suggestions: s
+                };
+            }
+        });
+        $('.combatant-adding-form').submit(function (e) {
+            e.preventDefault();
+            var tr = $(this).closest('.combatant-adding-panel'),
+                team = tr.closest('table').attr('id').replace(/^battlereport-/, ''),
+                ship = tr.find('.combatant-shipname'),
+                shipName = ship.val(),
+                id;
+            ship.val('');
+            if (!shipName)
+                return;
+            addCombatant(team, { shipTypeName: shipName });
         });
         $('#save-br').click(function () {
             $('#battleReportChanges').val(JSON.stringify(changes));
