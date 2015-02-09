@@ -247,6 +247,7 @@ class Battle {
                         "occurredToTeamC" => ($team == "teamC"),
                         "timeStamp" => $combatant->killTime,
                         "timeStampString" => date("H:i", $combatant->killTime),
+						"killID" => $combatant->killID,
                         "combatantEventOccuredTo" => $combatant
                     );
                 }

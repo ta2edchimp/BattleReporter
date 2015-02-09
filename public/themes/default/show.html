@@ -87,8 +87,8 @@
                     <tr>
                         {% if event.occurredToTeamA %}
                         {% set combatant = event.combatantEventOccuredTo %}
-                        <td class="danger"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
-                        <td class="danger" style="width:{{ pilotColWidth }}">
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
@@ -103,8 +103,8 @@
                         <td class="text-center">{{ event.timeStampString }}</td>
                         {% if event.occurredToTeamB %}
                         {% set combatant = event.combatantEventOccuredTo %}
-                        <td class="danger"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
-                        <td class="danger" style="width:{{ pilotColWidth }}">
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
@@ -120,8 +120,8 @@
                         <td class="text-center">{{ event.timeStampString }}</td>
                         {% if event.occurredToTeamC %}
                         {% set combatant = event.combatantEventOccuredTo %}
-                        <td class="danger"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
-                        <td class="danger" style="width:{{ pilotColWidth }}">
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+                        <td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
