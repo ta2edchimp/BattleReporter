@@ -17,7 +17,7 @@ Advanced editable BattleReport platform for EVE Online.
 
 Install and use [Composer](http://getcomposer.org/) to meet the requirements:
 
-    php composer.phar install
+    $ php composer.phar install
 
 Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
 
@@ -27,9 +27,11 @@ As there is no setup available at the moment, one should start by setting up a n
 
 Furthermore, you'll need a primary administrator account, therefore setup a php script with the following content:
 
-    <?php
-        $password = "YourPasswordHere123!";
-        echo "<p>$password:<br>" . password_hash($password, PASSWORD_BCRYPT) . "</p>";
+```php
+<?php
+$password = "YourPasswordHere123!";
+echo "<p>$password:<br>" . password_hash($password, PASSWORD_BCRYPT) . "</p>";
+````
 
 Execute it and add a new row to the table `brUsers` (set columns `userName` to your "admin" username, `password` to the script's output and `isAdmin` to `1`).
 
