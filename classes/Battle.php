@@ -48,7 +48,7 @@ class Battle {
         
         // Fetch corresponding records from database
         $result = $db->row(
-            "select br.*, ifnull(u.userName, 'Anonymous') as userName " .
+            "select br.*, ifnull(u.userName, 'Anonymous') as brCreatorUserName " .
 			"from brBattles as br left outer join brUsers as u on u.userID = br.brCreatorUserID " .
             "where br.battleReportID = :battleReportID" .
             ($onlyPublished ? " and br.brPublished = 1" : ""),
