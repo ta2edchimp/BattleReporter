@@ -148,7 +148,7 @@ class Battle {
         $this->killsTotal = $this->teamA->losses + $this->teamB->losses + $this->teamC->losses;
         
         if ($this->startTime > 0 && $this->endTime > 0)
-            $this->timeSpan = date("Y.m.d H:i", $this->startTime) . " - " . date("H:i", $this->endTime);
+            $this->timeSpan = date("Y-m-d H:i", $this->startTime) . " - " . date("H:i", $this->endTime);
         else
             $this->timeSpan = "";
         
@@ -186,7 +186,8 @@ class Battle {
             } else {
                 if (isset($change->added) && $change->added == true
                     && isset($change->teamName) && !empty($change->teamName)
-                    && isset($change->combatantInfo)) {
+                    && isset($change->combatantInfo)
+					&& (!isset($change->brDeleted) || $change->brDeleted != true)) {
                     
                     $corpName = "Unknown";
                     $alliName = "";
