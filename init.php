@@ -1,5 +1,8 @@
 <?php
 
+// Set default timezone to "EVE Time", aka "UTC"
+date_default_timezone_set("UTC");
+
 // Global database access wrapper object
 $db = new Db(DB_NAME, DB_USER, DB_PASS, DB_HOST);
 
