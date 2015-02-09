@@ -125,7 +125,7 @@ class BattleParty {
         // Fetch team members
         $team = $db->query(
             "select * from brCombatants " .
-            "where brBattlePartyID = :brBattlePartyID" .
+            "where brBattlePartyID = :brBattlePartyID and (brManuallyAdded = 0 or brDeleted = 0)" .
             ($toBeEdited ? "" : " and brHidden = 0"),
             array(
                 "brBattlePartyID" => $this->brBattlePartyID

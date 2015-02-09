@@ -13,6 +13,8 @@ CREATE TABLE `brCombatants` (
     `killID` text,
     `killTime` int(11) DEFAULT 0 NOT NULL,
     `priceTag` decimal(13,2) unsigned DEFAULT 0 NOT NULL,
+	`brManuallyAdded` tinyint(1) DEFAULT 0 NOT NULL,
+	`brDeleted` tinyint(1) DEFAULT 0 NOT NULL,
     PRIMARY KEY (`brCombatantID`),
     KEY `brCombatants_IX_characterID` (`characterID`),
     KEY `brCombatants_IX_corporationID` (`corporationID`),

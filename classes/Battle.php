@@ -206,7 +206,8 @@ class Battle {
                             "allianceID" => (empty($alliName) ? 0 : -1),
                             "allianceName" => $alliName,
                             "shipTypeID" => 0,
-                            "shipTypeName" => $change->combatantInfo->shipTypeName
+                            "shipTypeName" => $change->combatantInfo->shipTypeName,
+							"brManuallyAdded" => true
                         )
                     );
                     
@@ -224,8 +225,8 @@ class Battle {
             if (isset($change->brHidden))
                 $combatant->brHidden = $change->brHidden;
             
-            if (isset($change->brDelete))
-                $combatant->brDelete = $change->brDelete;
+            if (isset($change->brDeleted))
+                $combatant->brDeleted = $change->brDeleted;
         }
         
         return true;

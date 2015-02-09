@@ -16,7 +16,7 @@
                 editor.attr('class', '');
                 if (cmbt._team == 'teamA') editor.addClass('not-movable-left');
                 if (cmbt._team == 'teamC') editor.addClass('not-movable-right');
-                if (cmbt.brCombatantID < 0)
+                if (cmbt.brCombatantID < 0 || cmbt.brManuallyAdded)
                     editor.addClass('not-hideable').addClass('not-showable');
                 else
                     editor.addClass('not-trashable').addClass(cmbt.brHidden ? 'not-hideable' : 'not-showable');

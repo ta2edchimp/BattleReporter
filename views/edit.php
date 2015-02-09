@@ -37,9 +37,9 @@ if ($app->request->isPost()) {
     if ($success) {
         $battleReport->publish();
         $app->redirect("/show/$battleReportID");
-    }
-    
-    $output["battleReportSavingError"] = true;
+    } else {
+        $output["battleReportSavingError"] = true;
+	}
     
 }
 
