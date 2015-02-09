@@ -29,9 +29,12 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
         </thead -->
         <tbody>
         {% for battle in battleList %}
-            <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} class="text-muted" style="BattleReport is unpublished"{% endif %}>
+            <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} title="BattleReport is unpublished"{% endif %}>
                 <td></td>
-                <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">{{ battle.title }}</a></td>
+                <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">
+					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
+					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
+					</a></td>
                 <td>{{ battle.solarSystemName }}</td>
                 <td>{{ battle.date }}</td>
                 <td class="text-right">{{ battle.pilotCountTeamA }}</td>
@@ -45,9 +48,6 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
                     {% set efficiencyClsName = 'text-warning' %}
                 {% else %}
                     {% set efficiencyClsName = 'text-danger' %}
-                {% endif %}
-                {% if battle.published == 0 %}
-                    {% set efficiencyClsName = 'text-muted' %}
                 {% endif %}
                 <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
                 <td>{{ battle.iskDestroyed }}</td>
