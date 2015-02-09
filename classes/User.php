@@ -29,7 +29,7 @@ class User {
         global $db, $app;
         
         $userInfo = $db->row(
-            "select userID, userName, password from brUsers where userName = :userName",
+            "select userID, userName, password from brUsers where userName = :userName and deactivatedTime is NULL",
             array(
                 "userName" => $userName
             )
@@ -64,7 +64,7 @@ class User {
                         )
                     );
                     
-                    $app->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");//, $_SERVER["HTTP_HOST"]);//, $cookie_ssl, true);
+                    $app->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");
                     
                 }
                 
@@ -126,7 +126,7 @@ class User {
             $userName = $cookie[0];
             
             $userID = $db->single(
-                "select userID from brUsers where userName = :userName",
+                "select userID from brUsers where userName = :userName and deactivatedTime is NULL",
                 array(
                     "userName" => $userName
                 )

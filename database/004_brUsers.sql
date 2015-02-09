@@ -8,8 +8,9 @@ CREATE TABLE `brUsers` (
     `corporationID` int(16) DEFAULT NULL,
     `allianceID` int(16) DEFAULT NULL,
     `isAdmin` tinyint(1) DEFAULT 0 NOT NULL,
+	`deactivatedTime` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`userID`),
     UNIQUE KEY `userName` (`userName`),
-    KEY `brUsers_IX_login` (`userName`, `password`),
+    KEY `brUsers_IX_login` (`userName`, `password`, `deactivatedTime`),
     KEY `brUsers_IX_characterID` (`characterID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
