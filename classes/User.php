@@ -8,6 +8,21 @@ class User {
     public static function isLoggedIn() {
         return isset($_SESSION["isLoggedIn"]);
     }
+	
+	public static function getUserID() {
+		if (isset($_SESSION["isLoggedIn"]))
+			return $_SESSION["isLoggedIn"];
+		else
+			return -1;
+	}
+	
+	public static function getUserName() {
+        $userInfos = self::getUserInfos();
+        if ($userInfos == NULL)
+            return "";
+        
+        return $userInfos["userName"];
+	}
     
     public static function login($userName, $password, $autoLogin = false) {
         

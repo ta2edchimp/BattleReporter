@@ -24,10 +24,17 @@ class Battle {
     
     public $totalPilots = 0;
     public $totalLost = 0.0;
+	
+	public $creatorUserID = -1;
+	public $creatorUserName = "";
+	public $createTime = 0;
     
     
     public function __construct() {
         
+		$this->creatorUserID = User::getUserID();
+		$this->creatorUserName = User::getUserName();
+		
         $this->teamA = new BattleParty("teamA");
         $this->teamB = new BattleParty("teamB");
         $this->teamC = new BattleParty("teamC");
@@ -41,9 +48,10 @@ class Battle {
         
         // Fetch corresponding records from database
         $result = $db->row(
-            "select * from brBattles " .
-            "where battleReportID = :battleReportID" .
-            ($onlyPublished ? " and brPublished = 1" : ""),
+            "select br.*, ifnull(u.userName, 'Anonymous') as userName " .
+			"from brBattles as br left outer join brUsers as u on u.userID = br.brCreatorUserID " .
+            "where br.battleReportID = :battleReportID" .
+            ($onlyPublished ? " and br.brPublished = 1" : ""),
             array(
                 "battleReportID" => $id
             )
@@ -56,6 +64,9 @@ class Battle {
             return false;
         
         // Assign properties
+		$this->creatorUserID	= $result["brCreatorUserID"];
+		$this->creatorUserName	= $result["brCreatorUserName"];
+		$this->createTime		= $result["brCreateTime"];
         $this->battleReportID   = $result["battleReportID"];
         $this->title            = $result["brTitle"];
         $this->startTime        = $result["brStartTime"];
@@ -83,15 +94,16 @@ class Battle {
         if ($this->battleReportID <= 0) {
             $result = $db->query(
                 "insert into brBattles ".
-                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished) " .
+                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID) " .
                 "values " .
-                "(:title, :startTime, :endTime, :solarSystemID, :published)",
+                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID)",
                 array(
                     "title" => $this->title,
                     "startTime" => $this->startTime,
                     "endTime" => $this->endTime,
                     "solarSystemID" => $this->solarSystemID,
-                    "published" => $this->published ? 1 : 0
+                    "published" => $this->published ? 1 : 0,
+					"brCreatorUserID" => $this->creatorUserID
                 )
             );
             if ($result != NULL)
