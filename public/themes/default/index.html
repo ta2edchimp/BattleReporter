@@ -2,6 +2,13 @@
 
 {% set pageTitle = 'Overview' %}
 
+{% block head %}
+<style>
+table#battleReports-overview a.br-inv-link{text-decoration:none}
+table#battleReports-overview a:not(.btn){text-decoration:none}
+</style>
+{% endblock %}
+
 {% block content %}
     <h1>{{ BR_OWNER }}'s BattleReports</h1>
     {% if battleList|length == 0 %}
@@ -11,7 +18,7 @@
         </div>
     </div>
     {% else %}
-    <table class="panel-body table table-striped table-hover ">
+    <table id="battleReports-overview" class="panel-body table table-striped table-hover ">
         <!-- thead>
             <tr>
                 <th></th>
@@ -24,7 +31,7 @@
         {% for battle in battleList %}
             <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} class="text-muted" style="BattleReport is unpublished"{% endif %}>
                 <td></td>
-                <td><a href="/show/{{ battle.battleReportID }}">{{ battle.title }}</a></td>
+                <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">{{ battle.title }}</a></td>
                 <td>{{ battle.solarSystemName }}</td>
                 <td>{{ battle.date }}</td>
                 <td class="text-right">{{ battle.pilotCountTeamA }}</td>
