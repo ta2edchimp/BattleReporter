@@ -16,6 +16,11 @@
 
 {% block content %}
     <h1>Edit BattleReport</h1>
+	{% if BR_USER_CAN_EDIT == false %}
+	<div class="alert alert-danger">
+		<strong>Error!</strong> You are not permitted to alter BattleReports that are not your own!
+	</div>
+	{% else %}
     {% if battleReportSavingError == true %}
     <div class="alert alert-danger">
         <strong>Dammit!</strong> Something bad happened while trying to save the battle report. Please try again.
@@ -29,6 +34,7 @@
         {% set BR_CAN_APPEND_COMBATANTS = true %}
         {% include 'components/brEditPanel.html' %}
     </div>
+	{% endif %}
 {% endblock %}
 
 {% block scripts %}

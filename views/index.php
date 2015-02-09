@@ -5,6 +5,8 @@ $output = array();
 
 global $db;
 
+$params = array();
+
 $battleList = $db->query(
     "select br.battleReportID, br.brTitle as title, br.brStartTime as startTime, br.brEndTime as endTime, br.brPublished as published, " .
 		"br.brCreatorUserID as creatorUserID, ifnull(u.userName, '') as creatorUserName, " .
@@ -30,7 +32,7 @@ $battleList = $db->query(
     "from brBattles as br inner join mapSolarSystems as sys " .
         "on br.solarSystemID = sys.solarSystemID " .
 		" left outer join brUsers as u on u.userID = br.brCreatorUserID " .
-    (User::isAdmin() ? "" : "where br.brPublished = 1 ") .
+    (User::isLoggedIn() && User::can("edit") ? "" : "where br.brPublished = 1 ") .
     "order by br.brStartTime desc"
 );
 

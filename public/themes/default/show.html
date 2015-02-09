@@ -7,6 +7,9 @@
 
 {% block content %}
     <h1>
+		{% if battleReport.published == false %}
+		<span class="btn btn-xs btn-info">UNPUBLISHED</span><br>
+		{% endif %}
         {% if battleReport.title == '' %}
             {{ battleReport.title }}
         {% else %}

@@ -35,6 +35,7 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
 					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
 					</a></td>
+				<td>{{ battle.creatorUserName }}</td>
                 <td>{{ battle.solarSystemName }}</td>
                 <td>{{ battle.date }}</td>
                 <td class="text-right">{{ battle.pilotCountTeamA }}</td>

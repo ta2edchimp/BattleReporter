@@ -18,9 +18,11 @@ if (defined('BR_OWNER'))
 $twigEnv->addGlobal("BR_OWNERCORP_NAME", BR_OWNERCORP_NAME);
 
 $twigEnv->addGlobal("BR_USER_LOGGEDIN", User::isLoggedIn());
-$twigEnv->addGlobal("BR_USER_IS_ADMIN", User::isAdmin());
+$userIsAdmin = User::isAdmin();
+$twigEnv->addGlobal("BR_USER_IS_ADMIN", $userIsAdmin);
 $twigEnv->addGlobal("BR_USER_CAN_CREATE", User::can('create'));
-$twigEnv->addGlobal("BR_USER_CAN_EDIT", User::can('edit'));
+$twigEnv->addGlobal("BR_USER_CAN_EDIT", $userIsAdmin);
+$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", $userIsAdmin);
 
 
 $twigEnv->addGlobal("BR_FETCH_SOURCE_URL", BR_FETCH_SOURCE_URL);
