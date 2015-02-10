@@ -150,10 +150,11 @@
 <script>
     $('.combatant').each(function () {
         var c = $(this),
-            kid = c.attr('data-kill-id');
-        if (!kid) return;
+            kid = c.attr('data-kill-id'),
+			cid = c.attr('data-character-id');
+        if (!kid && (!cid || ['0', '-1'].indexOf(cid) > -1)) return;
         c.css({ cursor: 'pointer' }).click(function () {
-            window.open('{{ BR_FETCH_SOURCE_URL }}kill/' + kid + '/', '_blank');
+            window.open('{{ BR_FETCH_SOURCE_URL }}' + (!!kid ? ('kill/' + kid) : ('character/' + cid)) + '/', '_blank');
         });
     });
 </script>
