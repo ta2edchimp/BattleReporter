@@ -29,4 +29,10 @@ $app->view(new \Slim\Views\Twig());
 if ($BR_DEBUGMODE == true)
     $app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
+// Configuring PhealNG
+// Enable Caching -- ATTENTION: Directory MUST exist already!!
+\Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage(__DIR__ . '/cache/pheal/');
+// Enable AccessMask Check
+\Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();
+
 ?>
