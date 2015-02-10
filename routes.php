@@ -57,6 +57,13 @@ $app->get('/logout', function () use ($app) {
     
 });
 
+// Info pages
+$app->get('/info(/:page)', function ($page = "about") use ($app) {
+	
+	include("views/info.php");
+	
+});
+
 // Autocomplete Suggestions:
 $app->group('/autocomplete', function () use ($app, $db) {
     
