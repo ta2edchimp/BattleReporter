@@ -6,7 +6,8 @@
         "filp/whoops": "1.*",
 		"zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",
-        "phpfastcache/phpfastcache": "dev-Release_2.4"
+        "phpfastcache/phpfastcache": "dev-Release_2.4",
+		"erusev/parsedown": "dev-master"
     },
     "minimum-stability": "stable",
     "prefer-stable": true

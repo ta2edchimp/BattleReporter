@@ -14,6 +14,7 @@ Advanced editable BattleReport platform for EVE Online.
 - [Whoops](https://github.com/filp/whoops)
 - [Whoops Middleware for Slim](https://github.com/zeuxisoo/php-slim-whoops)
 - [phpFastCache](http://www.phpfastcache.com/)
+- [Parsedown](https://github.com/erusev/parsedown)
 
 Install and use [Composer](http://getcomposer.org/) to meet the requirements:
 
