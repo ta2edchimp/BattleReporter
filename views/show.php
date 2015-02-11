@@ -22,12 +22,13 @@ if ($battleReport->published == false) {
 		$app->stop();
 	}
 	
-	// ... but only admins and owners may actually edit this one.
-	if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
-		$twigEnv = $app->view()->getEnvironment();
-		$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
-		$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
-	}
+}
+	
+// ... but only admins and owners may actually edit this one.
+if (User::isLoggedIn() && (User::isAdmin() || $battleReport->creatorUserID == User::getUserID())) {
+	$twigEnv = $app->view()->getEnvironment();
+	$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
+	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
 }
 
 $battleReportDetailTitle = "Battle Overview";
