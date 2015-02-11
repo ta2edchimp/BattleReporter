@@ -16,26 +16,18 @@ Advanced editable BattleReport platform for EVE Online.
 - [phpFastCache](http://www.phpfastcache.com/)
 - [Parsedown](https://github.com/erusev/parsedown)
 
-Install and use [Composer](http://getcomposer.org/) to meet the requirements:
-
-    $ php composer.phar install
+The dependencies will be met by the use of [Composer](http://getcomposer.org/) during the automatic installation process.
 
 Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
 
 ### Setup:
 
-As there is no setup available at the moment, one should start by setting up a new database and import the tables from the `/database` directory as well as the tables `mapSolarSystems`, `invGroups` and `invTypes` from [Steve Ronuken/fuzzysteve's EVE SDE MySQL Dump](https://www.fuzzwork.co.uk/dump/latest/).
+As of `0.1.6`, a basic installer comes with BattleReporter. Run
 
-Furthermore, you'll need a primary administrator account, therefore setup a php script with the following content:
+	$ php install.php
 
-```php
-<?php
-$password = "YourPasswordHere123!";
-echo "<p>$password:<br>" . password_hash($password, PASSWORD_BCRYPT) . "</p>";
-````
+to launch it. The installer asks for some basic information regarding your installation of BattleReporter, uses [Composer](http://getcomposer.org) to meet the requirements (it will be installed into the installation directory if not present), create the BattleReporter's own database tables and set up the primary admin's user account.
 
-Execute it and add a new row to the table `brUsers` (set columns `userName` to your "admin" username, `password` to the script's output and `isAdmin` to `1`).
-
-Customize the contents of `/config.blueprint.php` to your needs (hint: you may get your corporation's id via [zKillboard](https://zkillboard.com), [Eve-Kill](https://beta.eve-kill.net) or sth. like that) and save it as `/config.php`.
+After the basic installation, you should download and import the tables `mapSolarSystems`, `invGroups` and `invTypes` from [Steve Ronuken/fuzzysteve's EVE SDE MySQL Dump](https://www.fuzzwork.co.uk/dump/latest/) as they are mandatory for BattleReporter to work.
 
 _to be continued ..._
