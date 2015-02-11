@@ -218,6 +218,7 @@ try {
 
 out();
 out("Setting up |w|admin|n| user account ... ", false);
+$adminPasswordHashed = ""
 // ... and finally set up the admin user account
 if (!function_exists('password_hash')) {
 	try {
@@ -229,6 +230,10 @@ if (!function_exists('password_hash')) {
 			"|n|Your server's PHP version is not up-to-date (less than |w|5.5|n|) and " .
 			"the library to provide downward compatibility could not be loaded.", true, true);
 	}
+}
+if (empty($adminPasswordHashed)) {
+	unlink($configFile);
+	out("|r|failed", true, true);
 }
 try {
 	if ($db->query("insert into brUsers (userName, password, isAdmin) values ('admin', :password, 1)", array("password" => $adminPasswordHashed)) == NULL) {
