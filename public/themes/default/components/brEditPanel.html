@@ -38,8 +38,14 @@
             <div class="row">
                 <div class="col-xs-6 text-left">
                 {% if BR_USER_CAN_UNPUBLISH and battleReport.published == true %}
-                    <a href="/edit/{{ battleReport.battleReportID }}/unpublish" class="btn btn-warning">Unpublish</a>
+                    <a id="br-btn-unpublish" href="/edit/{{ battleReport.battleReportID }}/unpublish" class="btn btn-warning">Unpublish</a>
                 {% endif %}
+				{% if BR_USER_CAN_DELETE %}
+					{% if battleReport.published == true %}
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{% endif %}
+					<a id="br-btn-delete" href="/edit/{{ battleReport.battleReportID }}/delete" class="btn btn-danger">Delete</a>
+				{% endif %}
                 </div>
                 <div class="col-xs-6 text-right">
                     <a href="/" class="btn btn-default">Dismiss</a>

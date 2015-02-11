@@ -23,6 +23,7 @@ $twigEnv->addGlobal("BR_USER_IS_ADMIN", $userIsAdmin);
 $twigEnv->addGlobal("BR_USER_CAN_CREATE", User::can('create'));
 $twigEnv->addGlobal("BR_USER_CAN_EDIT", $userIsAdmin);
 $twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", $userIsAdmin);
+$twigEnv->addGlobal("BR_USER_CAN_DELETE", $userIsAdmin);
 
 
 $twigEnv->addGlobal("BR_FETCH_SOURCE_URL", BR_FETCH_SOURCE_URL);

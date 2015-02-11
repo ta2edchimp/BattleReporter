@@ -7,5 +7,7 @@ CREATE TABLE `brBattles` (
     `brPublished` tinyint(1) DEFAULT 0 NOT NULL,
 	`brCreatorUserID` int(11) DEFAULT 0 NOT NULL,
 	`brCreateTime` int(11) DEFAULT 0 NOT NULL,
+	`brDeleteUserID` int(11) DEFAULT 0 NOT NULL,
+	`brDeleteTime` int(11) DEFAULT NULL,
     PRIMARY KEY (`battleReportID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

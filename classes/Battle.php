@@ -20,7 +20,7 @@ class Battle {
     public $teamC;
     
     public $published = false;
-    
+    private $deleted = false;
     
     public $totalPilots = 0;
     public $totalLost = 0.0;
@@ -50,7 +50,7 @@ class Battle {
         $result = $db->row(
             "select br.*, ifnull(u.userName, 'Anonymous') as brCreatorUserName " .
 			"from brBattles as br left outer join brUsers as u on u.userID = br.brCreatorUserID " .
-            "where br.battleReportID = :battleReportID" .
+            "where br.battleReportID = :battleReportID and br.brDeleteTime is NULL" .
             ($onlyPublished ? " and br.brPublished = 1" : ""),
             array(
                 "battleReportID" => $id
@@ -90,37 +90,43 @@ class Battle {
         
         global $db;
         
+		$values = array(
+            "title" => $this->title,
+            "startTime" => $this->startTime,
+            "endTime" => $this->endTime,
+            "solarSystemID" => $this->solarSystemID,
+            "published" => $this->published ? 1 : 0
+		);
+		if ($this->deleted == true) {
+			$values["brDeleteUserID"] = User::getUserID();
+			$values["brDeleteTime"] = time();
+		}
+		
         // Save basic battle report properties
         if ($this->battleReportID <= 0) {
+			$values["brCreatorUserID"] = $this->creatorUserID;
             $result = $db->query(
                 "insert into brBattles ".
-                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID) " .
+                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID" .
+					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
+				") " .
                 "values " .
-                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID)",
-                array(
-                    "title" => $this->title,
-                    "startTime" => $this->startTime,
-                    "endTime" => $this->endTime,
-                    "solarSystemID" => $this->solarSystemID,
-                    "published" => $this->published ? 1 : 0,
-					"brCreatorUserID" => $this->creatorUserID
-                )
+                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID" .
+					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
+				")",
+                $values
             );
             if ($result != NULL)
                 $this->battleReportID = $db->lastInsertId();
         } else {
+			$values["battleReportID"] = $this->battleReportID;
             $result = $db->query(
                 "update brBattles " .
-                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, SolarSystemID = :solarSystemID, brPublished = :published " .
+                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, " .
+					"SolarSystemID = :solarSystemID, brPublished = :published " .
+					($this->deleted ? ", brDeleteUserID = :brDeleteUserID, brDeleteTime = :brDeleteTime " : "") .
                 "where battleReportID = :battleReportID",
-                array(
-                    "title" => $this->title,
-                    "startTime" => $this->startTime,
-                    "endTime" => $this->endTime,
-                    "solarSystemID" => $this->solarSystemID,
-                    "published" => $this->published ? 1 : 0,
-                    "battleReportID" => $this->battleReportID
-                )
+                $values
             );
         }
         
@@ -145,6 +151,11 @@ class Battle {
         $this->published = false;
         $this->save();
     }
+	
+	public function delete() {
+		$this->deleted = true;
+		$this->save();
+	}
     
     
     public function updateDetails() {
@@ -359,7 +370,7 @@ class Battle {
         $id = $db->single(
             "select br.battleReportID " .
             "from brBattleParties as br inner join brCombatants as c " .
-            "where c.killID = :killID " .
+            "where c.killID = :killID and brDeleteTime is NULL " .
             "limit 1",
             array(
                 "killID" => $killID

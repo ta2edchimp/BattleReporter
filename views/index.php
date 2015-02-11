@@ -32,7 +32,8 @@ $battleList = $db->query(
     "from brBattles as br inner join mapSolarSystems as sys " .
         "on br.solarSystemID = sys.solarSystemID " .
 		" left outer join brUsers as u on u.userID = br.brCreatorUserID " .
-    (User::isLoggedIn() && User::can("edit") ? "" : "where br.brPublished = 1 ") .
+	"where br.brDeleteTime is NULL " .
+    (User::isLoggedIn() && User::can("edit") ? "" : "and br.brPublished = 1 ") .
     "order by br.brStartTime desc"
 );
 
