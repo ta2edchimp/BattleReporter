@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `brBattles`;
 CREATE TABLE `brBattles` (
     `battleReportID` int(11) NOT NULL AUTO_INCREMENT,
     `brTitle` text,

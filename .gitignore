@@ -1,4 +1,5 @@
 /config.php
+/config.dev.php
 /composer.phar
 /composer.lock
 vendor/

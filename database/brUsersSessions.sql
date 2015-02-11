@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `brUsersSessions`;
 CREATE TABLE `brUsersSessions` (
     `userID` int(11) NOT NULL,
     `sessionHash` varchar(192) NOT NULL,
