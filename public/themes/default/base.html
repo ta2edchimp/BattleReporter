@@ -36,6 +36,9 @@
 					{% if BR_USER_CAN_CREATE %}
 					<li><a href="/create">Create New BR</a></li>
 					{% endif %}
+					{% if BR_USER_IS_ADMIN %}
+					<li><a href="/admin">Admin</a></li>
+					{% endif %}
 					<li><a href="/logout">Logout</a></li>
 					{% else %}
 					<li><a href="/login">Login</a></li>
