@@ -19,18 +19,9 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
     </div>
     {% else %}
     <table id="battleReports-overview" class="panel-body table table-striped table-hover ">
-        <!-- thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead -->
         <tbody>
         {% for battle in battleList %}
             <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} title="BattleReport is unpublished"{% endif %}>
-                <td></td>
                 <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">
 					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
@@ -51,7 +42,6 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
                     {% set efficiencyClsName = 'text-danger' %}
                 {% endif %}
                 <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
-                <td>{{ battle.iskDestroyed }}</td>
             </tr>
         {% endfor %}
         </tbody>
