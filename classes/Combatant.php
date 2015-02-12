@@ -80,8 +80,11 @@ class Combatant {
     }
     
     
-    public function save($partyID = 0) {
+    public function save($partyID = "") {
         
+		if (empty($partyID))
+			$partyID = $this->brBattlePartyID;
+		
         if ($partyID <= 0)
             throw new Exception("Houston, we got a problem: The database has absolutely no idea, where to put the pilot " . $this->characterName . " (" . $this->characterID . ").");
         

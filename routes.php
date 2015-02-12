@@ -87,5 +87,13 @@ $app->group('/autocomplete', function () use ($app, $db) {
         
 });
 
+// Admin only pages
+if (User::isAdmin()) {
+	$app->get('/admin(/:adminAction)', function ($adminAction = "") use ($app, $db) {
+		
+		include ("views/admin/admin.php");
+		
+	});
+}
 
 ?>

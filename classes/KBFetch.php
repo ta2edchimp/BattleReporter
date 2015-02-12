@@ -34,6 +34,30 @@ class KBFetch {
         return $battle;
         
     }
+	
+	public static function fetchKill($killID = "") {
+		
+		if (empty($killID) || $killID <= 0)
+			return;
+		
+		$fetchedResult = Utils::curl(
+			BR_FETCH_SOURCE_URL . "api",
+			array(
+				"killID" => $killID
+			),
+			array(
+				"queryParams" => false,
+				"caching" => "auto",
+				"cachePath" => __DIR__ . '/../cache'
+			)
+		);
+		
+		if (empty($fetchedResult))
+			return null;
+		
+		return json_decode($fetchedResult);
+		
+	}
     
     public static function testTimespanPattern($timespan) {
         $didMatch = preg_match('/^[0-9]{4}-([0-1][0-2]|0[1-9])-[0-3][0-9] [0-2][0-9]:[0-5][0-9] - [0-2][0-9]:[0-5][0-9]$/', $timespan, $reMatches, PREG_OFFSET_CAPTURE);
