@@ -5,11 +5,22 @@ if (php_sapi_name() != "cli")
 
 $basePath = dirname(__FILE__);
 
+function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+	//error has been suppressed with "@"
+	if (error_reporting() === 0)
+		return;
+	throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+}
+
+// Force all warnings into errors
+set_error_handler("exception_error_handler");
+
 // If the config file is present, quit installer
 if (file_exists($basePath . "/config.php")) {
 	out("|r|BattleReporter has already been installed.");
 	out("Please delete" . PHP_EOL . "$basePath/config.php" . PHP_EOL . "if you wish to reinstall.", true, true);
 }
+
 
 out(PHP_EOL . "|w|Welcome the the BattleReporter Installer" . PHP_EOL . "|w|========================================" . PHP_EOL);
 
@@ -20,6 +31,7 @@ out("In order to install and setup you'll be asked a few questions." . PHP_EOL .
 
 prompt("Please hit enter to continue");
 $config = array();
+
 
 // Ask for some basics
 out();
