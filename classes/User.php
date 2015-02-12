@@ -34,7 +34,7 @@ class User {
                 "userName" => $userName
             )
         );
-        if ($userInfo == NULL)
+        if ($userInfo === NULL)
             return false;
         
         if (!empty($userInfo["password"])) {
@@ -96,8 +96,8 @@ class User {
         
         unset($_SESSION["isLoggedIn"]);
         
-        setcookie(self::$cookieName, "", time() - self::$cookieName, "/", $_SERVER["HTTP_HOST"]);
-        setcookie(self::$cookieName, "", time() - self::$cookieName, "/", "." . $_SERVER["HTTP_HOST"]);
+        setcookie(self::$cookieName, "", time() - self::$cookieLifetime, "/", $_SERVER["HTTP_HOST"]);
+        setcookie(self::$cookieName, "", time() - self::$cookieLifetime, "/", "." . $_SERVER["HTTP_HOST"]);
         
     }
     
@@ -131,7 +131,7 @@ class User {
                     "userName" => $userName
                 )
             );
-            if ($userID == NULL)
+            if ($userID === NULL)
                 return false;
             
             $sessionHashes = $db->query(
@@ -140,7 +140,7 @@ class User {
                     "userID" => $userID
                 )
             );
-            if ($sessionHashes == NULL)
+            if ($sessionHashes === NULL)
                 return false;
             
             foreach ($sessionHashes as $hash) {
@@ -266,5 +266,5 @@ class User {
         return false;
         
     }
-    
+	
 }
