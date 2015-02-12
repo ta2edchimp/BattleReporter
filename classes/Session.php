@@ -8,7 +8,8 @@ class Session implements SessionHandlerInterface {
     
     public function __construct() {
         $this->cache = new phpFastCache("files", array(
-           "path" => __DIR__ . "/../cache"
+           "path" => __DIR__ . "/../cache",
+		   "htaccess" => false
         ));
     }
     
