@@ -267,9 +267,7 @@ out("|g|success");
 out();
 out("|g|BattleReporter successfully installed");
 out();
-out("Don't forget to download and insert the latest of the following" . PHP_EOL .
-	"tables of the EVE SDE, e.g. from https://www.fuzzwork.co.uk/dump/latest/" . PHP_EOL .
-	"after that, you may browse to your BattleReporter's site and login as admin.");
+out("You may now browse to your BattleReporter's site and login as admin.");
 
 exit;
 
