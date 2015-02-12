@@ -28,6 +28,9 @@ As of `0.1.6`, a basic installer comes with BattleReporter. Run
 
 to launch it. The installer asks for some basic information regarding your installation of BattleReporter, uses [Composer](http://getcomposer.org) to meet the requirements (it will be installed into the installation directory if not present), create the BattleReporter's own database tables and set up the primary admin's user account.
 
-After the basic installation, you should download and import the tables `mapSolarSystems`, `invGroups` and `invTypes` from [Steve Ronuken/fuzzysteve's EVE SDE MySQL Dump](https://www.fuzzwork.co.uk/dump/latest/) as they are mandatory for BattleReporter to work.
+## Acknowledgements & Legal Stuff
+
+BattleReporter uses parts of [CCPs](http://www.ccpgames.com/) EVE Online SDE, specifically [Steve Ronuken/fuzzysteve's EVE SDE MySQL-port Dump](https://www.fuzzwork.co.uk/dump/latest/).
+
 
 _to be continued ..._
