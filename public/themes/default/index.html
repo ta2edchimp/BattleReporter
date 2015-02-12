@@ -6,6 +6,9 @@
 <style>
 table#battleReports-overview a.br-inv-link{text-decoration:none}
 table#battleReports-overview a:not(.btn){text-decoration:none}
+td.no-break{white-space:nowrap}
+@media(max-width:420px){.hidden-xxxs{display:none!important;}}
+@media(max-width:640px){.hidden-xxs{display:none!important;}}
 </style>
 {% endblock %}
 
@@ -26,12 +29,12 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
 					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
 					</a></td>
-				<td>{{ battle.creatorUserName }}</td>
-                <td>{{ battle.solarSystemName }}</td>
-                <td>{{ battle.date }}</td>
-                <td class="text-right">{{ battle.pilotCountTeamA }}</td>
-                <td class="text-center">:</td>
-                <td class="text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
+				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
+                <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
+                <td class="no-break">{{ battle.date }}</td>
+                <td class="no-break hidden-xxxs text-right">{{ battle.pilotCountTeamA }}</td>
+                <td class="no-break hidden-xxxs text-center">:</td>
+                <td class="no-break hidden-xxxs text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
                 {% if battle.efficiency == 1 %}
                     {% set efficiencyClsName = 'text-success' %}
                 {% elseif battle.efficiency > 0.5 %}
@@ -41,7 +44,7 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
                 {% else %}
                     {% set efficiencyClsName = 'text-danger' %}
                 {% endif %}
-                <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
+                <td class="no-break text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
             </tr>
         {% endfor %}
         </tbody>
