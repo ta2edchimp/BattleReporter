@@ -369,8 +369,11 @@ class Battle {
         
         $id = $db->single(
             "select br.battleReportID " .
-            "from brBattleParties as br inner join brCombatants as c " .
-            "where c.killID = :killID and brDeleteTime is NULL " .
+            "from brBattles as br inner join brBattleParties as bp " .
+				" on br.battleReportID = bp.battleReportID " .
+				" inner join brCombatants as c " .
+				" on bp.brBattlePartyID = c.brBattlePartyID " .
+            "where c.killID = :killID and br.brDeleteTime is NULL " .
             "limit 1",
             array(
                 "killID" => $killID
