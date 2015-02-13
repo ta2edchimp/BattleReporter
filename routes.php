@@ -45,12 +45,22 @@ $app->map('/edit/:battleReportID(/:editAction)', function ($battleReportID, $bat
     
 })->via('GET', 'POST');
 
-// Log in and out
+// Log in
 $app->map('/login', function () use ($app) {
     
     include("views/login.php");
     
 })->via('GET', 'POST');
+if (BR_LOGINMETHOD_EVE_SSO == true) {
+	$app->get('/login/eve-sso', function () use ($app) {
+		include("views/login-methods/eve-sso.php");
+	});
+	$app->get('/login/eve-sso-auth', function () use ($app) {
+		include("views/login-methods/eve-sso-auth.php");
+	});
+}
+
+// Log out
 $app->get('/logout', function () use ($app) {
     
     include("views/logout.php");

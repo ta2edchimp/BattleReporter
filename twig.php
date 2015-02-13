@@ -25,6 +25,7 @@ $twigEnv->addGlobal("BR_USER_CAN_EDIT", $userIsAdmin);
 $twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", $userIsAdmin);
 $twigEnv->addGlobal("BR_USER_CAN_DELETE", $userIsAdmin);
 
+$twigEnv->addGlobal("BR_LOGINMETHOD_EVE_SSO", BR_LOGINMETHOD_EVE_SSO);
 
 $twigEnv->addGlobal("BR_FETCH_SOURCE_URL", BR_FETCH_SOURCE_URL);
 $twigEnv->addGlobal("BR_FETCH_SOURCE_NAME", BR_FETCH_SOURCE_NAME);

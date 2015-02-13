@@ -37,6 +37,14 @@
             </div>
         </div>
         </form>
+		{% if BR_LOGINMETHOD_EVE_SSO == true %}
+		<p class="text-center"><small>alternatively:</small></p>
+		<div class="panel panel-default">
+			<div class="panel-footer text-center">
+				<a href="/login/eve-sso"><img src="/img/eve-sso-btn-lg-black.png"></a>
+			</div>
+		</div>
+		{% endif %}
     </div>
     <div class="col-sm-4 hidden-xs">&nbsp;</div>
 </div>

@@ -18,7 +18,7 @@ class User {
 	
 	public static function getUserName() {
         $userInfos = self::getUserInfos();
-        if ($userInfos == NULL)
+        if ($userInfos === NULL)
             return "";
         
         return $userInfos["userName"];
@@ -29,7 +29,7 @@ class User {
         global $db, $app;
         
         $userInfo = $db->row(
-            "select userID, userName, password from brUsers where userName = :userName and deactivatedTime is NULL",
+            "select userID, userName, password, corporationID, isAdmin from brUsers where userName = :userName and deactivatedTime is NULL",
             array(
                 "userName" => $userName
             )
@@ -41,6 +41,9 @@ class User {
             $pw = $userInfo["password"];
             if (self::checkPassword($password, $pw)) {
                 
+				if ($userInfo["isAdmin"] != 1 && BR_LOGIN_ONLY_OWNERCORP == true && $userInfo["corporationID"] != BR_OWNERCORP_ID)
+					return false;
+				
                 if ($autoLogin == true) {
                     
                     $hash = password_hash($password, PASSWORD_BCRYPT);
@@ -156,12 +159,90 @@ class User {
         return false;
         
     }
+	
+	public static function checkEVESSOLogin($characterID, $characterName, $characterOwnerHash) {
+		
+		if (BR_LOGINMETHOD_EVE_SSO != true)
+			return false;
+		
+		global $db;
+		
+		// Check if he's already in the database
+		$userInfo = $db->row(
+			"select *, IFNULL(deactivatedTime, 0) as deact from brUsers " .
+			"where characterID = :characterID",
+			array(
+				"characterID" => $characterID
+			)
+		);
+		if ($userInfo === FALSE) {
+			// User does not exist yet,
+			// so fetch Character Details (Corp, Alliance)
+			// and try to create him
+			if (!self::register($characterName, '', '', false))
+				return false;
+			
+			// No need to worry, userName column values have to be unique
+			$userInfo = $db->query(
+				"update brUsers " .
+				"set characterID = :characterID " .
+				"where userName = :characterName",
+				array(
+					"characterID" => $characterID,
+					"characterName" => $characterName
+				)
+			);
+			if ($userInfo != 1)
+				return false;
+			
+			// Fetch the user infos again
+			$userInfo = $db->row(
+				"select *, IFNULL(deactivatedTime, 0) as deact from brUsers " .
+				"where characterID = :characterID",
+				array(
+					"characterID" => $characterID
+				)
+			);
+			if ($userInfo === FALSE)
+				return false;
+		}
+		// ... has been deactivated
+		if ($userInfo["deact"] > 0)
+			return false;
+		
+		// ALWAYS check for Character Affiliation during
+		// login per EVE SSO
+		$pheal = new \Pheal\Pheal(null, null, "eve");
+		$response = $pheal->CharacterInfo(array("characterID" => $characterID));
+		
+		$updUser = array(
+			"userID" => $userInfo["userID"],
+			"corporationID" => $response->corporationID
+		);
+		if (!empty($response->allianceID) && !empty($response->alliance))
+			$updUser["allianceID"] = $response->allianceID;
+		$upd = $db->query(
+			"update brUsers " .
+			"set corporationID = :corporationID " .
+				(!empty($response->allianceID) && !empty($response->alliance) ? "and allianceID = :allianceID " : "") .
+			"where userID = :userID",
+			$updUser
+		);
+		
+		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP != true || $response->corporationID == BR_OWNERCORP_ID)) {
+			$_SESSION["isLoggedIn"] = $userInfo["userID"];
+			return true;
+		}
+		
+		return false;
+		
+	}
     
     public static function getUserInfos() {
         
         global $db;
         
-        if (!isset($_SESSION["isLoggedIn"]))
+        if (!self::isLoggedIn())
             return NULL;
         
         $result = $db->row(
@@ -240,13 +321,13 @@ class User {
         
         global $db;
         
-        if (isAdmin == false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
+        if ($isAdmin == false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
             return false;
         
         if (self::checkRegistration($userName, $email)) {
             
             $pw = password_hash($password, PASSWORD_BCRYPT);
-            $db->query(
+            $result = $db->query(
                 "insert into brUsers " .
                 "(userName, password, email, isAdmin) " .
                 "values " .
@@ -259,7 +340,7 @@ class User {
                 )
             );
             
-            return true;
+            return ($result == 1);
             
         }
         

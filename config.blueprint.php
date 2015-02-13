@@ -35,6 +35,17 @@ define('BR_THEME', '%BR_THEME%');
 
 
 /*
+ *	Allowed Login Methods
+ */
+// Only members of this BattleReporter's owner corp may login
+define('BR_LOGIN_ONLY_OWNERCORP', %BR_LOGIN_ONLY_OWNERCORP%);
+// Allow login via EVE Online Single Sign On?
+define('BR_LOGINMETHOD_EVE_SSO', %BR_LOGINMETHOD_EVE_SSO%);
+define('BR_LOGINMETHOD_EVE_SSO_CLIENTID', '%BR_LOGINMETHOD_EVE_SSO_CLIENTID%');
+define('BR_LOGINMETHOD_EVE_SSO_SECRET', '%BR_LOGINMETHOD_EVE_SSO_SECRET%');
+
+
+/*
  *  Debug Mode
  */
 $BR_DEBUGMODE = true;
