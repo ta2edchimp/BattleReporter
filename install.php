@@ -55,6 +55,37 @@ while (empty($config["BR_OWNERCORP_ID"]))
 	$config["BR_OWNERCORP_ID"] = prompt($config["BR_OWNERCORP_NAME"] . "'s ID");
 
 
+// Ask for Login features
+out();
+out("Do you want to enable users to login with their EVE Online accounts?");
+$br_login_via_eve_sso = prompt("Hit return or enter \"yes\", else enter \"no\"", "yes");
+$config["BR_LOGINMETHOD_EVE_SSO"] = "false";
+$config["BR_LOGINMETHOD_EVE_SSO_CLIENTID"] = "";
+$config["BR_LOGINMETHOD_EVE_SSO_SECRET"] = "";
+if (strtolower($br_login_via_eve_sso) == "yes") {
+	$config["BR_LOGINMETHOD_EVE_SSO"] = "true";
+	out();
+	out("You need to register the application at https://developers.eveonline.com" . PHP_EOL .
+		"and obtain a Client ID and a Secret Key, in order to be enabled to use" . PHP_EOL .
+		"EVE Online Single Sign On (see README.md for instructions)." . PHP_EOL .
+		"If you enter empty values, login via EVE SSO will be disabled.");
+	$br_eve_sso_clientid = prompt("Enter your Client ID", "");
+	if (!empty($br_eve_sso_clientid)) {
+		$config["BR_LOGINMETHOD_EVE_SSO_CLIENTID"] = $br_eve_sso_clientid;
+		$br_eve_sso_secret = prompt("Enter your Secret Key", "");
+		if (!empty($br_eve_sso_secret)) {
+			$config["BR_LOGINMETHOD_EVE_SSO_SECRET"] = $br_eve_sso_secret;
+		} else {
+			$config["BR_LOGINMETHOD_EVE_SSO_CLIENTID"] = "";
+			$config["BR_LOGINMETHOD_EVE_SSO_SECRET"] = "";
+		}
+	} else {
+		$config["BR_LOGINMETHOD_EVE_SSO_CLIENTID"] = "";
+		$config["BR_LOGINMETHOD_EVE_SSO_SECRET"] = "";
+	}
+}
+
+
 // Specify where to fetch the killmails from
 out();
 out("BattleReporter can fetch the killmails to create its reports from either" . PHP_EOL .
