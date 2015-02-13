@@ -175,10 +175,32 @@ class User {
 				"characterID" => $characterID
 			)
 		);
+		
+		$apiLookUp = null;
+		try {
+			// ALWAYS check for Character Affiliation during
+			// login per EVE SSO
+			$pheal = new \Pheal\Pheal(null, null, "eve");
+			$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
+		} catch (PhealException $ex) {
+			/*
+			 * This should be logged properly!
+			 */
+			
+			// Either way, as the user can't
+			// be verified, this will be the end ...
+			if ($userInfo === FALSE)
+				return false;
+		}
+		
+		// User does not exist yet, so create him using
+		// the fetched Character Details (Corp, Alliance) ...
 		if ($userInfo === FALSE) {
-			// User does not exist yet,
-			// so fetch Character Details (Corp, Alliance)
-			// and try to create him
+			// ... but ONLY, if he either is member of the BR_OWNERCORP
+			// or login is enabled for everyone.
+			if (BR_LOGIN_ONLY_OWNERCORP == true && $apiLookUp->corporationID != BR_OWNERCORP_ID)
+				return false;
+			
 			if (!self::register($characterName, '', '', false))
 				return false;
 			
@@ -203,17 +225,13 @@ class User {
 					"characterID" => $characterID
 				)
 			);
+			// Something went horribly wrong
 			if ($userInfo === FALSE)
 				return false;
 		}
 		// ... has been deactivated
 		if ($userInfo["deact"] > 0)
 			return false;
-		
-		// ALWAYS check for Character Affiliation during
-		// login per EVE SSO
-		$pheal = new \Pheal\Pheal(null, null, "eve");
-		$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
 		
 		$updUser = array(
 			"userID" => $userInfo["userID"],
