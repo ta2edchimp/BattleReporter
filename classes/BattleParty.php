@@ -124,8 +124,12 @@ class BattleParty {
         
         // Fetch team members
         $team = $db->query(
-            "select * from brCombatants " .
-            "where brBattlePartyID = :brBattlePartyID and (brManuallyAdded = 0 or brDeleted = 0)" .
+            "select c.* " .
+			"from brCombatants as c inner join invTypes as t " .
+				"on c.shipTypeID = t.typeID inner join invGroups as g " .
+				"on t.groupID = g.groupID " .
+            "where c.brBattlePartyID = :brBattlePartyID and (c.brManuallyAdded = 0 or c.brDeleted = 0) " .
+				"and (g.groupName <> 'Capsule' or c.died = 1)" .
             ($toBeEdited ? "" : " and brHidden = 0"),
             array(
                 "brBattlePartyID" => $this->brBattlePartyID

@@ -20,6 +20,7 @@ class Combatant {
     
     public $shipTypeID = 0;
     public $shipTypeName = "";
+	public $shipIsPod = null;
     
     public $died = false;
     public $killID = "";
@@ -28,7 +29,7 @@ class Combatant {
     
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "died", "killID", "killTime", "priceTag");
+    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipIsPod", "died", "killID", "killTime", "priceTag");
     
     public function __construct($props, $killID = "") {
         
@@ -71,6 +72,8 @@ class Combatant {
             if (empty($this->shipTypeID) || $this->shipTypeID <= 0)
                 $this->shipTypeID = Item::getIDByName($this->shipTypeName);
         }
+		if ($this->shipIsPod === null)
+			$this->shipIsPod = Item::isCapsule($this->shipTypeID);
             
         
         if (!empty($killID)) {
@@ -156,8 +159,13 @@ class Combatant {
                 // If he didn't die in between, sort by ship
                 if ($a->shipTypeID == $b->shipTypeID) {
                     // If ships are the same, sort by kill id
-                    strcmp($a->killID, $b->killID);
+                    return strcmp($a->killID, $b->killID);
                 }
+				// If one of the ships is a pod,
+				// display the non-capsule first
+				if ($a->shipIsPod || $b->shipIsPod) {
+					return $a->shipIsPod ? 1 : -1;
+				}
                 return strcasecmp($a->shipTypeName, $b->shipTypeName);
             }
             return ($a->died && !$b->died) ? -1 : 1;
