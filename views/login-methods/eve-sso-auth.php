@@ -1,6 +1,6 @@
 <?php
 
-if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO != true || empty(BR_LOGINMETHOD_EVE_SSO_CLIENTID) || empty(BR_LOGINMETHOD_EVE_SSO_SECRET))
+if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO != true || BR_LOGINMETHOD_EVE_SSO_CLIENTID == '' || BR_LOGINMETHOD_EVE_SSO_SECRET == '')
 	$app->redirect("/");
 
 $code	= $app->request->get('code');
