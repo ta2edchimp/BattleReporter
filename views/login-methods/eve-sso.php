@@ -5,8 +5,14 @@ if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO != true || BR_LOGINMETHOD_EVE_S
 
 $state			= uniqid();
 
-$redirect_uri	= $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . "/login/eve-sso-auth";
-$redirect_to	= $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . "/";
+$scheme			= $_SERVER["REQUEST_SCHEME"];
+if (empty($scheme)) {
+	$scheme		= "http";
+	if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on')
+		$scheme	= "https";
+}
+$redirect_uri	= $scheme . "://" . $_SERVER["HTTP_HOST"] . "/login/eve-sso-auth";
+$redirect_to	= $scheme . "://" . $_SERVER["HTTP_HOST"] . "/";
 
 $_SESSION['auth_state'] = $state;
 $_SESSION['auth_redirect'] = $redirect_to;
