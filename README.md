@@ -22,11 +22,21 @@ Ensure to have url rewriting enabled and set up properly in your web server for 
 
 ### Setup:
 
-As of `0.1.6`, a basic installer comes with BattleReporter. Run
+As of release `0.1.6`, a basic installer comes with BattleReporter. Run
 
 	$ php install.php
 
 to launch it. The installer asks for some basic information regarding your installation of BattleReporter, uses [Composer](http://getcomposer.org) to meet the requirements (it will be installed into the installation directory if not present), create the BattleReporter's own database tables and set up the primary admin's user account.
+
+#### Log in via EVE-O SSO
+
+As of release `0.2`, logging into the BattleReport with your EVE Online account is available via Single Sign On. In order to enable log in via EVE-O SSO, you must register your BattleReporter installation as an application in the [EVE Developers portal](https://developers.eveonline.com/). A verified e-mail address is required to register (don't worry this takes no more than hitting a button in the EVE Online Account Management and clicking a link in the e-mail you'll receive soon afterwards).
+
+When registering your BattleReporter installation in the EVE-Dev. portal, ensure to enter the correct `Callback URL`. Let's assume you installed BattleReporter to be available at `br.yourcorp.net` and you do not use SSL, the correct url would be
+
+	http://br.yourcorp.net/login/eve-sso-auth
+
+After hitting `Create Application`, you'll acquire a `Client ID` and a `Secret Key`. These are the values required during BattleReporter's installation process.
 
 ## Acknowledgements & Legal Stuff
 
