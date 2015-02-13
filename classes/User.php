@@ -213,23 +213,23 @@ class User {
 		// ALWAYS check for Character Affiliation during
 		// login per EVE SSO
 		$pheal = new \Pheal\Pheal(null, null, "eve");
-		$response = $pheal->CharacterInfo(array("characterID" => $characterID));
+		$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
 		
 		$updUser = array(
 			"userID" => $userInfo["userID"],
-			"corporationID" => $response->corporationID
+			"corporationID" => $apiLookUp->corporationID
 		);
-		if (!empty($response->allianceID) && !empty($response->alliance))
-			$updUser["allianceID"] = $response->allianceID;
+		if (!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance))
+			$updUser["allianceID"] = $apiLookUp->allianceID;
 		$upd = $db->query(
 			"update brUsers " .
 			"set corporationID = :corporationID " .
-				(!empty($response->allianceID) && !empty($response->alliance) ? "and allianceID = :allianceID " : "") .
+				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "and allianceID = :allianceID " : "") .
 			"where userID = :userID",
 			$updUser
 		);
 		
-		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP != true || $response->corporationID == BR_OWNERCORP_ID)) {
+		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP != true || $apiLookUp->corporationID == BR_OWNERCORP_ID)) {
 			$_SESSION["isLoggedIn"] = $userInfo["userID"];
 			return true;
 		}
