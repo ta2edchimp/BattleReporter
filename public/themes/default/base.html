@@ -15,6 +15,13 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+	<style>
+	#character-portrait{width:40px;height:40px;margin:-9px 5px -9px -15px;}
+	@media(max-width:767px){
+		#character-portrait{margin-left:0px}
+	}
+	.dropdown-menu{min-width:120px}
+	</style>
     {% block head %}{% endblock %}
 </head>
 <body style="padding-top:70px">
@@ -36,10 +43,22 @@
 					{% if BR_USER_CAN_CREATE %}
 					<li><a href="/create">Create New BR</a></li>
 					{% endif %}
-					{% if BR_USER_IS_ADMIN %}
-					<li><a href="/admin">Admin</a></li>
-					{% endif %}
-					<li><a href="/logout">Logout</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+							{% if BR_USER_CHARACTERID is defined %}
+							<img id="character-portrait" src="//image.eveonline.com/Character/{{ BR_USER_CHARACTERID }}_64.jpg">
+							{% endif %}
+							{{ BR_USER_NAME }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							{% if BR_USER_IS_ADMIN %}
+							<li><a href="/admin">Admin</a></li>
+							<li class="divider"></li>
+							{% endif %}
+							<li><a href="/logout">Logout</a></li>
+						</ul>
+					</li>
 					{% else %}
 					<li><a href="/login">Login</a></li>
 					{% endif %}
