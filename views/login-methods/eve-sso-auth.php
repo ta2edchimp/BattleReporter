@@ -57,7 +57,11 @@ if (!isset($verifyResult->CharacterID) || !isset($verifyResult->CharacterName) |
 $verifyResult->CharacterName . " (ID: " . $verifyResult->CharacterID . ")</p>";
 
 if (User::checkEVESSOLogin($verifyResult->CharacterID, $verifyResult->CharacterName, $verifyResult->CharacterOwnerHash)) {
-	$app->redirect("/");
+	$ref = $_SESSION['auth_redirect'];
+	if (empty($ref) || strpos(strtolower($ref), strtolower($_SERVER["HTTP_HOST"])) === FALSE)
+		$app->redirect("/");
+	else
+		$app->redirect($ref);
 } else {
 	$app->render('login.html', array(
 		"loginError" => "Login invalid." .

@@ -12,7 +12,11 @@ if (empty($scheme)) {
 		$scheme	= "https";
 }
 $redirect_uri	= $scheme . "://" . $_SERVER["HTTP_HOST"] . "/login/eve-sso-auth";
-$redirect_to	= $scheme . "://" . $_SERVER["HTTP_HOST"] . "/";
+$ref			= $app->request->get('ref');
+if ($ref == null || empty($ref) || strpos(strtolower($ref), strtolower($_SERVER["HTTP_HOST"])) === FALSE)
+	$redirect_to = $scheme . "://" . $_SERVER["HTTP_HOST"] . "/";
+else
+	$redirect_to = $ref;
 
 $_SESSION['auth_state'] = $state;
 $_SESSION['auth_redirect'] = $redirect_to;

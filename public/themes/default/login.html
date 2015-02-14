@@ -32,6 +32,7 @@
                 </div>
             </div>
             <div class="panel-footer text-right">
+				<input type="hidden" name="referer" value="{{ loginReferer }}">
                 <button type="reset" class="btn btn-sm btn-default">Reset</button>
                 <button type="submit" class="btn btn-sm btn-primary">Log In</button>
             </div>
@@ -41,7 +42,7 @@
 		<p class="text-center"><small>alternatively:</small></p>
 		<div class="panel panel-default">
 			<div class="panel-footer text-center">
-				<a href="/login/eve-sso"><img src="/img/eve-sso-btn-lg-black.png"></a>
+				<a href="/login/eve-sso?ref={{ loginReferer }}"><img src="/img/eve-sso-btn-lg-black.png"></a>
 			</div>
 		</div>
 		{% endif %}
