@@ -11,14 +11,14 @@ $codeHash = md5($trace);
 $errorDetails = array();
 
 if ($code)
-	$errorDetails["Code"] = $code;
+	$errorDetails[] = array("label" => "Code", "value" => $code);
 if ($message)
-	$errorDetails["Message"] = $message;
+	$errorDetails[] = array("label" => "Message", "value" => $message);
 if ($file)
-	$errorDetails["File"] = $file;
+	$errorDetails[] = array("label" => "File", "value" => $file);
 if ($line)
-	$errorDetails["Line"] = $line;
+	$errorDetails[] = array("label" => "Line", "value" => $line);
 
-$errorDetails["Date"] = date("Y-m-d H:i:s");
+$errorDetails[] = array("label" => "Date", "value" => date("Y-m-d H:i:s"));
 
 $app->render("error.html", array("codeHash" => $codeHash, "message" => $message, "errorDetails" => $errorDetails, "trace" => nl2br($trace)));
