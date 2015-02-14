@@ -261,7 +261,7 @@ try {
 
 out();
 out("Setting up |w|admin|n| user account ... ", false);
-$adminPasswordHashed = ""
+$adminPasswordHashed = "";
 // ... and finally set up the admin user account
 if (!function_exists('password_hash')) {
 	try {
