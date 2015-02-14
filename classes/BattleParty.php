@@ -124,10 +124,15 @@ class BattleParty {
         
         // Fetch team members
         $team = $db->query(
-            "select c.* " .
-			"from brCombatants as c inner join invTypes as t " .
-				"on c.shipTypeID = t.typeID inner join invGroups as g " .
-				"on t.groupID = g.groupID " .
+            "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
+			"from invGroups as g right outer join invTypes as t " .
+				"on g.groupID = t.groupID " .
+			"right outer join brCombatants as c " .
+				"on t.typeID = c.shipTypeID " .
+			"left outer join brCorporations as cc " .
+				"on c.corporationID = cc.corporationID " .
+			"left outer join brAlliances as a " .
+				"on c.allianceID = a.allianceID " .
             "where c.brBattlePartyID = :brBattlePartyID and (c.brManuallyAdded = 0 or c.brDeleted = 0) " .
 				"and (g.groupName <> 'Capsule' or c.died = 1)" .
             ($toBeEdited ? "" : " and brHidden = 0"),
