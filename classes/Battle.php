@@ -28,6 +28,8 @@ class Battle {
 	public $creatorUserID = -1;
 	public $creatorUserName = "";
 	public $createTime = 0;
+	
+	public $footage = array();
     
     
     public function __construct() {
@@ -74,6 +76,9 @@ class Battle {
         $this->solarSystemID    = $result["solarSystemID"];
         $this->published        = $result["brPublished"] == 1 ? true : false;
         
+		// Load associated footage
+		$this->loadFootage();
+		
         // Sort battle parties
         $this->teamA->sort();
         $this->teamB->sort();
@@ -129,6 +134,9 @@ class Battle {
                 $values
             );
         }
+		
+		// Save associated footage
+		$this->saveFootage();
         
         // Save the battle parties
         $this->teamA->save($this->battleReportID);
@@ -340,8 +348,103 @@ class Battle {
         $this->teamC->sort();
         
         $this->updateDetails();
-
+		
     }
+	
+	
+	public function loadFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		global $db;
+		
+		$results = $db->query(
+			"select * from brVideos " .
+			"where battleReportID = :battleReportID " .
+			"order by videoID",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+		if ($results === NULL)
+			return;
+		
+		foreach ($results as $video) {
+			$embedVideoUrl = self::getEmbedVideoUrl($video["videoUrl"]);
+			if (!empty($embedVideoUrl))
+				$this->footage[] = $embedVideoUrl;
+		}
+		
+	}
+	
+	public function saveFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$this->removeFootageFromDb();
+		
+		global $db;
+		
+		foreach ($this->footage as $video) {
+			if (empty($video))
+				continue;
+			
+			$db->query(
+				"insert into brVideos " .
+				"(battleReportID, videoUrl) " .
+				"values " .
+				"(:battleReportID, :videoUrl)",
+				array(
+					"battleReportID" => $this->battleReportID,
+					"videoUrl" => $video
+				)
+			);
+		}
+		
+	}
+	
+	public function addFootage($videos = array()) {
+		
+		$toAdd = array();
+		
+		foreach ($videos as $video) {
+			$embedUrl = self::getEmbedVideoUrl($video);
+			if (!in_array($embedUrl, $this->footage))
+				$this->footage[] = $embedUrl;
+		}
+		
+	}
+	
+	private function removeFootageFromDb() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		global $db;
+		
+		$db->query(
+			"delete from brVideos where battleReportID = :battleReportID",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+	}
+	
+	public function removeFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$this->removeFootageFromDb();
+		$this->footage = array();
+		
+		return;
+		
+	}
     
     
     public function toJSON() {
@@ -393,5 +496,37 @@ class Battle {
         
         return $combatantA->killTime < $combatantB->killTime ? -1 : 1;
     }
+	
+	private static function getEmbedVideoUrl($url = "") {
+		
+		if (empty($url))
+			return "";
+		
+		$matches = NULL;
+		$pattern = "/" .
+			"(" . // YouTube URLs (direct video link, embed link)
+				"(http(s){0,1}:){0,1}(\/\/){0,1}(www.){0,1}youtube.com\/(embed\/|watch\?(.*?)v=)(?P<youTubeVideoID>[a-z0-9_-]{1,})" .
+			"|" . // Vimeo URLs (direct video link, embed link)
+				"(http(s){0,1}:){0,1}(\/\/){0,1}((www|player).){0,1}vimeo.com\/(video\/){0,1}(?P<vimeoVideoID>[0-9]{1,})(.*?)" .
+			")/i";
+		
+		// Neither pattern matches, exit
+		if (preg_match($pattern, $url, $matches) != 1)
+			return "";
+		
+		// Create EmbedUrl for YouTube video
+		if (isset($matches["youTubeVideoID"]) && !empty($matches["youTubeVideoID"])) {
+			return "//youtube.com/embed/" . $matches["youTubeVideoID"];
+		}
+		
+		// Create EmbedUrl for Vimeo video
+		if (isset($matches["vimeoVideoID"]) && !empty($matches["vimeoVideoID"])) {
+			return "//player.vimeo.com/video/" . $matches["vimeoVideoID"] . "?title=0&amp;byline=0&amp;portrait=0: ";
+		}
+		
+		// Something else does not fit ...
+		return "";
+		
+	}
     
 }

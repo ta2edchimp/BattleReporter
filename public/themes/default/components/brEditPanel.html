@@ -4,6 +4,24 @@
                     <label for="battleTitle" class="control-label">Title:</label>
                     <input class="form-control" id="battleTitle" name="battleTitle" value="{{ battleReport.title }}">
                 </div>
+				<div class="form-group">
+					{% set battleFootageUrl = '' %}
+					{% if battleReport.footage|length > 0 %}
+					{% for video in battleReport.footage %}
+						{% set battleFootageUrl = video %}
+					{% endfor %}
+					{% endif %}
+					<label for="battleFootageUrl" class="control-label">Battle Footage:</label>
+					<div class="row">
+						<div class="col-sm-6">
+							<input class="form-control" id="battleFootageUrl" name="battleFootageUrl" value="{{ battleFootageUrl }}">
+						</div>
+						<div class="col-sm-6">
+							You may enter a video's link from <a href="//youtube.com/">YouTube</a> or <a href="//vimeo.com/">Vimeo</a>.
+							It will show up next to your BattleReport.
+						</div>
+					</div>
+				</div>
                 <input type="hidden" id="battleReportChanges" name="battleReportChanges" value="">
             </form>
         </div>

@@ -52,6 +52,12 @@ if ($app->request->isPost()) {
         $success = $battleReport->applyChanges($brChanges);
     
     $battleReport->title = $parameters["battleTitle"];
+	
+	$videoUrl = $parameters["battleFootageUrl"];
+	// currently, allow only one video
+	$battleReport->removeFootage();
+	if (!empty($videoUrl))
+		$battleReport->addFootage(array($videoUrl));
     
     if ($success) {
         $battleReport->publish();
