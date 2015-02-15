@@ -81,15 +81,6 @@ class BattleParty {
             $this->efficiency = 0.0;
     }
     
-    private function getUniquePilotsCount() {
-        $pilots = array();
-        foreach ($this->members as $member) {
-            if (!in_array($member->characterID, $pilots))
-                $pilots[] = $member->characterID;
-        }
-        return count($pilots);
-    }
-    
     
     public function sort() {
         usort($this->members, 'Combatant::sorter');
