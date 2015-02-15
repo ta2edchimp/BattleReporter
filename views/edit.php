@@ -24,7 +24,6 @@ if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
 	
 	$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
 	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
-	//$twigEnv->addGlobal("BR_USER_CAN_DELETE", true);
 	
 	if (strtolower($battleReportEditAction) == "unpublish") {
 		$battleReport->unpublish();
