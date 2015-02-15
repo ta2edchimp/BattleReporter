@@ -31,16 +31,16 @@ class Kill {
     }
     
     
-    public function setCombatant($combatant) {
+    public function setCombatant(Combatant $combatant) {
         $this->victim = $combatant;
     }
     
-    public function addAttacker($attacker) {
+    public function addAttacker(Combatant $attacker) {
         if ($this->getAttacker($attacker) == null)
             $this->attackers[] = $attacker;
     }
     
-    public function getAttacker($attacker) {
+    public function getAttacker(Combatant $attacker) {
         $id = $attacker->characterID;
         foreach ($this->attackers as $atk) {
             if ($atk->characterID == $id)
@@ -63,8 +63,8 @@ class Kill {
     }
     
     
-    public static function fromImport($kill = "") {
-        if (empty($kill))
+    public static function fromImport(stdClass $kill = null) {
+        if ($kill === null)
             return null;
         
         if (!isset($kill->victim) || !isset($kill->attackers) || !isset($kill->killID))

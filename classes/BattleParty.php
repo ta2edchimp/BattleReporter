@@ -19,9 +19,7 @@ class BattleParty {
     }
     
     
-    public function add($combatant = "") {
-        if (empty($combatant))
-            return;
+    public function add(Combatant $combatant) {
         
         // Test, if combatant has not yet been added
         // That is having reshipped counts as being another combatant

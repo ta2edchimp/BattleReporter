@@ -203,7 +203,7 @@ class Combatant {
     }
     
     
-    public static function sorter($a, $b) {
+    public static function sorter(Combatant $a, Combatant $b) {
         if ($a->characterID == $b->characterID) {
             // If its the same char, sort by dead or alive
             if ($a->died == $b->died) {
