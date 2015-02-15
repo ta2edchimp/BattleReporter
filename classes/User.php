@@ -26,7 +26,7 @@ class User {
     
     public static function login($userName, $password, $autoLogin = false) {
         
-        global $db, $app;
+        $db = Db::getInstance();
         
         $userInfo = $db->row(
             "select userID, userName, password, corporationID, isAdmin from brUsers where userName = :userName and deactivatedTime is NULL",
@@ -67,7 +67,7 @@ class User {
                         )
                     );
                     
-                    $app->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");
+                    \Slim\Slim::getInstance()->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");
                     
                 }
                 
@@ -84,13 +84,9 @@ class User {
     
     public static function logout() {
         
-        global $db, $app;
+        $sessionCookie = \Slim\Slim::getInstance()->getEncryptedCookie(self::$cookieName, false);
         
-        $sessionCookie = $app->getEncryptedCookie(self::$cookieName, false);
-        
-        $db = Db::getInstance();
-        
-        $db->query(
+        Db::getInstance()->query(
             "delete from brUsersSessions where sessionHash = :sessionHash",
             array(
                 "sessionHash" => $sessionCookie
@@ -118,9 +114,9 @@ class User {
     
     public static function checkAutoLogin() {
         
-        global $db, $app;
+        $db = Db::getInstance();
         
-        $sessionCookie = $app->getEncryptedCookie(self::$cookieName, false);
+        $sessionCookie = \Slim\Slim::getInstance()->getEncryptedCookie(self::$cookieName, false);
         
         if (!empty($sessionCookie)) {
             $cookie = explode("/", $sessionCookie);
