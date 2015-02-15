@@ -3,4 +3,4 @@ CREATE TABLE `brVideos` (
   `battleReportID` int(11) DEFAULT NULL,
   `videoUrl` text,
   PRIMARY KEY (`videoID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -14,4 +14,4 @@ CREATE TABLE `brUsers` (
     UNIQUE KEY `userName` (`userName`),
     KEY `brUsers_IX_login` (`userName`, `deactivatedTime`, `userID`, `password`),
     KEY `brUsers_IX_characterID` (`characterID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

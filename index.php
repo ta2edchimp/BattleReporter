@@ -47,5 +47,3 @@ include('twig.php');
 include('routes.php');
 
 $app->run();
-
-?>
