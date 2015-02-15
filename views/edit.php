@@ -12,7 +12,7 @@ $output = array();
 
 // Try to fetch the specified battle report
 $battleReport = new Battle();
-if ($battleReport->load($battleReportID, false, true) == false) {
+if ($battleReport->load($battleReportID, false, true) === false) {
     $app->render("brNotFound.html");
     $app->stop();
 }
@@ -47,7 +47,7 @@ if ($app->request->isPost()) {
     $parameters = $app->request->post();
     
     $brChanges = json_decode($parameters["battleReportChanges"]);
-    if ($brChanges != null)
+    if ($brChanges !== null)
         $success = $battleReport->applyChanges($brChanges);
     
     $battleReport->title = $parameters["battleTitle"];

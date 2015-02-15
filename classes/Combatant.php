@@ -51,7 +51,7 @@ class Combatant {
         
         if ($this->corporationID == -1 && !empty($this->corporationName) && $this->corporationName != "Unknown") {
             $corp = self::getCorpInfoByName($this->corporationName);
-            if ($corp != null) {
+            if ($corp !== null) {
                 $this->corporationID = $corp["corporationID"];
 				$this->corporationName = $corp["corporationName"];
 				if (isset($corp["allianceID"]) && isset($corp["allianceName"]) && !empty($corp["allianceID"]) && !empty($corp["allianceName"])) {
@@ -65,7 +65,7 @@ class Combatant {
         
         if ($this->allianceID == -1 && !empty($this->allianceName)) {
             $alli = self::getEntityByName($this->allianceName);
-            if ($alli != null) {
+            if ($alli !== null) {
                 $this->allianceID = $alli["entityID"];
 				$this->allianceName = $alli["entityName"];
             } else {
@@ -101,7 +101,7 @@ class Combatant {
         
         // Not yet saved combatants that have been deleted
         // are simply not saved ...
-        if ($this->brCombatantID <= 0 && $this->brDeleted == true)
+        if ($this->brCombatantID <= 0 && $this->brDeleted === true)
             return;
         
         global $db;
@@ -249,7 +249,7 @@ class Combatant {
         $pheal = new \Pheal\Pheal();
         $response = $pheal->eveScope->CharacterID(array("names" => $name));
         
-        if ($response != null && $response->characters != null) {
+        if ($response !== null && $response->characters !== null) {
             foreach ($response->characters as $row) {
                 if (strtolower($row->name) == strtolower($name)) {
                     $result = intVal($row->characterID);
@@ -302,7 +302,7 @@ class Combatant {
 		$pheal = new \Pheal\Pheal();
 		$response = $pheal->corpScope->CorporationSheet(array("corporationID" => $corp["entityID"]));
 		
-		if ($response != null && $response->allianceID != null && $response->allianceName != null) {
+		if ($response !== null && $response->allianceID !== null && $response->allianceName !== null) {
 			$result["allianceID"] = $response->allianceID;
 			$result["allianceName"] = $response->allianceName;
 		}

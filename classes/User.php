@@ -41,10 +41,10 @@ class User {
             $pw = $userInfo["password"];
             if (self::checkPassword($password, $pw)) {
                 
-				if ($userInfo["isAdmin"] != 1 && BR_LOGIN_ONLY_OWNERCORP == true && $userInfo["corporationID"] != BR_OWNERCORP_ID)
+				if ($userInfo["isAdmin"] != 1 && BR_LOGIN_ONLY_OWNERCORP === true && $userInfo["corporationID"] != BR_OWNERCORP_ID)
 					return false;
 				
-                if ($autoLogin == true) {
+                if ($autoLogin === true) {
                     
                     $hash = password_hash($password, PASSWORD_BCRYPT);
                     $hash = $userName . "/" . hash("sha256", $userName . $hash . time());
@@ -160,7 +160,7 @@ class User {
 	
 	public static function checkEVESSOLogin($characterID, $characterName) {
 		
-		if (BR_LOGINMETHOD_EVE_SSO != true)
+		if (BR_LOGINMETHOD_EVE_SSO !== true)
 			return false;
 		
 		global $db;
@@ -196,7 +196,7 @@ class User {
 		if ($userInfo === FALSE) {
 			// ... but ONLY, if he either is member of the BR_OWNERCORP
 			// or login is enabled for everyone.
-			if (BR_LOGIN_ONLY_OWNERCORP == true && $apiLookUp->corporationID != BR_OWNERCORP_ID)
+			if (BR_LOGIN_ONLY_OWNERCORP === true && $apiLookUp->corporationID != BR_OWNERCORP_ID)
 				return false;
 			
 			if (!self::register($characterName, '', '', false))
@@ -245,7 +245,7 @@ class User {
 			$updUser
 		);
 		
-		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP != true || $apiLookUp->corporationID == BR_OWNERCORP_ID)) {
+		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP !== true || $apiLookUp->corporationID == BR_OWNERCORP_ID)) {
 			$_SESSION["isLoggedIn"] = $userInfo["userID"];
 			return true;
 		}
@@ -337,7 +337,7 @@ class User {
         
         global $db;
         
-        if ($isAdmin == false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
+        if ($isAdmin === false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
             return false;
         
         if (self::checkRegistration($userName, $email)) {

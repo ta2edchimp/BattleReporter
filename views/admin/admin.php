@@ -75,7 +75,7 @@ function refetchKillMailsForMissingLossValues() {
 		
 		$combatant = new Combatant($combatant);
 		// Maybe track the count of omitted combatants?
-		if ($combatant == null)
+		if ($combatant === null)
 			continue;
 		
 		$killArray = KBFetch::fetchKill($combatant->killID);

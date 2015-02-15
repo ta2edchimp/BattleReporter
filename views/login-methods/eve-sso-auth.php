@@ -1,13 +1,13 @@
 <?php
 
-if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO != true || BR_LOGINMETHOD_EVE_SSO_CLIENTID == '' || BR_LOGINMETHOD_EVE_SSO_SECRET == '')
+if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO !== true || BR_LOGINMETHOD_EVE_SSO_CLIENTID == '' || BR_LOGINMETHOD_EVE_SSO_SECRET == '')
 	$app->redirect("/");
 
 $code	= $app->request->get('code');
 $state	= $app->request->get('state');
 
 // The state defined before the sso redirect and the returned one match.
-if (!isset($_SESSION['auth_state']) || $state == null || $_SESSION['auth_state'] != $state)
+if (!isset($_SESSION['auth_state']) || $state === null || $_SESSION['auth_state'] != $state)
 	$app->redirect("/login");
 
 $tokenResult = Utils::curl(

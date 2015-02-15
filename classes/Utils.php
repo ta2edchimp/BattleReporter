@@ -36,7 +36,7 @@ class Utils {
 		$parametersAsPostFields = false;
         if (isset($options["queryParams"]))
             $parametersAsQuerystring = $options["queryParams"];
-        if (isset($options["postParams"]) && $options["postParams"] == true)
+        if (isset($options["postParams"]) && $options["postParams"] === true)
 			$parametersAsPostFields = true;
 		
         $timeout = 180;
@@ -69,16 +69,16 @@ class Utils {
         $result = null;
         $cache = null;
         
-        if ($caching == true) {
+        if ($caching === true) {
             if (isset($options["cachePath"]))
                 $cache = new phpFastCache("files", array("path" => $options["cachePath"]));
             else
                 $cache = new phpFastCache("files");
-            if ($cache != null)
+            if ($cache !== null)
                 $result = $cache->get($url);
         }
         
-        if ($result == null) {
+        if ($result === null) {
             $curl = curl_init();
             
             curl_setopt($curl, CURLOPT_ENCODING, "");
@@ -100,12 +100,12 @@ class Utils {
 					curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
 				} else {
 					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options["sslVerify"]);
-					if ($options["sslVerify"] == true)
+					if ($options["sslVerify"] === true)
 						curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 				}
 			}
 			
-			if (isset($options["postParams"]) && $options["postParams"] == true) {
+			if (isset($options["postParams"]) && $options["postParams"] === true) {
 				$fieldCount = count($parameters);
 				$fieldStr = "";
 				if ($fieldCount > 0) {
@@ -149,8 +149,8 @@ class Utils {
             if ($errno)
                 throw new Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
             
-            if ($caching == true && $cache != null) {
-                if ($autoCaching == true && !empty($headers["Expires"])) {
+            if ($caching === true && $cache !== null) {
+                if ($autoCaching === true && !empty($headers["Expires"])) {
                     $expires = strtotime($headers["Expires"]);
                     $cacheLifetime = $expires - time();
                 }

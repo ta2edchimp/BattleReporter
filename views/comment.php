@@ -8,7 +8,7 @@ if (!User::isLoggedIn() || BR_COMMENTS_ENABLED !== true)
 	$app->redirect($referer);
 
 $commentMessage = $app->request->post("CommentMessage");
-if ($commentMessage == null || empty($commentMessage))
+if ($commentMessage === null || empty($commentMessage))
 	$app->redirect($referer);
 
 

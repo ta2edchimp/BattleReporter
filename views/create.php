@@ -9,7 +9,7 @@ $output = array();
 // Get all POST variables
 $parameters = $app->request->post();
 
-if ($parameters != null) {
+if ($parameters !== null) {
     
     $battleTimespan         = null;
     $battleSolarSystem      = null;
@@ -40,7 +40,7 @@ if ($parameters != null) {
         
         $output["inputBattleSolarSystemName"] = $inputBattleSolarSystemName;
         
-        if ($battleSolarSystem == null) {
+        if ($battleSolarSystem === null) {
             $output["battleSolarSystemError"] = true;
         } else {
             $output["battleSolarSystem"] = $battleSolarSystem;
@@ -50,7 +50,7 @@ if ($parameters != null) {
     /*
      *  Fetch corresponding kills ... if existing ...
      */
-    if ($battleTimespan != null && $battleSolarSystem != null) {
+    if ($battleTimespan !== null && $battleSolarSystem !== null) {
         try {
             $battle = KBFetch::fetchBattle(
                 array(

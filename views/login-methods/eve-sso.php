@@ -1,6 +1,6 @@
 <?php
 
-if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO != true || BR_LOGINMETHOD_EVE_SSO_CLIENTID == '' || BR_LOGINMETHOD_EVE_SSO_SECRET == '')
+if (User::isLoggedIn() || BR_LOGINMETHOD_EVE_SSO !== true || BR_LOGINMETHOD_EVE_SSO_CLIENTID == '' || BR_LOGINMETHOD_EVE_SSO_SECRET == '')
 	$app->redirect("/");
 
 $state			= uniqid();
@@ -13,7 +13,7 @@ if (empty($scheme)) {
 }
 $redirect_uri	= $scheme . "://" . $_SERVER["HTTP_HOST"] . "/login/eve-sso-auth";
 $ref			= $app->request->get('ref');
-if ($ref == null || empty($ref) || strpos(strtolower($ref), strtolower($_SERVER["HTTP_HOST"])) === FALSE)
+if ($ref === null || empty($ref) || strpos(strtolower($ref), strtolower($_SERVER["HTTP_HOST"])) === FALSE)
 	$redirect_to = $scheme . "://" . $_SERVER["HTTP_HOST"] . "/";
 else
 	$redirect_to = $ref;

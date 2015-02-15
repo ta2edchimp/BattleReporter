@@ -11,10 +11,10 @@ class Kill {
     
     
     public function __construct($victim = null, $attackers = null, $solarSystemID = 0, $killTime = 0) {
-        if ($victim != null)
+        if ($victim !== null)
             $this->victim = $victim;
         
-        if ($attackers != null) {
+        if ($attackers !== null) {
             foreach ($attackers as $attacker)
                 $this->addAttacker($attacker);
         }
@@ -36,7 +36,7 @@ class Kill {
     }
     
     public function addAttacker(Combatant $attacker) {
-        if ($this->getAttacker($attacker) == null)
+        if ($this->getAttacker($attacker) === null)
             $this->attackers[] = $attacker;
     }
     
@@ -79,7 +79,7 @@ class Kill {
         $attackers = array();
         foreach ($kill->attackers as $atk) {
             $attacker = new Combatant($atk);
-            if ($atk != null)
+            if ($atk !== null)
                 $attackers[] = $attacker;
         }
         
@@ -94,7 +94,7 @@ class Kill {
         else
             $solarSystemID = 0;
         
-        if ($victim != null && count($attackers) > 0)
+        if ($victim !== null && count($attackers) > 0)
             return new Kill($victim, $attackers, $solarSystemID, $killTime);
         
         return null;

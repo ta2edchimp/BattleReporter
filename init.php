@@ -26,7 +26,7 @@ $app->config(array("templates.path" => __DIR__ ."/public/themes/$theme"));
 $app->view(new \Slim\Views\Twig());
 
 // Give us pretty error messages ... (if in debug mode)
-if ($BR_DEBUGMODE == true)
+if ($BR_DEBUGMODE === true)
     $app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
 // Configuring PhealNG

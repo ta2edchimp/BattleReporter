@@ -116,7 +116,7 @@ class Battle {
             "solarSystemID" => $this->solarSystemID,
             "published" => $this->published ? 1 : 0
 		);
-		if ($this->deleted == true) {
+		if ($this->deleted === true) {
 			$values["brDeleteUserID"] = User::getUserID();
 			$values["brDeleteTime"] = time();
 		}
@@ -229,10 +229,10 @@ class Battle {
                     }
                 }
             } else {
-                if (isset($change->added) && $change->added == true
+                if (isset($change->added) && $change->added === true
                     && isset($change->teamName) && !empty($change->teamName)
                     && isset($change->combatantInfo)
-					&& (!isset($change->brDeleted) || $change->brDeleted != true)) {
+					&& (!isset($change->brDeleted) || $change->brDeleted !== true)) {
                     
                     $corpName = "Unknown";
                     $alliName = "";
@@ -258,13 +258,13 @@ class Battle {
                     
                     $currentTeam = $change->teamName;
                     
-                    if ($combatant != null)
+                    if ($combatant !== null)
                         $this->$currentTeam->members[] = $combatant;
                     
                 }
             }
             
-            if ($combatant == null)
+            if ($combatant === null)
                 continue;
             
             if (isset($change->brHidden))
@@ -344,12 +344,12 @@ class Battle {
         foreach ($importedKills as $impKill) {
             
             $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-            if ($existantBattleID != null)
+            if ($existantBattleID !== null)
                 throw new Exception("The fetched events are already part of an existing BattleReport.");
             
             $kill = Kill::fromImport($impKill);
             
-            if ($kill != null) {
+            if ($kill !== null) {
                 
                 // Per default, the victim is member of teamB
                 $tgt = "teamB";

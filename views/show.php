@@ -8,13 +8,13 @@ if (empty($battleReportID) || $battleReportID == 0) {
 // Try to fetch the specified battle report
 $battleReport = new Battle();
 
-if ($battleReport->load($battleReportID, false) == false) {
+if ($battleReport->load($battleReportID, false) === false) {
     $app->render("brNotFound.html");
     $app->stop();
 }
 
 // If unpublished and/or no access ... yell "not found"
-if ($battleReport->published == false) {
+if ($battleReport->published === false) {
 	
 	// Users with general "edit" permission may see an unpublished battle report
 	if (!User::isLoggedIn() || !User::can("edit")) {

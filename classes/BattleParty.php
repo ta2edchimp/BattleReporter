@@ -30,7 +30,7 @@ class BattleParty {
                     if ($member->shipTypeID == $combatant->shipTypeID) {
                         // If this char is already on the list in the same ship,
                         // but this time is the victim, replace him.
-                        if ($member->died == false && $combatant->died == true) {
+                        if ($member->died === false && $combatant->died === true) {
                             // Replace the existing member
                             $member = $combatant;
                             return;
@@ -132,7 +132,7 @@ class BattleParty {
         
         foreach ($team as $memberData) {
             $combatant = new Combatant($memberData);
-            if ($combatant != null)
+            if ($combatant !== null)
                 $this->add($combatant);
         }
         
