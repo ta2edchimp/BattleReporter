@@ -26,7 +26,8 @@ $battleList = $db->query(
 			"select bp.brBattlePartyID from brBattleParties as bp where bp.battleReportID = br.battleReportID and bp.brTeamName = 'teamC' limit 1" .
 		")), 0.0) as iskLostTeamC, " .
 		"sys.solarSystemName, " .
-		"(select count(commentID) from brComments as cm where cm.battleReportID = br.battleReportID and cm.commentDeleteTime is NULL) as commentCount " .
+		"(select count(commentID) from brComments as cm where cm.battleReportID = br.battleReportID and cm.commentDeleteTime is NULL) as commentCount, " .
+		"(select count(videoID) from brVideos as v where v.battleReportID = br.battlereportID) as footageCount " .
 	"from brBattles as br inner join mapSolarSystems as sys " .
 		"on br.solarSystemID = sys.solarSystemID " .
 		"left outer join brUsers as u on u.userID = br.brCreatorUserID " .
