@@ -22,10 +22,9 @@ $_SESSION['auth_state'] = $state;
 $_SESSION['auth_redirect'] = $redirect_to;
 session_write_close();
 
-header(
-	'Location:https://login.eveonline.com/oauth/authorize' .
+$app->redirect(
+	'https://login.eveonline.com/oauth/authorize' .
 	'?response_type=code&redirect_uri=' . $redirect_uri .
-	'&client_id=' . BR_LOGINMETHOD_EVE_SSO_CLIENTID . '&scope=&state=' . $state
+	'&client_id=' . BR_LOGINMETHOD_EVE_SSO_CLIENTID . '&scope=&state=' . $state,
+	302
 );
-
-exit;
