@@ -56,7 +56,7 @@ if (!isset($verifyResult->CharacterID) || !isset($verifyResult->CharacterName) |
 
 $verifyResult->CharacterName . " (ID: " . $verifyResult->CharacterID . ")</p>";
 
-if (User::checkEVESSOLogin($verifyResult->CharacterID, $verifyResult->CharacterName, $verifyResult->CharacterOwnerHash)) {
+if (User::checkEVESSOLogin($verifyResult->CharacterID, $verifyResult->CharacterName)) {
 	$ref = $_SESSION['auth_redirect'];
 	if (empty($ref) || strpos(strtolower($ref), strtolower($_SERVER["HTTP_HOST"])) === FALSE)
 		$app->redirect("/");

@@ -106,8 +106,6 @@ class User {
     
     public static function checkPassword($enteredPw, $storedPw) {
         
-        global $db;
-        
         if (empty($enteredPw) || empty($storedPw))
             return false;
         
@@ -160,7 +158,7 @@ class User {
         
     }
 	
-	public static function checkEVESSOLogin($characterID, $characterName, $characterOwnerHash) {
+	public static function checkEVESSOLogin($characterID, $characterName) {
 		
 		if (BR_LOGINMETHOD_EVE_SSO != true)
 			return false;
@@ -239,10 +237,10 @@ class User {
 		);
 		if (!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance))
 			$updUser["allianceID"] = $apiLookUp->allianceID;
-		$upd = $db->query(
+		$db->query(
 			"update brUsers " .
 			"set corporationID = :corporationID " .
-				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "and allianceID = :allianceID " : "") .
+				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "and allianceID = :allianceID " : "and allianceID = NULL ") .
 			"where userID = :userID",
 			$updUser
 		);
