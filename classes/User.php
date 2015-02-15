@@ -88,7 +88,7 @@ class User {
         
         $sessionCookie = $app->getEncryptedCookie(self::$cookieName, false);
         
-        global $db;
+        $db = Db::getInstance();
         
         $db->query(
             "delete from brUsersSessions where sessionHash = :sessionHash",
@@ -163,7 +163,7 @@ class User {
 		if (BR_LOGINMETHOD_EVE_SSO !== true)
 			return false;
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		// Check if he's already in the database
 		$userInfo = $db->row(
@@ -256,7 +256,7 @@ class User {
     
     public static function getUserInfos() {
         
-        global $db;
+        $db = Db::getInstance();
         
         if (!self::isLoggedIn())
             return NULL;
@@ -319,7 +319,7 @@ class User {
     
     public static function checkRegistration($userName, $email) {
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->query(
             "select userName, email from brUsers where userName = :userName or email = :email",
@@ -335,7 +335,7 @@ class User {
     
     public static function register($userName, $password, $email, $isAdmin = false) {
         
-        global $db;
+        $db = Db::getInstance();
         
         if ($isAdmin === false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
             return false;

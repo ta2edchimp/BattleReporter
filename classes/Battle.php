@@ -47,7 +47,7 @@ class Battle {
     
     public function load($id, $onlyPublished = true, $toBeEdited = false) {
         
-        global $db;
+        $db = Db::getInstance();
         
         // Fetch corresponding records from database
         $result = $db->row(
@@ -107,7 +107,7 @@ class Battle {
     
     public function save() {
         
-        global $db;
+        $db = Db::getInstance();
         
 		$values = array(
             "title" => $this->title,
@@ -307,7 +307,7 @@ class Battle {
 	
 	public function getComments() {
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		if ($this->battleReportID <= 0 || BR_COMMENTS_ENABLED !== true)
 			return array();
@@ -399,7 +399,7 @@ class Battle {
 		if ($this->battleReportID <= 0)
 			return;
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		$results = $db->query(
 			"select * from brVideos " .
@@ -428,7 +428,7 @@ class Battle {
 		
 		$this->removeFootageFromDb();
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		foreach ($this->footage as $video) {
 			if (empty($video))
@@ -463,7 +463,7 @@ class Battle {
 		if ($this->battleReportID <= 0)
 			return;
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		$db->query(
 			"delete from brVideos where battleReportID = :battleReportID",
@@ -508,7 +508,7 @@ class Battle {
         if (empty($killID))
             return null;
         
-        global $db;
+        $db = Db::getInstance();
         
         $id = $db->single(
             "select br.battleReportID " .

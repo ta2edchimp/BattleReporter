@@ -104,7 +104,7 @@ class Combatant {
         if ($this->brCombatantID <= 0 && $this->brDeleted === true)
             return;
         
-        global $db;
+        $db = Db::getInstance();
         
         $params = array(
             "characterID" => $this->characterID,
@@ -273,7 +273,7 @@ class Combatant {
 			return null;
 		
 		// first, try to get this information from the database
-		global $db;
+		$db = Db::getInstance();
 		
 		$result = $db->query(
 			"select c.corporationID, c.corporationName, ifnull(a.allianceID, 0) as allianceID, ifnull(a.allianceName, '') as allianceName " .

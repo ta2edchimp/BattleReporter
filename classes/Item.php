@@ -11,7 +11,7 @@ class Item {
         if (isset(self::$nameIDs["id#" . $id]))
             return self::$nameIDs["id#" . $id];
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->single(
             "select typeName " .
@@ -37,7 +37,7 @@ class Item {
         if (isset(self::$nameIDs["name#" . $name]))
             return self::$nameIDs["name#" . $name];
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->single(
             "select typeID " .
@@ -61,7 +61,7 @@ class Item {
         if (empty($namePart))
             return array();
         
-        global $db;
+        $db = Db::getInstance();
         
         $ships = $db->query(
             "select typeName as name, typeID as id " .
@@ -92,7 +92,7 @@ class Item {
 		if (empty($name))
 			return "";
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		$groupID = $db->single(
 			"select groupID from invGroups where groupName = :groupName",
@@ -113,7 +113,7 @@ class Item {
 		if (empty($id))
 			return "";
 		
-		global $db;
+		$db = Db::getInstance();
 		
 		$groupID = $db->single(
 			"select groupID from invTypes where typeID = :typeID",

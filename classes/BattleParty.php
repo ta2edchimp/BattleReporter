@@ -94,7 +94,7 @@ class BattleParty {
         if (empty($this->name))
             return false;
         
-        global $db;
+        $db = Db::getInstance();
         
         // Fetch corresponding records from database
         $result = $db->row(
@@ -145,7 +145,7 @@ class BattleParty {
         if ($brID <= 0)
             throw new Exception("Cannot save a battle party to a non existent battle report!");
         
-        global $db;
+        $db = Db::getInstance();
         
         // Save basic battle report properties
         if ($this->brBattlePartyID <= 0) {
