@@ -113,5 +113,17 @@ class Db {
         $this->init($query, $params);
         return $this->sQuery->fetchColumn();
     }
+	
+	
+	private static $instance = null;
+	
+	public static function getInstance($dbname = "", $user = "", $password = "", $host = "") {
+		
+		if (self::$instance === null)
+			self::$instance = new self($dbname, $user, $password, $host);
+		
+		return self::$instance;
+		
+	}
     
 }
