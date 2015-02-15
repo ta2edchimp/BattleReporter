@@ -1,4 +1,4 @@
-# BattleReporter [![SensioLabsInsight](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3/small.png)](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3)
+# BattleReporter [![SensioLabsInsight](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3/mini.png)](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3)
 
 Advanced editable BattleReport platform for EVE Online.
 
