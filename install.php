@@ -310,8 +310,6 @@ out("|g|BattleReporter successfully installed");
 out();
 out("You may now browse to your BattleReporter's site and login as admin.");
 
-exit;
-
 
 /*
  *	Output and Input Helper Functions
