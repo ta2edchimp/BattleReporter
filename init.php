@@ -7,7 +7,7 @@ date_default_timezone_set("UTC");
 $basePath = dirname(__FILE__);
 
 // Global database access wrapper object
-$db = new Db(DB_NAME, DB_USER, DB_PASS, DB_HOST);
+$db = Db::getInstance(DB_NAME, DB_USER, DB_PASS, DB_HOST);
 
 // Global (Slim) application object
 $app = new \Slim\Slim();
