@@ -28,7 +28,8 @@ $battleList = $db->query(
         "ifnull((select sum(c.priceTag) from brCombatants as c where c.brHidden = 0 and c.brBattlePartyID = (" .
             "select bp.brBattlePartyID from brBattleParties as bp where bp.battleReportID = br.battleReportID and bp.brTeamName = 'teamC' limit 1" .
         ")), 0.0) as iskLostTeamC, " .
-        "sys.solarSystemName " .
+        "sys.solarSystemName, " .
+		"(select count(commentID) from brComments as cm where cm.battleReportID = br.battleReportID and cm.commentDeleteTime is NULL) as commentCount " .
     "from brBattles as br inner join mapSolarSystems as sys " .
         "on br.solarSystemID = sys.solarSystemID " .
 		" left outer join brUsers as u on u.userID = br.brCreatorUserID " .

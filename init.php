@@ -34,5 +34,3 @@ if ($BR_DEBUGMODE == true)
 \Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage(__DIR__ . '/cache/pheal/');
 // Enable AccessMask Check
 \Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();
-
-?>

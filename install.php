@@ -137,6 +137,16 @@ while (empty($adminPassword))
 	$adminPassword = prompt("Enter admin password", "");
 
 
+// Ask for advanced functions
+out();
+out("Do you want to allow logged in users to comment on BattleReports?");
+$enableComments = prompt("Enter \"yes\" or \"no\"", "no");
+if (strtolower($enableComments) == "yes")
+	$config["BR_COMMENTS_ENABLED"] = "true";
+else
+	$config["BR_COMMENTS_ENABLED"] = "false";
+
+
 // Write config to file
 $configFile = "$basePath/config.php";
 $configFileContents = file_get_contents("$basePath/config.blueprint.php");

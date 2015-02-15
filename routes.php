@@ -5,12 +5,12 @@
  */
 // 404 - File Not Found
 $app->notFound(function () use ($app) {
-    $app->render('404.html');
+    $app->render("404.html");
 });
 
 // Any Error ...
 $app->error(function (\Exception $e) use ($app) {
-    include('view/error.php');
+    include("views/error.php");
 });
 
 
@@ -97,11 +97,27 @@ $app->group('/autocomplete', function () use ($app, $db) {
         
 });
 
+// Pages only for logged in users
+if (User::isLoggedIn() && BR_COMMENTS_ENABLED === true) {
+	$app->post('/comment/:battleReportID', function ($battleReportID) use ($app, $db) {
+		
+		include("views/comment.php");
+		
+	});
+	if (User::isAdmin()) {
+		$app->get('/comment/delete/:commentID', function ($commentID) use ($app, $db) {
+			
+			include("views/admin/deleteComment.php");
+			
+		});
+	}
+}
+
 // Admin only pages
 if (User::isAdmin()) {
 	$app->get('/admin(/:adminAction)', function ($adminAction = "") use ($app, $db) {
 		
-		include ("views/admin/admin.php");
+		include("views/admin/admin.php");
 		
 	});
 }

@@ -11,8 +11,9 @@
 	.collapse-button .glyphicon-chevron-up{display:inline-block;}
 	.collapse-button.collapsed .glyphicon-chevron-down{display:inline-block;}
 	.collapse-button.collapsed .glyphicon-chevron-up{display:none;}
-	.battle-footage{position:relative;width:100%;padding-top:56.35%}
+	.battle-footage{position:relative;width:100%;padding-top:56.35%;}
 	.battle-footage iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+	.comment{font-size:12px;background-position:0 0;background-repeat:no-repeat;background-size:48px 48px;padding-left:63px;}
 </style>
 {% endblock %}
 
@@ -54,8 +55,11 @@
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div style="float:right">
-                <a href="/show/{{ battleReport.battleReportID }}" class="btn btn-xs btn-primary"{% if battleReportDetail == 'overview' %} style="opacity:.5"{% endif %}><span class="glyphicon glyphicon-menu-hamburger"></span></a>
-                <a href="/show/{{ battleReport.battleReportID }}/timeline" class="btn btn-xs btn-primary"{% if battleReportDetail == 'timeline' %} style="opacity:.5"{% endif %}><span class="glyphicon glyphicon-time"></span></a>
+                <a href="/show/{{ battleReport.battleReportID }}" class="btn btn-xs btn-primary"{% if battleReportDetail != 'overview' %} style="opacity:.5"{% endif %}><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+                <a href="/show/{{ battleReport.battleReportID }}/timeline" class="btn btn-xs btn-primary"{% if battleReportDetail != 'timeline' %} style="opacity:.5"{% endif %}><span class="glyphicon glyphicon-time"></span></a>
+				{% if BR_COMMENTS_ENABLED == true %}
+				<a href="/show/{{ battleReport.battleReportID }}/comments" class="btn btn-xs btn-primary"{% if battleReportDetail != 'comments' %} style="opacity:.5"{% endif %}><span class="glyphicon glyphicon-comment"></span>{% if battleReport.commentCount > 0 %} <span class="badge">{{ battleReport.commentCount }}</span>{% endif %}</a>
+				{% endif %}
             </div>
             <h3 class="panel-title">{{ battleReportDetailTitle }}</h3>
         </div>
@@ -89,7 +93,7 @@
                 {% endif %}
             </div>
         </div>
-        {% else %}
+		{% elseif battleReportDetail == 'timeline' %}
         <div class="panel-body">
             <div class="row">
             {% if battleReport.teamC.members|length > 0 %}
@@ -173,6 +177,69 @@
                 </tbody>
             </table>
         </div>
+		{% else %}
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-6">
+			{% set comments = battleReport.getComments() %}
+			{% if comments|length > 0 %}
+				{% set separator = '' %}
+				{% for comment in comments %}
+					{{ separator|raw }}
+					<div id="comment-{{ comment.commentID }}" class="comment"{% if comment.characterID is defined %} style="background-image:url(//image.eveonline.com/Character/{{ comment.characterID }}_128.jpg)"{% endif %}>
+						<p><strong>{{ comment.userName }}</strong><br>
+							<small>{{ comment.commentTime|time_ago }}</small></p>
+						<p>{{ comment.commentMessage|enable_urls }}</p>
+						{% if BR_USER_IS_ADMIN == true %}
+						<div class="text-right">
+							<a href="/comment/delete/{{ comment.commentID }}" class="btn btn-xs btn-danger">Delete Comment</a>
+						</div>
+						{% endif %}
+					</div>
+					{% set separator = '<div>&nbsp;</div>' %}
+				{% endfor %}
+			{% else %}
+					<p>There are not comments yet.
+					{% if battleReport.published == true %}
+						<br class="hidden-xs"><strong>Be the first to comment!</strong>
+					{% endif %}
+					</p>
+			{% endif %}
+				</div>
+				<div class="col-sm-6">
+			{% if battleReport.published != true %}
+					<div class="alert alert-warning">
+						<p>Comments are locked on unpublished BattleReports.</p>
+					</div>
+			{% else %}
+				{% if BR_USER_LOGGEDIN %}
+					<form action="/comment/{{ battleReport.battleReportID }}" method="post">
+						<div class="form-group"{% if BR_USER_CHARACTERID is defined %} style="background-image:url(//image.eveonline.com/Character/{{ BR_USER_CHARACTERID }}_128.jpg);background-position:100% 0;background-size:contain;background-repeat:no-repeat"{% endif %}>
+							<label class="control-label">Comment as:</label>
+							<div>
+								{{ BR_USER_NAME }}
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="CommentMessage" class="control-label">Your Message:</label>
+							<div>
+								<textarea class="form-control" rows="3" id="CommentMessage" name="CommentMessage"></textarea>
+							</div>
+						</div>
+						<div class="text-right">
+							<button class="btn btn-warning" type="reset">Reset</button>
+							<button class="btn btn-primary" type="submit">Post Comment <span class="glyphicon glyphicon-arrow-right"></span></button>
+						</div>
+					</form>
+				{% else %}
+					<div class="alert alert-info">
+						<p>You must be <a href="/login" class="alert-link">logged in</a> in order to comment.</p>
+					</div>
+				{% endif %}
+			{% endif %}
+				</div>
+			</div>
+		</div>
         {% endif %}
     </div>
 {% endblock %}

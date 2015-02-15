@@ -46,8 +46,12 @@ define('BR_LOGINMETHOD_EVE_SSO_SECRET', '%BR_LOGINMETHOD_EVE_SSO_SECRET%');
 
 
 /*
+ *	Advanced Functions
+ */
+define('BR_COMMENTS_ENABLED', %BR_COMMENTS_ENABLED%);
+
+
+/*
  *  Debug Mode
  */
 $BR_DEBUGMODE = true;
-
-?>

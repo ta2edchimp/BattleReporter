@@ -30,6 +30,9 @@ td.no-break{white-space:nowrap}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
 					</a></td>
 				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
+				{% if BR_COMMENTS_ENABLED == true %}
+				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<span class="glyphicon glyphicon-comment"></span>{% endif %}</td>
+				{% endif %}
                 <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
                 <td class="no-break">{{ battle.date }}</td>
                 <td class="no-break hidden-xxxs text-right">{{ battle.pilotCountTeamA }}</td>

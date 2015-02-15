@@ -34,6 +34,8 @@ if (User::isLoggedIn() && (User::isAdmin() || $battleReport->creatorUserID == Us
 $battleReportDetailTitle = "Battle Overview";
 
 $availableDetails = array("timeline");
+if (BR_COMMENTS_ENABLED === true)
+	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {
     $battleReportDetail = strtolower($battleReportDetail);
     if (!in_array($battleReportDetail, $availableDetails))
@@ -46,6 +48,9 @@ switch ($battleReportDetail) {
     case "timeline":
         $battleReportDetailTitle = "Battle Timeline";
         break;
+	case "comments":
+		$battleReportDetailTitle = "Comments";
+		break;
 }
 
 $app->render("show.html", array(

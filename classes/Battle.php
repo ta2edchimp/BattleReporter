@@ -30,6 +30,7 @@ class Battle {
 	public $createTime = 0;
 	
 	public $footage = array();
+	public $commentCount = 0;
     
     
     public function __construct() {
@@ -86,6 +87,19 @@ class Battle {
         
         // Update certain properties
         $this->updateDetails();
+		
+		// Update comment count property
+		$commentCount = $db->single(
+			"select count(commentID) as commentCount " .
+			"from brComments " .
+			"where battleReportID = :battleReportID and commentDeleteTime is NULL",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		if ($commentCount !== FALSE)
+			$this->commentCount = $commentCount;
+		
         return true;
         
     }
@@ -289,6 +303,34 @@ class Battle {
         return $timeline;
         
     }
+	
+	
+	public function getComments() {
+		
+		global $db;
+		
+		if ($this->battleReportID <= 0 || BR_COMMENTS_ENABLED !== true)
+			return array();
+		
+		$results = $db->query(
+			"select c.*, u.userID, u.userName, u.characterID, u.corporationID, cc.corporationName, u.allianceID, al.allianceName " .
+			"from brComments as c inner join brUsers as u " .
+				"on c.commentUserID = u.userID left outer join brCorporations as cc " .
+				"on u.corporationID = cc.corporationID left outer join brAlliances as al " .
+				"on u.allianceID = al.allianceID " .
+			"where c.battleReportID = :battleReportID and c.commentDeleteTime is NULL " .
+			"order by c.commentTime asc",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+		if ($results === FALSE)
+			return array();
+		
+		return $results;
+		
+	}
     
     
     public function import($importedKills) {
