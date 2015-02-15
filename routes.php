@@ -51,7 +51,7 @@ $app->map('/login', function () use ($app) {
     include("views/login.php");
     
 })->via('GET', 'POST');
-if (BR_LOGINMETHOD_EVE_SSO == true) {
+if (BR_LOGINMETHOD_EVE_SSO === true) {
 	$app->get('/login/eve-sso', function () use ($app) {
 		include("views/login-methods/eve-sso.php");
 	});

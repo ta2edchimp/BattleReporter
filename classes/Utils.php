@@ -63,7 +63,7 @@ class Utils {
         if (isset($options["userAgent"]))
             $userAgent = $options["userAgent"];
         
-		if ($parametersAsPostFields != true)
+		if ($parametersAsPostFields !== true)
 			$url .= self::transformParameters($parameters, $parametersAsQuerystring);
         
         $result = null;
