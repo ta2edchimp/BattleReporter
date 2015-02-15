@@ -11,11 +11,7 @@ class Db {
     
     private $sQuery;
     
-    private $settings;
-    
     private $bConnected = false;
-    
-    private $log;
     
     private $parameters;
     
