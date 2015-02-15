@@ -450,8 +450,6 @@ class Battle {
 	
 	public function addFootage($videos = array()) {
 		
-		$toAdd = array();
-		
 		foreach ($videos as $video) {
 			$embedUrl = self::getEmbedVideoUrl($video);
 			if (!in_array($embedUrl, $this->footage))
