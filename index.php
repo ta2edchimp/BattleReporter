@@ -3,7 +3,6 @@
 require_once('vendor/autoload.php');
 
 require_once('classes/Db.php');
-require_once('classes/DAO.php');
 
 // PHP 5.5-like password hash functions in prior versions
 if (!function_exists('password_hash') || !function_exists('password_verify')
