@@ -94,7 +94,7 @@ $app->group('/autocomplete', function () use ($app, $db) {
     $app->post('/alliNames', function () use ($app, $db) {
         include("views/autocomplete/alliNames.php");
     });
-        
+    
 });
 
 // Pages only for logged in users
@@ -115,7 +115,7 @@ if (User::isLoggedIn() && BR_COMMENTS_ENABLED === true) {
 
 // Admin only pages
 if (User::isAdmin()) {
-	$app->get('/admin(/:adminAction)', function ($adminAction = "") use ($app, $db) {
+	$app->get('/admin(/:adminAction)', function ($adminAction = "") use ($app, $db, $basePath) {
 		
 		include("views/admin/admin.php");
 		
