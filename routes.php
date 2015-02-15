@@ -18,7 +18,7 @@ $app->error(function (\Exception $e) use ($app) {
  *  Default routings
  */
 // Homepage
-$app->get('/', function () use ($app) {
+$app->get('/', function () use ($app, $db) {
     
     include("views/index.php");
     
@@ -68,7 +68,7 @@ $app->get('/logout', function () use ($app) {
 });
 
 // Info pages
-$app->get('/info(/:page)', function ($page = "about") use ($app) {
+$app->get('/info(/:page)', function ($page = "about") use ($app, $basePath, $theme) {
 	
 	include("views/info.php");
 	

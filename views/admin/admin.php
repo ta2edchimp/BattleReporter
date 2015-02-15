@@ -18,7 +18,7 @@ if (!in_array($adminAction, $availableActions))
 switch ($adminAction) {
 	
 	case "refetchforlossvalues":
-		$output["adminMissingLossValues"]["action"] = refetchKillMailsForMissingLossValues();
+		$output["adminMissingLossValues"]["action"] = refetchKillMailsForMissingLossValues($db);
 		break;
 	
 	default:
@@ -51,15 +51,13 @@ else
 $app->render("admin/admin.html", $output);
 
 
-function refetchKillMailsForMissingLossValues() {
+function refetchKillMailsForMissingLossValues(Db $db) {
 	
 	$result = array(
 		"success" => true
 	);
 	$missingCount = -1;
 	$refetchCount = 0;
-	
-	global $db;
 	
 	$combatants = $db->query("select * from brCombatants where died = 1 and priceTag <= 0");
 	if ($combatants === NULL) {

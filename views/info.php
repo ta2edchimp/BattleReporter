@@ -1,7 +1,5 @@
 <?php
 
-global $basePath, $theme;
-
 $output = array();
 
 $infoFilePath = "$basePath/public/themes/$theme/information/$page.md";
