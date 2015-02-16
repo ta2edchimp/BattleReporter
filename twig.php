@@ -4,7 +4,7 @@ $twig = $app->view();
 
 $twig->parserOptions = array(
     "charset" => "utf-8",
-    "cache" => false,//__DIR__ . "/cache/templates/$theme",
+    "cache" => ($BR_DEBUGMODE === true ? false : ("$basePath/cache/templates/$theme")),
     "auto_reload" => true,
     "strict_variables" => false,
     "autoescape" => true
