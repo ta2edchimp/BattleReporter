@@ -8,13 +8,13 @@ if (empty($battleReportID) || $battleReportID == 0) {
 // Try to fetch the specified battle report
 $battleReport = new Battle();
 
-if ($battleReport->load($battleReportID, false) == false) {
+if ($battleReport->load($battleReportID, false) === false) {
     $app->render("brNotFound.html");
     $app->stop();
 }
 
 // If unpublished and/or no access ... yell "not found"
-if ($battleReport->published == false) {
+if ($battleReport->published === false) {
 	
 	// Users with general "edit" permission may see an unpublished battle report
 	if (!User::isLoggedIn() || !User::can("edit")) {
@@ -22,17 +22,20 @@ if ($battleReport->published == false) {
 		$app->stop();
 	}
 	
-	// ... but only admins and owners may actually edit this one.
-	if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
-		$twigEnv = $app->view()->getEnvironment();
-		$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
-		$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
-	}
+}
+	
+// ... but only admins and owners may actually edit this one.
+if (User::isLoggedIn() && (User::isAdmin() || $battleReport->creatorUserID == User::getUserID())) {
+	$twigEnv = $app->view()->getEnvironment();
+	$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
+	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
 }
 
 $battleReportDetailTitle = "Battle Overview";
 
 $availableDetails = array("timeline");
+if (BR_COMMENTS_ENABLED === true)
+	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {
     $battleReportDetail = strtolower($battleReportDetail);
     if (!in_array($battleReportDetail, $availableDetails))
@@ -45,6 +48,9 @@ switch ($battleReportDetail) {
     case "timeline":
         $battleReportDetailTitle = "Battle Timeline";
         break;
+	case "comments":
+		$battleReportDetailTitle = "Comments";
+		break;
 }
 
 $app->render("show.html", array(

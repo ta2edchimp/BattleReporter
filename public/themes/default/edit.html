@@ -42,5 +42,11 @@
 <script src="/js/jquery.autocomplete.min.js"></script>
 <script>
 {% include 'components/brEditor.js' %}
+{% if BR_USER_CAN_UNPUBLISH %}
+$('#br-btn-unpublish').click(function (event) { if (!confirm('Do you really want to unpublish this BattleReport?')) event.preventDefault(); });
+{% endif %}
+{% if BR_USER_CAN_DELETE %}
+$('#br-btn-delete').click(function (event) { if (!confirm('Do you really want to completely delete this BattleReport?')) event.preventDefault(); });
+{% endif %}
 </script>
 {% endblock %}

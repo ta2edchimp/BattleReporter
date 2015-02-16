@@ -6,6 +6,9 @@
 <style>
 table#battleReports-overview a.br-inv-link{text-decoration:none}
 table#battleReports-overview a:not(.btn){text-decoration:none}
+td.no-break{white-space:nowrap}
+@media(max-width:420px){.hidden-xxxs{display:none!important;}}
+@media(max-width:640px){.hidden-xxs{display:none!important;}}
 </style>
 {% endblock %}
 
@@ -19,28 +22,23 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
     </div>
     {% else %}
     <table id="battleReports-overview" class="panel-body table table-striped table-hover ">
-        <!-- thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead -->
         <tbody>
         {% for battle in battleList %}
             <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} title="BattleReport is unpublished"{% endif %}>
-                <td></td>
                 <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">
 					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
 					</a></td>
-				<td>{{ battle.creatorUserName }}</td>
-                <td>{{ battle.solarSystemName }}</td>
-                <td>{{ battle.date }}</td>
-                <td class="text-right">{{ battle.pilotCountTeamA }}</td>
-                <td class="text-center">:</td>
-                <td class="text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
+				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
+				{% if BR_COMMENTS_ENABLED == true %}
+				<td class="no-break hidden-xs">{% if battle.footageCount > 0 %}<span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span>{% endif %}</td>
+				{% endif %}
+				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span>{% endif %}</td>
+                <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
+                <td class="no-break">{{ battle.date }}</td>
+                <td class="no-break hidden-xxxs text-right">{{ battle.pilotCountTeamA }}</td>
+                <td class="no-break hidden-xxxs text-center">:</td>
+                <td class="no-break hidden-xxxs text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
                 {% if battle.efficiency == 1 %}
                     {% set efficiencyClsName = 'text-success' %}
                 {% elseif battle.efficiency > 0.5 %}
@@ -50,8 +48,7 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
                 {% else %}
                     {% set efficiencyClsName = 'text-danger' %}
                 {% endif %}
-                <td class="text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
-                <td>{{ battle.iskDestroyed }}</td>
+                <td class="no-break text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
             </tr>
         {% endfor %}
         </tbody>

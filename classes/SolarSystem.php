@@ -8,7 +8,7 @@ class SolarSystem {
         if (empty($name))
             return null;
         
-        global $db;
+        $db = Db::getInstance();
         
         $system = $db->row(
             "select solarSystemName as name, solarSystemID as id " .
@@ -34,7 +34,7 @@ class SolarSystem {
         if (isset(self::$nameIDs["id#" . $id]))
             return self::$nameIDs["id#" . $id];
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->single(
             "select solarSystemName " .
@@ -57,7 +57,7 @@ class SolarSystem {
         if (empty($namePart))
             return array();
         
-        global $db;
+        $db = Db::getInstance();
         
         $systems = $db->query(
             "select solarSystemName as name, solarSystemID as id " .

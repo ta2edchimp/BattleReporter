@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="content row">
-    <div class="col-sm-4 hidden-xs">&nbsp;</div>
-    <div class="col-sm-4">
+    <div class="col-md-4 col-sm-2 hidden-xs">&nbsp;</div>
+    <div class="col-md-4 col-sm-8">
         {% if loginError is defined %}
         <div class="alert alert-dismissable alert-danger">
             {{ loginError }}
@@ -32,12 +32,21 @@
                 </div>
             </div>
             <div class="panel-footer text-right">
+				<input type="hidden" name="referer" value="{{ loginReferer }}">
                 <button type="reset" class="btn btn-sm btn-default">Reset</button>
                 <button type="submit" class="btn btn-sm btn-primary">Log In</button>
             </div>
         </div>
         </form>
+		{% if BR_LOGINMETHOD_EVE_SSO == true %}
+		<p class="text-center"><small>alternatively:</small></p>
+		<div class="panel panel-default">
+			<div class="panel-footer text-center">
+				<a href="/login/eve-sso?ref={{ loginReferer }}"><img src="/img/eve-sso-btn-lg-black.png"></a>
+			</div>
+		</div>
+		{% endif %}
     </div>
-    <div class="col-sm-4 hidden-xs">&nbsp;</div>
+    <div class="col-md-4 col-sm-2 hidden-xs">&nbsp;</div>
 </div>
 {% endblock %}

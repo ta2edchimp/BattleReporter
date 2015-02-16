@@ -10,13 +10,13 @@ if (isset($params["query"])) {
     if (!empty($namePart)) {
         
         $results = $db->query(
-            "select distinct allianceName as value, allianceID as data " .
-            "from (select allianceName, allianceID from brCombatants " .
+            "select allianceName as value, allianceID as data " .
+            "from (select allianceName, allianceID from brAlliances " .
                 "where allianceName like :nameStartsWith " .
                 "order by allianceName) as drvdtbl1 " .
             "union " .
-            "select distinct allianceName as value, allianceID as data " .
-                "from (select allianceName, allianceID from brCombatants " .
+            "select allianceName as value, allianceID as data " .
+                "from (select allianceName, allianceID from brAlliances " .
                 "where allianceName like :nameContains " .
                 "order by allianceName) as drvdtbl2",
             array(

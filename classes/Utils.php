@@ -33,9 +33,12 @@ class Utils {
             return "";
         
         $parametersAsQuerystring = false;
+		$parametersAsPostFields = false;
         if (isset($options["queryParams"]))
             $parametersAsQuerystring = $options["queryParams"];
-        
+        if (isset($options["postParams"]) && $options["postParams"] === true)
+			$parametersAsPostFields = true;
+		
         $timeout = 180;
         if (isset($options["timeout"]))
             $timeout = $options["timeout"];
@@ -60,37 +63,61 @@ class Utils {
         if (isset($options["userAgent"]))
             $userAgent = $options["userAgent"];
         
-        $url .= self::transformParameters($parameters, $parametersAsQuerystring);
+		if ($parametersAsPostFields !== true)
+			$url .= self::transformParameters($parameters, $parametersAsQuerystring);
         
         $result = null;
         $cache = null;
         
-        if ($caching == true) {
+        if ($caching === true) {
             if (isset($options["cachePath"]))
                 $cache = new phpFastCache("files", array("path" => $options["cachePath"]));
             else
                 $cache = new phpFastCache("files");
-            if ($cache != null)
+            if ($cache !== null)
                 $result = $cache->get($url);
         }
         
-        if ($result == null) {
+        if ($result === null) {
             $curl = curl_init();
             
             curl_setopt($curl, CURLOPT_ENCODING, "");
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             
-            // TODO: merge these
-            //if (count($headers) > 0)
-            //    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'Accept-language: en\r\n' .
-                'Accept-Encoding: gzip\r\n'
-            ));
+			$headers = array();
+			if (isset($options["headers"]) && count($options["headers"]) > 0)
+				$headers = $options["headers"];
+			else {
+				$headers[] = 'Accept-language: en';
+				$headers[] = 'Accept-Encoding: gzip';
+			}
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             
-            if (substr($url, 0, 5) == "https")
-               curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+            if (substr($url, 0, 5) == "https") {
+				if (!isset($options["sslVerify"])) {
+					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+				} else {
+					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options["sslVerify"]);
+					if ($options["sslVerify"] === true)
+						curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+				}
+			}
+			
+			if (isset($options["postParams"]) && $options["postParams"] === true) {
+				$fieldCount = count($parameters);
+				$fieldStr = "";
+				if ($fieldCount > 0) {
+					foreach ($parameters as $key => $value)
+						$fieldStr .= $key . "=" . $value . "&";
+					
+					rtrim($fieldStr, "&");
+					
+					curl_setopt($curl, CURLOPT_POST, $fieldCount);
+					curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldStr);
+				}
+			}
             
             curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
             
@@ -117,13 +144,13 @@ class Utils {
             curl_close($curl);
             
             if ($httpCode >= 400)
-                throw new Exception("HTTP-Error #$httpCode with url \"$url\"", $httpCode);
+                throw new Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
             
             if ($errno)
                 throw new Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
             
-            if ($caching == true && $cache != null) {
-                if ($autoCaching == true && !empty($headers["Expires"])) {
+            if ($caching === true && $cache !== null) {
+                if ($autoCaching === true && !empty($headers["Expires"])) {
                     $expires = strtotime($headers["Expires"]);
                     $cacheLifetime = $expires - time();
                 }

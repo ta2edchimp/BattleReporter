@@ -11,10 +11,10 @@ class Kill {
     
     
     public function __construct($victim = null, $attackers = null, $solarSystemID = 0, $killTime = 0) {
-        if ($victim != null)
+        if ($victim !== null)
             $this->victim = $victim;
         
-        if ($attackers != null) {
+        if ($attackers !== null) {
             foreach ($attackers as $attacker)
                 $this->addAttacker($attacker);
         }
@@ -31,16 +31,16 @@ class Kill {
     }
     
     
-    public function setCombatant($combatant) {
+    public function setCombatant(Combatant $combatant) {
         $this->victim = $combatant;
     }
     
-    public function addAttacker($attacker) {
-        if ($this->getAttacker($attacker) == null)
+    public function addAttacker(Combatant $attacker) {
+        if ($this->getAttacker($attacker) === null)
             $this->attackers[] = $attacker;
     }
     
-    public function getAttacker($attacker) {
+    public function getAttacker(Combatant $attacker) {
         $id = $attacker->characterID;
         foreach ($this->attackers as $atk) {
             if ($atk->characterID == $id)
@@ -63,8 +63,8 @@ class Kill {
     }
     
     
-    public static function fromImport($kill = "") {
-        if (empty($kill))
+    public static function fromImport(stdClass $kill = null) {
+        if ($kill === null)
             return null;
         
         if (!isset($kill->victim) || !isset($kill->attackers) || !isset($kill->killID))
@@ -79,7 +79,7 @@ class Kill {
         $attackers = array();
         foreach ($kill->attackers as $atk) {
             $attacker = new Combatant($atk);
-            if ($atk != null)
+            if ($atk !== null)
                 $attackers[] = $attacker;
         }
         
@@ -94,7 +94,7 @@ class Kill {
         else
             $solarSystemID = 0;
         
-        if ($victim != null && count($attackers) > 0)
+        if ($victim !== null && count($attackers) > 0)
             return new Kill($victim, $attackers, $solarSystemID, $killTime);
         
         return null;

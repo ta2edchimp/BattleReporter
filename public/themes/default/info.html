@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Info' %}
+
+{% block content %}
+	{% if infoPageContents is not defined or infoPageError is defined %}
+	<div class="alert alert-danger">
+		{% if infoPageError == '' %}
+		<strong>Error!</strong> There's something wrong with the requested info page!
+		{% else %}
+		{{ infoPageError }}
+		{% endif %}
+	</div>
+	{% else %}
+	<div class="col-sm-2 hidden-xs">&nbsp;</div>
+	<div class="col-sm-8">
+		{{ infoPageContents|raw }}
+	</div>
+	<div class="col-sm-2 hidden-xs">&nbsp;</div>
+	{% endif %}
+{% endblock %}

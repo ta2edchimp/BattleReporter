@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Administration' %}
+
+{% block content %}
+	<h1>Administration</h1>
+	{% if adminMissingLossValues is defined %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{% if adminMissingLossValues.battleReportsCount > 0 %}
+				<span class="text-danger glyphicon glyphicon-remove"></span>
+				{% else %}
+				<span class="text-success glyphicon glyphicon-ok"></span>
+				{% endif %}
+				BattleReports with missing LossValues
+			</h3>
+		</div>
+		<div class="panel-body">
+		{% if adminMissingLossValues.error == true %}
+			<div class="alert alert-danger">
+				<strong>Error</strong> while searching for BattleReports with missing LossValues.
+			</div>
+		{% endif %}
+		{% if adminMissingLossValues.action is defined and adminMissingLossValues.action.message != '' %}
+			<div class="alert alert-{% if adminMissingLossValues.action.success == true %}info{% else %}danger{% endif %}">
+				{{ adminMissingLossValues.action.message }}
+			</div>
+		{% endif %}
+		{% if adminMissingLossValues.battleReportsCount is defined %}
+			<div>
+				There are <kbd>{{ adminMissingLossValues.battleReportsCount }}</kbd> BattleReports with missing <strong>LossValues</strong>.
+				{% if adminMissingLossValues.battleReportsCount > 0 %}
+				<a href="/admin/refetchForLossValues" class="btn btn-sm btn-danger">Refetch involved KillMails &amp; fix it!</a>
+				{% endif %}
+			</div>
+		{% endif %}
+		</div>
+	</div>
+	{% endif %}
+	{% if adminSomethingFoo is defined %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Admin Something Foo ...</h3>
+		</div>
+		<div class="panel-body">
+			Whoop
+		</div>
+	</div>
+	{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+</script>
+{% endblock %}

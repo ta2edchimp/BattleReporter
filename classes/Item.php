@@ -11,7 +11,7 @@ class Item {
         if (isset(self::$nameIDs["id#" . $id]))
             return self::$nameIDs["id#" . $id];
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->single(
             "select typeName " .
@@ -22,7 +22,7 @@ class Item {
             )
         );
         
-        if ($result == NULL)
+        if ($result === NULL)
             return "";
         
         self::$nameIDs["id#" . $id] = $result;
@@ -37,7 +37,7 @@ class Item {
         if (isset(self::$nameIDs["name#" . $name]))
             return self::$nameIDs["name#" . $name];
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->single(
             "select typeID " .
@@ -48,7 +48,7 @@ class Item {
             )
         );
         
-        if ($result == NULL)
+        if ($result === NULL)
             return "";
         
         self::$nameIDs["name#" . $name] = $result;
@@ -61,7 +61,7 @@ class Item {
         if (empty($namePart))
             return array();
         
-        global $db;
+        $db = Db::getInstance();
         
         $ships = $db->query(
             "select typeName as name, typeID as id " .
@@ -81,10 +81,83 @@ class Item {
             )
         );
         
-        if ($ships == NULL)
+        if ($ships === NULL)
             return array();
         
         return $ships;
     }
+	
+	public static function getGroupIDByName($name = "") {
+		
+		if (empty($name))
+			return "";
+		
+		$db = Db::getInstance();
+		
+		$groupID = $db->single(
+			"select groupID from invGroups where groupName = :groupName",
+			array(
+				"groupName" => $name
+			)
+		);
+		
+		if ($groupID === NULL)
+			return "";
+		
+		return $groupID;
+		
+	}
+	
+	public static function getGroupIDofTypeID($id = "") {
+		
+		if (empty($id))
+			return "";
+		
+		$db = Db::getInstance();
+		
+		$groupID = $db->single(
+			"select groupID from invTypes where typeID = :typeID",
+			array(
+				"typeID" => $id
+			)
+		);
+		
+		if ($groupID === NULL)
+			return "";
+		
+		return $groupID;
+		
+	}
+	
+	private static $shipTypeIDgroupIDs = array();
+	private static $podGroupID = "";
+	
+	public static function isCapsule($shipTypeID = "") {
+		
+		if (empty($shipTypeID))
+			return false;
+		
+		if (isset(self::$shipTypeIDgroupIDs[$shipTypeID])) {
+			$shipTypeGroupID = self::$shipTypeIDgroupIDs[$shipTypeID];
+		} else {
+			$temp = self::getGroupIDofTypeID($shipTypeID);
+			if (empty($temp))
+				return false;
+			
+			self::$shipTypeIDgroupIDs[$shipTypeID] = $temp;
+			$shipTypeGroupID = self::$shipTypeIDgroupIDs[$shipTypeID];
+		}
+		
+		if (empty(self::$podGroupID)) {
+			$temp = self::getGroupIDByName("Capsule");
+			if (empty($temp))
+				return false;
+			
+			self::$podGroupID = $temp;
+		}
+		
+		return $shipTypeGroupID == self::$podGroupID;
+		
+	}
     
 }

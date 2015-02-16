@@ -5,11 +5,19 @@
 {% block content %}
 <div class="jumbotron">
 	<div class="page-header">
-		<h1>Error</h1>
+		<h1>Error!</h1>
 	</div>
-	<p class="text-danger">{{ errorMessage }}</p>
-	{{ error|raw }}
-	<div class="pull-right"><small>{{ code }}</small></div>
+	<div class="alert alert-danger">
+		<p>{{ message }}</p>
+		<kbd># {{ codeHash }}</kbd>
+	</div>
+	{% for detail in errorDetails %}
+	<div class="row">
+		<div class="col-xs-3">{{ detail.label }}</div>
+		<div class="col-xs-9">{{ detail.value }}</div>
+	</div>
+	{% endfor %}
+	<p>&nbsp;</p>
 	<p><a href="/" class="btn btn-primary btn-lg" role="button">Go Back To K-Space</a></p>
 </div>
 {% endblock %}

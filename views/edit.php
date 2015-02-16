@@ -12,7 +12,7 @@ $output = array();
 
 // Try to fetch the specified battle report
 $battleReport = new Battle();
-if ($battleReport->load($battleReportID, false, true) == false) {
+if ($battleReport->load($battleReportID, false, true) === false) {
     $app->render("brNotFound.html");
     $app->stop();
 }
@@ -30,6 +30,11 @@ if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
 		$app->redirect("/");
 	}
 	
+	if (User::isAdmin() && strtolower($battleReportEditAction) == "delete") {
+		$battleReport->delete();
+		$app->redirect("/");
+	}
+	
 } else {
 	$twigEnv->addGlobal("BR_USER_CAN_EDIT", false);
 	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", false);
@@ -42,10 +47,16 @@ if ($app->request->isPost()) {
     $parameters = $app->request->post();
     
     $brChanges = json_decode($parameters["battleReportChanges"]);
-    if ($brChanges != null)
+    if ($brChanges !== null)
         $success = $battleReport->applyChanges($brChanges);
     
     $battleReport->title = $parameters["battleTitle"];
+	
+	$videoUrl = $parameters["battleFootageUrl"];
+	// currently, allow only one video
+	$battleReport->removeFootage();
+	if (!empty($videoUrl))
+		$battleReport->addFootage(array($videoUrl));
     
     if ($success) {
         $battleReport->publish();

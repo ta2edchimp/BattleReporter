@@ -1,6 +1,8 @@
 /config.php
+/config.dev.php
 /composer.phar
 /composer.lock
 vendor/
 cache/
 public/test.php
+public/.htaccess

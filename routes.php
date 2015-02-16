@@ -5,12 +5,12 @@
  */
 // 404 - File Not Found
 $app->notFound(function () use ($app) {
-    $app->render('404.html');
+    $app->render("404.html");
 });
 
 // Any Error ...
 $app->error(function (\Exception $e) use ($app) {
-    include('view/error.php');
+    include("views/error.php");
 });
 
 
@@ -18,7 +18,7 @@ $app->error(function (\Exception $e) use ($app) {
  *  Default routings
  */
 // Homepage
-$app->get('/', function () use ($app) {
+$app->get('/', function () use ($app, $db) {
     
     include("views/index.php");
     
@@ -39,22 +39,39 @@ $app->map('/create', function () use ($app) {
 })->via('GET', 'POST');
 
 // Editing existing (and newly created) battle reports
-$app->map('/edit/:battleReportID(/:unpublish)', function ($battleReportID, $battleReportEditAction = "") use ($app) {
+$app->map('/edit/:battleReportID(/:editAction)', function ($battleReportID, $battleReportEditAction = "") use ($app) {
     
     include("views/edit.php");
     
 })->via('GET', 'POST');
 
-// Log in and out
+// Log in
 $app->map('/login', function () use ($app) {
     
     include("views/login.php");
     
 })->via('GET', 'POST');
+if (BR_LOGINMETHOD_EVE_SSO === true) {
+	$app->get('/login/eve-sso', function () use ($app) {
+		include("views/login-methods/eve-sso.php");
+	});
+	$app->get('/login/eve-sso-auth', function () use ($app) {
+		include("views/login-methods/eve-sso-auth.php");
+	});
+}
+
+// Log out
 $app->get('/logout', function () use ($app) {
     
     include("views/logout.php");
     
+});
+
+// Info pages
+$app->get('/info(/:page)', function ($page = "about") use ($app, $basePath, $theme) {
+	
+	include("views/info.php");
+	
 });
 
 // Autocomplete Suggestions:
@@ -77,8 +94,30 @@ $app->group('/autocomplete', function () use ($app, $db) {
     $app->post('/alliNames', function () use ($app, $db) {
         include("views/autocomplete/alliNames.php");
     });
-        
+    
 });
 
+// Pages only for logged in users
+if (User::isLoggedIn() && BR_COMMENTS_ENABLED === true) {
+	$app->post('/comment/:battleReportID', function ($battleReportID) use ($app, $db) {
+		
+		include("views/comment.php");
+		
+	});
+	if (User::isAdmin()) {
+		$app->get('/comment/delete/:commentID', function ($commentID) use ($app, $db) {
+			
+			include("views/admin/deleteComment.php");
+			
+		});
+	}
+}
 
-?>
+// Admin only pages
+if (User::isAdmin()) {
+	$app->get('/admin(/:adminAction)', function ($adminAction = "") use ($app, $db, $basePath) {
+		
+		include("views/admin/admin.php");
+		
+	});
+}

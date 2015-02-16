@@ -1,4 +1,4 @@
-# BattleReporter
+# BattleReporter [![SensioLabsInsight](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3/mini.png)](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3)
 
 Advanced editable BattleReport platform for EVE Online.
 
@@ -14,27 +14,33 @@ Advanced editable BattleReport platform for EVE Online.
 - [Whoops](https://github.com/filp/whoops)
 - [Whoops Middleware for Slim](https://github.com/zeuxisoo/php-slim-whoops)
 - [phpFastCache](http://www.phpfastcache.com/)
+- [Parsedown](https://github.com/erusev/parsedown)
 
-Install and use [Composer](http://getcomposer.org/) to meet the requirements:
-
-    $ php composer.phar install
+The dependencies will be met by the use of [Composer](http://getcomposer.org/) during the automatic installation process.
 
 Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
 
 ### Setup:
 
-As there is no setup available at the moment, one should start by setting up a new database and import the tables from the `/database` directory as well as the tables `mapSolarSystems`, `invGroups` and `invTypes` from [Steve Ronuken/fuzzysteve's EVE SDE MySQL Dump](https://www.fuzzwork.co.uk/dump/latest/).
+As of release `0.1.6`, a basic installer comes with BattleReporter. Run
 
-Furthermore, you'll need a primary administrator account, therefore setup a php script with the following content:
+	$ php install.php
 
-```php
-<?php
-$password = "YourPasswordHere123!";
-echo "<p>$password:<br>" . password_hash($password, PASSWORD_BCRYPT) . "</p>";
-````
+to launch it. The installer asks for some basic information regarding your installation of BattleReporter, uses [Composer](http://getcomposer.org) to meet the requirements (it will be installed into the installation directory if not present), create the BattleReporter's own database tables and set up the primary admin's user account.
 
-Execute it and add a new row to the table `brUsers` (set columns `userName` to your "admin" username, `password` to the script's output and `isAdmin` to `1`).
+#### Log in via EVE-O SSO
 
-Customize the contents of `/config.blueprint.php` to your needs (hint: you may get your corporation's id via [zKillboard](https://zkillboard.com), [Eve-Kill](https://beta.eve-kill.net) or sth. like that) and save it as `/config.php`.
+As of release `0.2`, logging into the BattleReport with your EVE Online account is available via Single Sign On. In order to enable log in via EVE-O SSO, you must register your BattleReporter installation as an application in the [EVE Developers portal](https://developers.eveonline.com/). A verified e-mail address is required to register (don't worry this takes no more than hitting a button in the EVE Online Account Management and clicking a link in the e-mail you'll receive soon afterwards).
+
+When registering your BattleReporter installation in the EVE-Dev. portal, ensure to enter the correct `Callback URL`. Let's assume you installed BattleReporter to be available at `br.yourcorp.net` and you do not use SSL, the correct url would be
+
+	http://br.yourcorp.net/login/eve-sso-auth
+
+After hitting `Create Application`, you'll acquire a `Client ID` and a `Secret Key`. These are the values required during BattleReporter's installation process.
+
+## Acknowledgements & Legal Stuff
+
+BattleReporter uses parts of [CCPs](http://www.ccpgames.com/) EVE Online SDE, specifically [Steve Ronuken/fuzzysteve's EVE SDE MySQL-port Dump](https://www.fuzzwork.co.uk/dump/latest/).
+
 
 _to be continued ..._

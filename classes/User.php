@@ -18,7 +18,7 @@ class User {
 	
 	public static function getUserName() {
         $userInfos = self::getUserInfos();
-        if ($userInfos == NULL)
+        if ($userInfos === NULL)
             return "";
         
         return $userInfos["userName"];
@@ -26,22 +26,25 @@ class User {
     
     public static function login($userName, $password, $autoLogin = false) {
         
-        global $db, $app;
+        $db = Db::getInstance();
         
         $userInfo = $db->row(
-            "select userID, userName, password from brUsers where userName = :userName and deactivatedTime is NULL",
+            "select userID, userName, password, corporationID, isAdmin from brUsers where userName = :userName and deactivatedTime is NULL",
             array(
                 "userName" => $userName
             )
         );
-        if ($userInfo == NULL)
+        if ($userInfo === NULL)
             return false;
         
         if (!empty($userInfo["password"])) {
             $pw = $userInfo["password"];
             if (self::checkPassword($password, $pw)) {
                 
-                if ($autoLogin == true) {
+				if ($userInfo["isAdmin"] != 1 && BR_LOGIN_ONLY_OWNERCORP === true && $userInfo["corporationID"] != BR_OWNERCORP_ID)
+					return false;
+				
+                if ($autoLogin === true) {
                     
                     $hash = password_hash($password, PASSWORD_BCRYPT);
                     $hash = $userName . "/" . hash("sha256", $userName . $hash . time());
@@ -64,7 +67,7 @@ class User {
                         )
                     );
                     
-                    $app->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");
+                    \Slim\Slim::getInstance()->setEncryptedCookie(self::$cookieName, $hash, time() + self::$cookieLifetime, "/");
                     
                 }
                 
@@ -81,13 +84,9 @@ class User {
     
     public static function logout() {
         
-        global $db, $app;
+        $sessionCookie = \Slim\Slim::getInstance()->getEncryptedCookie(self::$cookieName, false);
         
-        $sessionCookie = $app->getEncryptedCookie(self::$cookieName, false);
-        
-        global $db;
-        
-        $db->query(
+        Db::getInstance()->query(
             "delete from brUsersSessions where sessionHash = :sessionHash",
             array(
                 "sessionHash" => $sessionCookie
@@ -96,14 +95,12 @@ class User {
         
         unset($_SESSION["isLoggedIn"]);
         
-        setcookie(self::$cookieName, "", time() - self::$cookieName, "/", $_SERVER["HTTP_HOST"]);
-        setcookie(self::$cookieName, "", time() - self::$cookieName, "/", "." . $_SERVER["HTTP_HOST"]);
+        setcookie(self::$cookieName, "", time() - self::$cookieLifetime, "/", $_SERVER["HTTP_HOST"]);
+        setcookie(self::$cookieName, "", time() - self::$cookieLifetime, "/", "." . $_SERVER["HTTP_HOST"]);
         
     }
     
     public static function checkPassword($enteredPw, $storedPw) {
-        
-        global $db;
         
         if (empty($enteredPw) || empty($storedPw))
             return false;
@@ -117,9 +114,9 @@ class User {
     
     public static function checkAutoLogin() {
         
-        global $db, $app;
+        $db = Db::getInstance();
         
-        $sessionCookie = $app->getEncryptedCookie(self::$cookieName, false);
+        $sessionCookie = \Slim\Slim::getInstance()->getEncryptedCookie(self::$cookieName, false);
         
         if (!empty($sessionCookie)) {
             $cookie = explode("/", $sessionCookie);
@@ -131,7 +128,7 @@ class User {
                     "userName" => $userName
                 )
             );
-            if ($userID == NULL)
+            if ($userID === NULL)
                 return false;
             
             $sessionHashes = $db->query(
@@ -140,7 +137,7 @@ class User {
                     "userID" => $userID
                 )
             );
-            if ($sessionHashes == NULL)
+            if ($sessionHashes === NULL)
                 return false;
             
             foreach ($sessionHashes as $hash) {
@@ -156,12 +153,108 @@ class User {
         return false;
         
     }
+	
+	public static function checkEVESSOLogin($characterID, $characterName) {
+		
+		if (BR_LOGINMETHOD_EVE_SSO !== true)
+			return false;
+		
+		$db = Db::getInstance();
+		
+		// Check if he's already in the database
+		$userInfo = $db->row(
+			"select *, IFNULL(deactivatedTime, 0) as deact from brUsers " .
+			"where characterID = :characterID",
+			array(
+				"characterID" => $characterID
+			)
+		);
+		
+		$apiLookUp = null;
+		try {
+			// ALWAYS check for Character Affiliation during
+			// login per EVE SSO
+			$pheal = new \Pheal\Pheal(null, null, "eve");
+			$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
+		} catch (PhealException $ex) {
+			/*
+			 * This should be logged properly!
+			 */
+			
+			// Either way, as the user can't
+			// be verified, this will be the end ...
+			if ($userInfo === FALSE)
+				return false;
+		}
+		
+		// User does not exist yet, so create him using
+		// the fetched Character Details (Corp, Alliance) ...
+		if ($userInfo === FALSE) {
+			// ... but ONLY, if he either is member of the BR_OWNERCORP
+			// or login is enabled for everyone.
+			if (BR_LOGIN_ONLY_OWNERCORP === true && $apiLookUp->corporationID != BR_OWNERCORP_ID)
+				return false;
+			
+			if (!self::register($characterName, '', '', false))
+				return false;
+			
+			// No need to worry, userName column values have to be unique
+			$userInfo = $db->query(
+				"update brUsers " .
+				"set characterID = :characterID " .
+				"where userName = :characterName",
+				array(
+					"characterID" => $characterID,
+					"characterName" => $characterName
+				)
+			);
+			if ($userInfo != 1)
+				return false;
+			
+			// Fetch the user infos again
+			$userInfo = $db->row(
+				"select *, IFNULL(deactivatedTime, 0) as deact from brUsers " .
+				"where characterID = :characterID",
+				array(
+					"characterID" => $characterID
+				)
+			);
+			// Something went horribly wrong
+			if ($userInfo === FALSE)
+				return false;
+		}
+		// ... has been deactivated
+		if ($userInfo["deact"] > 0)
+			return false;
+		
+		$updUser = array(
+			"userID" => $userInfo["userID"],
+			"corporationID" => $apiLookUp->corporationID
+		);
+		if (!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance))
+			$updUser["allianceID"] = $apiLookUp->allianceID;
+		$db->query(
+			"update brUsers " .
+			"set corporationID = :corporationID " .
+				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "and allianceID = :allianceID " : "and allianceID = NULL ") .
+			"where userID = :userID",
+			$updUser
+		);
+		
+		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP !== true || $apiLookUp->corporationID == BR_OWNERCORP_ID)) {
+			$_SESSION["isLoggedIn"] = $userInfo["userID"];
+			return true;
+		}
+		
+		return false;
+		
+	}
     
     public static function getUserInfos() {
         
-        global $db;
+        $db = Db::getInstance();
         
-        if (!isset($_SESSION["isLoggedIn"]))
+        if (!self::isLoggedIn())
             return NULL;
         
         $result = $db->row(
@@ -222,7 +315,7 @@ class User {
     
     public static function checkRegistration($userName, $email) {
         
-        global $db;
+        $db = Db::getInstance();
         
         $result = $db->query(
             "select userName, email from brUsers where userName = :userName or email = :email",
@@ -238,15 +331,15 @@ class User {
     
     public static function register($userName, $password, $email, $isAdmin = false) {
         
-        global $db;
+        $db = Db::getInstance();
         
-        if (isAdmin == false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
+        if ($isAdmin === false && (strtolower($userName) == "admin" || strtolower($userName) == "administrator" || strtolower($userName) == "root"))
             return false;
         
         if (self::checkRegistration($userName, $email)) {
             
             $pw = password_hash($password, PASSWORD_BCRYPT);
-            $db->query(
+            $result = $db->query(
                 "insert into brUsers " .
                 "(userName, password, email, isAdmin) " .
                 "values " .
@@ -259,12 +352,12 @@ class User {
                 )
             );
             
-            return true;
+            return ($result == 1);
             
         }
         
         return false;
         
     }
-    
+	
 }

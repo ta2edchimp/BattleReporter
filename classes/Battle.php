@@ -20,7 +20,7 @@ class Battle {
     public $teamC;
     
     public $published = false;
-    
+    private $deleted = false;
     
     public $totalPilots = 0;
     public $totalLost = 0.0;
@@ -28,6 +28,9 @@ class Battle {
 	public $creatorUserID = -1;
 	public $creatorUserName = "";
 	public $createTime = 0;
+	
+	public $footage = array();
+	public $commentCount = 0;
     
     
     public function __construct() {
@@ -44,13 +47,13 @@ class Battle {
     
     public function load($id, $onlyPublished = true, $toBeEdited = false) {
         
-        global $db;
+        $db = Db::getInstance();
         
         // Fetch corresponding records from database
         $result = $db->row(
             "select br.*, ifnull(u.userName, 'Anonymous') as brCreatorUserName " .
 			"from brBattles as br left outer join brUsers as u on u.userID = br.brCreatorUserID " .
-            "where br.battleReportID = :battleReportID" .
+            "where br.battleReportID = :battleReportID and br.brDeleteTime is NULL" .
             ($onlyPublished ? " and br.brPublished = 1" : ""),
             array(
                 "battleReportID" => $id
@@ -74,6 +77,9 @@ class Battle {
         $this->solarSystemID    = $result["solarSystemID"];
         $this->published        = $result["brPublished"] == 1 ? true : false;
         
+		// Load associated footage
+		$this->loadFootage();
+		
         // Sort battle parties
         $this->teamA->sort();
         $this->teamB->sort();
@@ -81,6 +87,19 @@ class Battle {
         
         // Update certain properties
         $this->updateDetails();
+		
+		// Update comment count property
+		$commentCount = $db->single(
+			"select count(commentID) as commentCount " .
+			"from brComments " .
+			"where battleReportID = :battleReportID and commentDeleteTime is NULL",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		if ($commentCount !== FALSE)
+			$this->commentCount = $commentCount;
+		
         return true;
         
     }
@@ -88,41 +107,50 @@ class Battle {
     
     public function save() {
         
-        global $db;
+        $db = Db::getInstance();
         
+		$values = array(
+            "title" => $this->title,
+            "startTime" => $this->startTime,
+            "endTime" => $this->endTime,
+            "solarSystemID" => $this->solarSystemID,
+            "published" => $this->published ? 1 : 0
+		);
+		if ($this->deleted === true) {
+			$values["brDeleteUserID"] = User::getUserID();
+			$values["brDeleteTime"] = time();
+		}
+		
         // Save basic battle report properties
         if ($this->battleReportID <= 0) {
+			$values["brCreatorUserID"] = $this->creatorUserID;
             $result = $db->query(
                 "insert into brBattles ".
-                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID) " .
+                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID" .
+					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
+				") " .
                 "values " .
-                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID)",
-                array(
-                    "title" => $this->title,
-                    "startTime" => $this->startTime,
-                    "endTime" => $this->endTime,
-                    "solarSystemID" => $this->solarSystemID,
-                    "published" => $this->published ? 1 : 0,
-					"brCreatorUserID" => $this->creatorUserID
-                )
+                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID" .
+					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
+				")",
+                $values
             );
             if ($result != NULL)
                 $this->battleReportID = $db->lastInsertId();
         } else {
+			$values["battleReportID"] = $this->battleReportID;
             $result = $db->query(
                 "update brBattles " .
-                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, SolarSystemID = :solarSystemID, brPublished = :published " .
+                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, " .
+					"SolarSystemID = :solarSystemID, brPublished = :published " .
+					($this->deleted ? ", brDeleteUserID = :brDeleteUserID, brDeleteTime = :brDeleteTime " : "") .
                 "where battleReportID = :battleReportID",
-                array(
-                    "title" => $this->title,
-                    "startTime" => $this->startTime,
-                    "endTime" => $this->endTime,
-                    "solarSystemID" => $this->solarSystemID,
-                    "published" => $this->published ? 1 : 0,
-                    "battleReportID" => $this->battleReportID
-                )
+                $values
             );
         }
+		
+		// Save associated footage
+		$this->saveFootage();
         
         // Save the battle parties
         $this->teamA->save($this->battleReportID);
@@ -145,6 +173,11 @@ class Battle {
         $this->published = false;
         $this->save();
     }
+	
+	public function delete() {
+		$this->deleted = true;
+		$this->save();
+	}
     
     
     public function updateDetails() {
@@ -196,10 +229,10 @@ class Battle {
                     }
                 }
             } else {
-                if (isset($change->added) && $change->added == true
+                if (isset($change->added) && $change->added === true
                     && isset($change->teamName) && !empty($change->teamName)
                     && isset($change->combatantInfo)
-					&& (!isset($change->brDeleted) || $change->brDeleted != true)) {
+					&& (!isset($change->brDeleted) || $change->brDeleted !== true)) {
                     
                     $corpName = "Unknown";
                     $alliName = "";
@@ -225,13 +258,13 @@ class Battle {
                     
                     $currentTeam = $change->teamName;
                     
-                    if ($combatant != null)
+                    if ($combatant !== null)
                         $this->$currentTeam->members[] = $combatant;
                     
                 }
             }
             
-            if ($combatant == null)
+            if ($combatant === null)
                 continue;
             
             if (isset($change->brHidden))
@@ -270,6 +303,34 @@ class Battle {
         return $timeline;
         
     }
+	
+	
+	public function getComments() {
+		
+		$db = Db::getInstance();
+		
+		if ($this->battleReportID <= 0 || BR_COMMENTS_ENABLED !== true)
+			return array();
+		
+		$results = $db->query(
+			"select c.*, u.userID, u.userName, u.characterID, u.corporationID, cc.corporationName, u.allianceID, al.allianceName " .
+			"from brComments as c inner join brUsers as u " .
+				"on c.commentUserID = u.userID left outer join brCorporations as cc " .
+				"on u.corporationID = cc.corporationID left outer join brAlliances as al " .
+				"on u.allianceID = al.allianceID " .
+			"where c.battleReportID = :battleReportID and c.commentDeleteTime is NULL " .
+			"order by c.commentTime asc",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+		if ($results === FALSE)
+			return array();
+		
+		return $results;
+		
+	}
     
     
     public function import($importedKills) {
@@ -283,12 +344,12 @@ class Battle {
         foreach ($importedKills as $impKill) {
             
             $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-            if ($existantBattleID != null)
+            if ($existantBattleID !== null)
                 throw new Exception("The fetched events are already part of an existing BattleReport.");
             
             $kill = Kill::fromImport($impKill);
             
-            if ($kill != null) {
+            if ($kill !== null) {
                 
                 // Per default, the victim is member of teamB
                 $tgt = "teamB";
@@ -329,8 +390,101 @@ class Battle {
         $this->teamC->sort();
         
         $this->updateDetails();
-
+		
     }
+	
+	
+	public function loadFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$db = Db::getInstance();
+		
+		$results = $db->query(
+			"select * from brVideos " .
+			"where battleReportID = :battleReportID " .
+			"order by videoID",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+		if ($results === NULL)
+			return;
+		
+		foreach ($results as $video) {
+			$embedVideoUrl = self::getEmbedVideoUrl($video["videoUrl"]);
+			if (!empty($embedVideoUrl))
+				$this->footage[] = $embedVideoUrl;
+		}
+		
+	}
+	
+	public function saveFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$this->removeFootageFromDb();
+		
+		$db = Db::getInstance();
+		
+		foreach ($this->footage as $video) {
+			if (empty($video))
+				continue;
+			
+			$db->query(
+				"insert into brVideos " .
+				"(battleReportID, videoUrl) " .
+				"values " .
+				"(:battleReportID, :videoUrl)",
+				array(
+					"battleReportID" => $this->battleReportID,
+					"videoUrl" => $video
+				)
+			);
+		}
+		
+	}
+	
+	public function addFootage($videos = array()) {
+		
+		foreach ($videos as $video) {
+			$embedUrl = self::getEmbedVideoUrl($video);
+			if (!in_array($embedUrl, $this->footage))
+				$this->footage[] = $embedUrl;
+		}
+		
+	}
+	
+	private function removeFootageFromDb() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$db = Db::getInstance();
+		
+		$db->query(
+			"delete from brVideos where battleReportID = :battleReportID",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+	}
+	
+	public function removeFootage() {
+		
+		if ($this->battleReportID <= 0)
+			return;
+		
+		$this->removeFootageFromDb();
+		$this->footage = array();
+		
+		return;
+		
+	}
     
     
     public function toJSON() {
@@ -354,12 +508,15 @@ class Battle {
         if (empty($killID))
             return null;
         
-        global $db;
+        $db = Db::getInstance();
         
         $id = $db->single(
             "select br.battleReportID " .
-            "from brBattleParties as br inner join brCombatants as c " .
-            "where c.killID = :killID " .
+            "from brBattles as br inner join brBattleParties as bp " .
+				" on br.battleReportID = bp.battleReportID " .
+				" inner join brCombatants as c " .
+				" on bp.brBattlePartyID = c.brBattlePartyID " .
+            "where c.killID = :killID and br.brDeleteTime is NULL " .
             "limit 1",
             array(
                 "killID" => $killID
@@ -379,5 +536,37 @@ class Battle {
         
         return $combatantA->killTime < $combatantB->killTime ? -1 : 1;
     }
+	
+	private static function getEmbedVideoUrl($url = "") {
+		
+		if (empty($url))
+			return "";
+		
+		$matches = NULL;
+		$pattern = "/" .
+			"(" . // YouTube URLs (direct video link, embed link)
+				"(http(s){0,1}:){0,1}(\/\/){0,1}(www.){0,1}youtube.com\/(embed\/|watch\?(.*?)v=)(?P<youTubeVideoID>[a-z0-9_-]{1,})" .
+			"|" . // Vimeo URLs (direct video link, embed link)
+				"(http(s){0,1}:){0,1}(\/\/){0,1}((www|player).){0,1}vimeo.com\/(video\/){0,1}(?P<vimeoVideoID>[0-9]{1,})(.*?)" .
+			")/i";
+		
+		// Neither pattern matches, exit
+		if (preg_match($pattern, $url, $matches) != 1)
+			return "";
+		
+		// Create EmbedUrl for YouTube video
+		if (isset($matches["youTubeVideoID"]) && !empty($matches["youTubeVideoID"])) {
+			return "//youtube.com/embed/" . $matches["youTubeVideoID"];
+		}
+		
+		// Create EmbedUrl for Vimeo video
+		if (isset($matches["vimeoVideoID"]) && !empty($matches["vimeoVideoID"])) {
+			return "//player.vimeo.com/video/" . $matches["vimeoVideoID"] . "?title=0&amp;byline=0&amp;portrait=0: ";
+		}
+		
+		// Something else does not fit ...
+		return "";
+		
+	}
     
 }

@@ -19,9 +19,7 @@ class BattleParty {
     }
     
     
-    public function add($combatant = "") {
-        if (empty($combatant))
-            return;
+    public function add(Combatant $combatant) {
         
         // Test, if combatant has not yet been added
         // That is having reshipped counts as being another combatant
@@ -32,7 +30,7 @@ class BattleParty {
                     if ($member->shipTypeID == $combatant->shipTypeID) {
                         // If this char is already on the list in the same ship,
                         // but this time is the victim, replace him.
-                        if ($member->died == false && $combatant->died == true) {
+                        if ($member->died === false && $combatant->died === true) {
                             // Replace the existing member
                             $member = $combatant;
                             return;
@@ -83,15 +81,6 @@ class BattleParty {
             $this->efficiency = 0.0;
     }
     
-    private function getUniquePilotsCount() {
-        $pilots = array();
-        foreach ($this->members as $member) {
-            if (!in_array($member->characterID, $pilots))
-                $pilots[] = $member->characterID;
-        }
-        return count($pilots);
-    }
-    
     
     public function sort() {
         usort($this->members, 'Combatant::sorter');
@@ -105,7 +94,7 @@ class BattleParty {
         if (empty($this->name))
             return false;
         
-        global $db;
+        $db = Db::getInstance();
         
         // Fetch corresponding records from database
         $result = $db->row(
@@ -124,8 +113,17 @@ class BattleParty {
         
         // Fetch team members
         $team = $db->query(
-            "select * from brCombatants " .
-            "where brBattlePartyID = :brBattlePartyID and (brManuallyAdded = 0 or brDeleted = 0)" .
+            "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
+			"from invGroups as g right outer join invTypes as t " .
+				"on g.groupID = t.groupID " .
+			"right outer join brCombatants as c " .
+				"on t.typeID = c.shipTypeID " .
+			"left outer join brCorporations as cc " .
+				"on c.corporationID = cc.corporationID " .
+			"left outer join brAlliances as a " .
+				"on c.allianceID = a.allianceID " .
+            "where c.brBattlePartyID = :brBattlePartyID and (c.brManuallyAdded = 0 or c.brDeleted = 0) " .
+				"and (g.groupName <> 'Capsule' or c.died = 1)" .
             ($toBeEdited ? "" : " and brHidden = 0"),
             array(
                 "brBattlePartyID" => $this->brBattlePartyID
@@ -134,7 +132,7 @@ class BattleParty {
         
         foreach ($team as $memberData) {
             $combatant = new Combatant($memberData);
-            if ($combatant != null)
+            if ($combatant !== null)
                 $this->add($combatant);
         }
         
@@ -147,7 +145,7 @@ class BattleParty {
         if ($brID <= 0)
             throw new Exception("Cannot save a battle party to a non existent battle report!");
         
-        global $db;
+        $db = Db::getInstance();
         
         // Save basic battle report properties
         if ($this->brBattlePartyID <= 0) {
