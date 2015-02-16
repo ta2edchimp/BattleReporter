@@ -54,6 +54,8 @@ $twig_time_ago_filter = new Twig_SimpleFilter('time_ago', function (Twig_Environ
 		return $diff->m . " month" . ($diff->m > 1 ? "s" : "") . " ago";
 	elseif ($diff->d > 0)
 		return $diff->d . " day" . ($diff->d > 1 ? "s" : "") . " ago";
+	elseif ($diff->h > 0)
+		return $diff->h . " hour" . ($diff->h > 1 ? "s" : "") . " ago";
 	elseif ($diff->i > 0)
 		return $diff->i . " minute" . ($diff->i > 1 ? "s" : "") . " ago";
 	else
