@@ -19,9 +19,9 @@ if (!defined('BR_THEME'))
     $theme = BR_THEME;
 if(!isset($theme) || empty($theme))
     $theme = "default";
-elseif(!is_dir(__DIR__ . "/public/themes/$theme"))
+elseif(!is_dir("$basePath/public/themes/$theme"))
     $theme = "default";
-$app->config(array("templates.path" => __DIR__ ."/public/themes/$theme"));
+$app->config(array("templates.path" => "$basePath/public/themes/$theme"));
 
 $app->view(new \Slim\Views\Twig());
 
