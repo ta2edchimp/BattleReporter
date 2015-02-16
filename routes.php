@@ -61,7 +61,7 @@ if (BR_LOGINMETHOD_EVE_SSO === true) {
 }
 
 // Log out
-$app->get('/logout', function () use ($app) {
+$app->get('/logout', function () use ($app, $basePath, $theme, $BR_DEBUGMODE) {
     
     include("views/logout.php");
     
