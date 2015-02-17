@@ -235,8 +235,8 @@ class User {
 			$updUser["allianceID"] = $apiLookUp->allianceID;
 		$db->query(
 			"update brUsers " .
-			"set corporationID = :corporationID " .
-				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "and allianceID = :allianceID " : "and allianceID = NULL ") .
+			"set corporationID = :corporationID, " .
+				(!empty($apiLookUp->allianceID) && !empty($apiLookUp->alliance) ? "allianceID = :allianceID " : "allianceID = NULL ") .
 			"where userID = :userID",
 			$updUser
 		);
