@@ -21,12 +21,18 @@
 					<p>You may enter a video's link from <a href="//youtube.com/">YouTube</a> or <a href="//vimeo.com/">Vimeo</a>. It will show up next to your BattleReport.</p>
 					<p>You may also (optionally) select one of the BattleReport's enlisted combatants to specify the video's point of view.</p>
 				</div>
-				<div class="col-sm-8">
+				<div class="complete-battle-footage col-sm-8">
 				{% set firstFreeIdx = 1 %}
 				{% for video in battleReport.footage %}
 					<div class="battle-footage-container form-group">
 						<label for="battleFootage-{{ video.index }}-url" class="control-label">Battle Footage:</label>
 						<div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default move-battle-footage-up"><span class="glyphicon glyphicon-chevron-up" aria-label="Move Up"></span></button>
+							</span>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default move-battle-footage-down"><span class="glyphicon glyphicon-chevron-down" aria-label="Move Down"></span></button>
+							</span>
 							<input class="form-control" id="battleFootage-{{ video.index }}-url" name="battleFootageUrl[]" value="{{ video.url }}">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-danger delete-battle-footage"><span class="glyphicon glyphicon-trash" aria-label="Delete"></span></button>

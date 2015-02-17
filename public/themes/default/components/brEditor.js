@@ -187,9 +187,25 @@
 			console.log('clicked delete. removing', $(this).closest('.battle-footage-container'));
 			$(this).closest('.battle-footage-container').remove();
 		}
+		function upFtg() {
+			var all = $('.complete-battle-footage').children('.battle-footage-container'),
+				el = $(this).closest('.battle-footage-container'),
+				idx;
+			if ((idx = all.index(el)) <= 0) return;
+			el.insertBefore(el.prev());
+		}
+		function dnFtg() {
+			var all = $('.complete-battle-footage').children('.battle-footage-container'),
+				el = $(this).closest('.battle-footage-container'),
+				idx = all.index(el);
+			if (idx >= (all.length - 1)) return;
+			el.insertAfter(el.next());
+		}
 		function listenFtg(el) {
 			console.log('listening to', el.find('button.delete-battle-footage'));
 			el.find('button.delete-battle-footage').click(deleteFtg);
+			el.find('button.move-battle-footage-up').click(upFtg);
+			el.find('button.move-battle-footage-down').click(dnFtg);
 		}
 		tpl = $('#battle-footage-template');
 		$('.battle-footage-container').each(function () {
