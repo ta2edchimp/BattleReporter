@@ -9,6 +9,8 @@ table#battleReports-overview a:not(.btn){text-decoration:none}
 td.no-break{white-space:nowrap}
 @media(max-width:420px){.hidden-xxxs{display:none!important;}}
 @media(max-width:640px){.hidden-xxs{display:none!important;}}
+a.direct-link,a.direct-link:link,a.direct-link:visited{opacity:0.7;}
+a.direct-link:hover,a.direct-link:focus{opacity:1;}
 </style>
 {% endblock %}
 
@@ -31,9 +33,9 @@ td.no-break{white-space:nowrap}
 					</a></td>
 				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
 				{% if BR_COMMENTS_ENABLED == true %}
-				<td class="no-break hidden-xs">{% if battle.footageCount > 0 %}<span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span>{% endif %}</td>
+				<td class="no-break hidden-xs">{% if battle.footageCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}#footage"><span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span></a>{% endif %}</td>
 				{% endif %}
-				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span>{% endif %}</td>
+				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}/comments"><span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span></a>{% endif %}</td>
                 <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
                 <td class="no-break">{{ battle.date }}</td>
                 <td class="no-break hidden-xxxs text-right">{{ battle.brUniquePilotsTeamA }}</td>

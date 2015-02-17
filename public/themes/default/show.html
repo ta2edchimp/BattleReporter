@@ -33,17 +33,17 @@
     </h1>
     {% include 'components/brStatistics.html' %}
 	{% if battleReport.footage|length > 0 %}
-	<div class="panel panel-default">
+	<div id="footage" class="panel panel-default">
 		<div class="panel-heading">
 			<div style="float:right">
-				<a href="#footage" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
+				<a href="#footage-panel" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
 					<span class="glyphicon glyphicon-chevron-down"></span>
 					<span class="glyphicon glyphicon-chevron-up"></span>
 				</a>
 			</div>
 			<h3 class="panel-title">Battle Footage</h3>
 		</div>
-		<div id="footage" class="panel-body panel-collapse collapse">
+		<div id="footage-panel" class="panel-body panel-collapse collapse">
 		{% for video in battleReport.footage %}
 			<div class="battle-footage">
 				<iframe width="480" height="270" frameborder="0" src="{{ video }}"></iframe>
@@ -130,7 +130,7 @@
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
-                                    {% if combatant.allianceID > 0 %} / {{ combatant.allianceName }}{% endif %}</small><br>
+                                    {% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
                                 {{ combatant.shipTypeName }}<br>
                                     {% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
                             </div>
@@ -146,7 +146,7 @@
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
-                                    {% if combatant.allianceID > 0 %} / {{ combatant.allianceName }}{% endif %}</small><br>
+                                    {% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
                                 {{ combatant.shipTypeName }}<br>
                                     {% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
                             </div>
@@ -163,7 +163,7 @@
                             <div class="combatant-details">
                                 {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
                                 <small>{{ combatant.corporationName }}
-                                    {% if combatant.allianceID > 0 %} / {{ combatant.allianceName }}{% endif %}</small><br>
+                                    {% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
                                 {{ combatant.shipTypeName }}<br>
                                     {% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
                             </div>
@@ -255,5 +255,6 @@
             window.open('{{ BR_FETCH_SOURCE_URL }}' + (!!kid ? ('kill/' + kid) : ('character/' + cid)) + '/', '_blank');
         });
     });
+	!function(l){if((l.hash||('#'+(l.href.split('#')[1]||'')))=='#footage')$('#footage-panel').addClass('in');}(window.location);
 </script>
 {% endblock %}
