@@ -53,19 +53,30 @@ if ($app->request->isPost()) {
     $battleReport->title = $parameters["battleTitle"];
 	
 	$videoUrls = $parameters["battleFootageUrl"];
+	$povCmbtID = $parameters["battleFootageCombatantID"];
 	
 	// currently, allow only one video
 	$battleReport->removeFootage();
 	foreach ($videoUrls as $videoUrl) {
-		if (!empty($videoUrl))
-			$battleReport->addFootage(array($videoUrl));
+		if (empty($videoUrl))
+			continue;
+		
+		$footage = array(
+			"url" => $videoUrl
+		);
+		
+		$idx = array_search($videoUrl, $videoUrls);
+		if ($idx !== FALSE && isset($povCmbtID[$idx]) && !empty($povCmbtID[$idx]))
+			$footage["combatantID"] = $povCmbtID[$idx];
+		
+		$battleReport->addFootage($footage);
 	}
     
     if ($success) {
         $battleReport->publish();
 		// No need to reload the battle report records
 		// as here comes the redirect, right away ...
-        $app->redirect("/show/$battleReportID");
+        //$app->redirect("/show/$battleReportID");
     } else {
         $output["battleReportSavingError"] = true;
 	}

@@ -184,7 +184,6 @@
     }({{ battleReport.toJSON()|raw }});
 	!function(tpl, add){
 		function deleteFtg() {
-			console.log('clicked delete. removing', $(this).closest('.battle-footage-container'));
 			$(this).closest('.battle-footage-container').remove();
 		}
 		function upFtg() {
@@ -202,10 +201,31 @@
 			el.insertAfter(el.next());
 		}
 		function listenFtg(el) {
-			console.log('listening to', el.find('button.delete-battle-footage'));
 			el.find('button.delete-battle-footage').click(deleteFtg);
 			el.find('button.move-battle-footage-up').click(upFtg);
 			el.find('button.move-battle-footage-down').click(dnFtg);
+			suggestPilot(el);
+		}
+		function suggestPilot(el) {
+			var inp = el.find('input[name^=battleFootageCombatantCharName]'),
+				id = el.find('input[name^=battleFootageCombatantID]');
+			inp.autocomplete({
+				serviceUrl: '/autocomplete/combatants/{{ battleReport.battleReportID }}',
+				type: 'POST',
+				onSelect: function (suggestion) {
+					id.val('');
+					if (!!suggestion.data)
+						id.val(suggestion.data);
+					else
+						inp.val('');
+				},
+				onInvalidateSelection: function () {
+					id.val('');
+				}
+			}).blur(function () {
+				if (!id.val())
+					inp.val('');
+			});
 		}
 		tpl = $('#battle-footage-template');
 		$('.battle-footage-container').each(function () {
@@ -213,12 +233,21 @@
 		});
 		(add = $('#add-battle-footage')).find('button.add-battle-footage').click(function () {
 			var ftg = tpl.clone(),
-			inp = add.find('input[name^=battleFootageUrl]');
+				inp = add.find('input[name^=battleFootageUrl]');
 			
 			ftg.find('input[name^=battleFootageUrl]').val(inp.val());
+			inp.val('');
+			
+			inp = add.find('input[name^=battleFootageCombatantID]');
+			ftg.find('input[name^=battleFootageCombatantID]').val(inp.val());
+			inp.val('');
+			
+			inp = add.find('input[name^=battleFootageCombatantCharName]');
+			ftg.find('input[name^=battleFootageCombatantCharName]').val(inp.val());
 			inp.val('');
 			
 			add.before(ftg);
 			listenFtg(ftg);
 		});
+		suggestPilot(add);
 	}();

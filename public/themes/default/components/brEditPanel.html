@@ -22,7 +22,6 @@
 					<p>You may also (optionally) select one of the BattleReport's enlisted combatants to specify the video's point of view.</p>
 				</div>
 				<div class="complete-battle-footage col-sm-8">
-				{% set firstFreeIdx = 1 %}
 				{% for video in battleReport.footage %}
 					<div class="battle-footage-container form-group">
 						<label for="battleFootage-{{ video.index }}-url" class="control-label">Battle Footage:</label>
@@ -34,21 +33,30 @@
 								<button type="button" class="btn btn-default move-battle-footage-down"><span class="glyphicon glyphicon-chevron-down" aria-label="Move Down"></span></button>
 							</span>
 							<input class="form-control" id="battleFootage-{{ video.index }}-url" name="battleFootageUrl[]" value="{{ video.url }}">
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-user" aria-label="Select pilot"></span>
+							</span>
+							<input class="form-control" name="battleFootageCombatantCharName[]" value="{% if video.combatant is defined %}{{ video.combatant.characterName }}{% endif %}">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-danger delete-battle-footage"><span class="glyphicon glyphicon-trash" aria-label="Delete"></span></button>
 							</span>
 						</div>
+						<input type="text" name="battleFootageCombatantID[]" value="{{ video.combatantID }}">
 					</div>
-					{% set firstFreeIdx = firstFreeIdx + 1 %}
 				{% endfor %}
 					<div id="add-battle-footage" class="form-group">
-						<label for="battleFootage-{{ firstFreeIdx }}" class="control-label">Battle Footage:</label>
+						<label for="battleFootage-add-url" class="control-label">Battle Footage:</label>
 						<div class="input-group">
-							<input class="form-control" id="battleFootage-{{ firstFreeIdx }}" name="battleFootageUrl[]" value="">
+							<input class="form-control" id="battleFootage-add-url" name="battleFootageUrl[]" value="">
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-user" aria-label="Select pilot"></span>
+							</span>
+							<input class="form-control" name="battleFootageCombatantCharName[]" value="">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-info add-battle-footage">Add</button>
 							</span>
 						</div>
+						<input type="text" name="battleFootageCombatantID[]" value="">
 					</div>
 				</div>
 			</div>

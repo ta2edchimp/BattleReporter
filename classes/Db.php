@@ -27,7 +27,7 @@ class Db {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->bConnected = true;
         } catch (PDOException $e) {
-			throw new Exception("Exception while connection to the database: " . $e->getMessage(), $e->getCode(), $e);
+			throw new Exception("Exception while connection to the database: " . $e->getMessage());
         }
     }
     
@@ -52,7 +52,7 @@ class Db {
             }
             $this->success = $this->sQuery->execute();
         } catch (PDOException $e) {
-			throw new Exception("Exception while initializing database query: " . $e->getMessage(), $e->getCode(), $e);
+			throw new Exception("Exception while initializing database query: " . $e->getMessage());
         }
     }
     

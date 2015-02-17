@@ -14,7 +14,7 @@
 	.battle-footage{position:relative;margin-top:15px;width:100%;padding-top:56.35%;}
 	.battle-footage:first-child{margin-top:0;}
 	.battle-footage iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
-	.pov-container{position:absolute;top:15px;left:15px;width:300px;}
+	.pov-container{position:absolute;top:15px;left:15px;width:250px;}
 	@media(max-width:640px){.pov-container{width:auto;right:15px;}}
 	.pov-container .collapse-button{display:block;}
 	.pov-container .table{margin:0;}
@@ -52,6 +52,34 @@
 		{% for video in battleReport.footage %}
 			<div class="battle-footage">
 				<iframe width="480" height="270" frameborder="0" src="{{ video.url }}"></iframe>
+				{% if video.combatant is defined %}
+				{% set combatant = video.combatant %}
+				<div class="pov-container">
+					<div>
+						<a href="#footage-{{ video.index }}-combatant" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
+							<span class="glyphicon glyphicon-chevron-down"></span>
+							<span class="glyphicon glyphicon-chevron-up"></span>
+						</a>
+					</div>
+					<div id="footage-{{ video.index }}-combatant" class="collapse in">
+						<table id="battlereport-{{ currentTeamID }}" class="table table-striped table-hover battlereport-combatants">
+							<tbody>
+								<tr class="combatant">
+									<td><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+									<td style="width:100%">
+										<div class="combatant-details">
+											{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
+											<small>{{ combatant.corporationName }}
+												{% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
+												{{ combatant.shipTypeName }}
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				{% endif %}
 			</div>
 		{% endfor %}
 		</div>
