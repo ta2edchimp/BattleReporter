@@ -107,6 +107,8 @@ class Battle {
     
     public function save() {
         
+		$this->updateDetails();
+		
         $db = Db::getInstance();
         
 		$values = array(
@@ -114,7 +116,10 @@ class Battle {
             "startTime" => $this->startTime,
             "endTime" => $this->endTime,
             "solarSystemID" => $this->solarSystemID,
-            "published" => $this->published ? 1 : 0
+            "published" => $this->published ? 1 : 0,
+			"brUniquePilotsTeamA" => $this->teamA->uniquePilots,
+			"brUniquePilotsTeamB" => $this->teamB->uniquePilots,
+			"brUniquePilotsTeamC" => $this->teamC->uniquePilots
 		);
 		if ($this->deleted === true) {
 			$values["brDeleteUserID"] = User::getUserID();
@@ -126,11 +131,13 @@ class Battle {
 			$values["brCreatorUserID"] = $this->creatorUserID;
             $result = $db->query(
                 "insert into brBattles ".
-                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID" .
+                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID, " .
+					"brUniquePilotsTeamA, brUniquePilotsTeamB, brUniquePilotsTeamC" .
 					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
 				") " .
                 "values " .
-                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID" .
+                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
+					":brUniquePilotsTeamA, :brUniquePilotsTeamB, :brUniquePilotsTeamC" .
 					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
 				")",
                 $values
@@ -142,8 +149,11 @@ class Battle {
             $result = $db->query(
                 "update brBattles " .
                 "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, " .
-					"SolarSystemID = :solarSystemID, brPublished = :published " .
-					($this->deleted ? ", brDeleteUserID = :brDeleteUserID, brDeleteTime = :brDeleteTime " : "") .
+					"SolarSystemID = :solarSystemID, brPublished = :published, " .
+					"brUniquePilotsTeamA = :brUniquePilotsTeamA, " .
+					"brUniquePilotsTeamB = :brUniquePilotsTeamB, " .
+					"brUniquePilotsTeamC = :brUniquePilotsTeamC" .
+					($this->deleted ? ", brDeleteUserID = :brDeleteUserID, brDeleteTime = :brDeleteTime " : " ") .
                 "where battleReportID = :battleReportID",
                 $values
             );

@@ -36,9 +36,9 @@ td.no-break{white-space:nowrap}
 				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span>{% endif %}</td>
                 <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
                 <td class="no-break">{{ battle.date }}</td>
-                <td class="no-break hidden-xxxs text-right">{{ battle.pilotCountTeamA }}</td>
+                <td class="no-break hidden-xxxs text-right">{{ battle.brUniquePilotsTeamA }}</td>
                 <td class="no-break hidden-xxxs text-center">:</td>
-                <td class="no-break hidden-xxxs text-left">{{ battle.pilotCountTeamB + battle.pilotCountTeamC }}</td>
+                <td class="no-break hidden-xxxs text-left">{{ battle.brUniquePilotsTeamB + battle.brUniquePilotsTeamC }}</td>
                 {% if battle.efficiency == 1 %}
                     {% set efficiencyClsName = 'text-success' %}
                 {% elseif battle.efficiency > 0.5 %}
