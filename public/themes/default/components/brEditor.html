@@ -19,3 +19,25 @@
         <a href="#" class="trash btn btn-primary"><span class="glyphicon glyphicon-trash"></span></a>
     </div>
 </div>
+<div style="display:none">
+	<div id="battle-footage-template" class="battle-footage-container form-group">
+		<label class="control-label">Battle Footage:</label>
+		<div class="input-group">
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default move-battle-footage-up"><span class="glyphicon glyphicon-chevron-up" aria-label="Move Up"></span></button>
+			</span>
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default move-battle-footage-down"><span class="glyphicon glyphicon-chevron-down" aria-label="Move Down"></span></button>
+			</span>
+			<input class="form-control" name="battleFootageUrl[]" value="">
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-user" aria-label="Select pilot"></span>
+			</span>
+			<input class="form-control" name="battleFootageCombatantCharName[]" value="">
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-danger delete-battle-footage"><span class="glyphicon glyphicon-trash" aria-label="Delete"></span></button>
+			</span>
+		</div>
+		<input type="text" name="battleFootageCombatantID[]" value="">
+	</div>
+</div>
