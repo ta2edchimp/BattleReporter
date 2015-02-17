@@ -182,3 +182,27 @@
             $('#battleReportEditor').submit();
         });
     }({{ battleReport.toJSON()|raw }});
+	!function(tpl, add){
+		function deleteFtg() {
+			console.log('clicked delete. removing', $(this).closest('.battle-footage-container'));
+			$(this).closest('.battle-footage-container').remove();
+		}
+		function listenFtg(el) {
+			console.log('listening to', el.find('button.delete-battle-footage'));
+			el.find('button.delete-battle-footage').click(deleteFtg);
+		}
+		tpl = $('#battle-footage-template');
+		$('.battle-footage-container').each(function () {
+			listenFtg($(this));
+		});
+		(add = $('#add-battle-footage')).find('button.add-battle-footage').click(function () {
+			var ftg = tpl.clone(),
+			inp = add.find('input[name^=battleFootageUrl]');
+			
+			ftg.find('input[name^=battleFootageUrl]').val(inp.val());
+			inp.val('');
+			
+			add.before(ftg);
+			listenFtg(ftg);
+		});
+	}();

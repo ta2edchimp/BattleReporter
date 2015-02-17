@@ -425,8 +425,13 @@ class Battle {
 		
 		foreach ($results as $video) {
 			$embedVideoUrl = self::getEmbedVideoUrl($video["videoUrl"]);
-			if (!empty($embedVideoUrl))
-				$this->footage[] = $embedVideoUrl;
+			if (empty($embedVideoUrl))
+				continue;
+			
+			$this->footage[] = array(
+				"index" => (count($this->footage) + 1),
+				"url" => $embedVideoUrl
+			);
 		}
 		
 	}

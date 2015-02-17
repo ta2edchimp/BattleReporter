@@ -27,13 +27,8 @@
     </div>
     {% endif %}
     {% include 'components/brStatistics.html' %}
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Edit Battle</h3>
-        </div>
-        {% set BR_CAN_APPEND_COMBATANTS = true %}
-        {% include 'components/brEditPanel.html' %}
-    </div>
+    {% set BR_CAN_APPEND_COMBATANTS = true %}
+    {% include 'components/brEditPanel.html' %}
 	{% endif %}
 {% endblock %}
 

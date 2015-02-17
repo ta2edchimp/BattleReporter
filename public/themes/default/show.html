@@ -11,8 +11,13 @@
 	.collapse-button .glyphicon-chevron-up{display:inline-block;}
 	.collapse-button.collapsed .glyphicon-chevron-down{display:inline-block;}
 	.collapse-button.collapsed .glyphicon-chevron-up{display:none;}
-	.battle-footage{position:relative;width:100%;padding-top:56.35%;}
+	.battle-footage{position:relative;margin-top:15px;width:100%;padding-top:56.35%;}
+	.battle-footage:first-child{margin-top:0;}
 	.battle-footage iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+	.pov-container{position:absolute;top:15px;left:15px;width:300px;}
+	@media(max-width:640px){.pov-container{width:auto;right:15px;}}
+	.pov-container .collapse-button{display:block;}
+	.pov-container .table{margin:0;}
 	.comment{font-size:12px;background-position:0 0;background-repeat:no-repeat;background-size:48px 48px;padding-left:63px;}
 </style>
 {% endblock %}
@@ -46,7 +51,7 @@
 		<div id="footage-panel" class="panel-body panel-collapse collapse">
 		{% for video in battleReport.footage %}
 			<div class="battle-footage">
-				<iframe width="480" height="270" frameborder="0" src="{{ video }}"></iframe>
+				<iframe width="480" height="270" frameborder="0" src="{{ video.url }}"></iframe>
 			</div>
 		{% endfor %}
 		</div>
