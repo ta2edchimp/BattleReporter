@@ -76,7 +76,7 @@ if ($app->request->isPost()) {
         $battleReport->publish();
 		// No need to reload the battle report records
 		// as here comes the redirect, right away ...
-        //$app->redirect("/show/$battleReportID");
+        $app->redirect("/show/$battleReportID");
     } else {
         $output["battleReportSavingError"] = true;
 	}

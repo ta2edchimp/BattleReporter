@@ -41,7 +41,7 @@
 								<button type="button" class="btn btn-danger delete-battle-footage"><span class="glyphicon glyphicon-trash" aria-label="Delete"></span></button>
 							</span>
 						</div>
-						<input type="text" name="battleFootageCombatantID[]" value="{{ video.combatantID }}">
+						<input type="hidden" name="battleFootageCombatantID[]" value="{{ video.combatantID }}">
 					</div>
 				{% endfor %}
 					<div id="add-battle-footage" class="form-group">
@@ -56,7 +56,7 @@
 								<button type="button" class="btn btn-info add-battle-footage">Add</button>
 							</span>
 						</div>
-						<input type="text" name="battleFootageCombatantID[]" value="">
+						<input type="hidden" name="battleFootageCombatantID[]" value="">
 					</div>
 				</div>
 			</div>
