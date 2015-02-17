@@ -547,9 +547,9 @@ class Battle {
 		$matches = NULL;
 		$pattern = "/" .
 			"(" . // YouTube URLs (direct video link, embed link)
-				"(http(s){0,1}:){0,1}(\/\/){0,1}(www.){0,1}youtube.com\/(embed\/|watch\?(.*?)v=)(?P<youTubeVideoID>[a-z0-9_-]{1,})" .
+				"(http(s){0,1}:){0,1}(\/\/){0,1}(www.){0,1}(youtube\.com\/(embed\/|watch\?(.*?)v=)|youtu\.be\/)(?P<youTubeVideoID>[a-z0-9_-]{1,})" .
 			"|" . // Vimeo URLs (direct video link, embed link)
-				"(http(s){0,1}:){0,1}(\/\/){0,1}((www|player).){0,1}vimeo.com\/(video\/){0,1}(?P<vimeoVideoID>[0-9]{1,})(.*?)" .
+				"(http(s){0,1}:){0,1}(\/\/){0,1}((www|player).){0,1}vimeo\.com\/(video\/){0,1}(?P<vimeoVideoID>[0-9]{1,})(.*?)" .
 			")/i";
 		
 		// Neither pattern matches, exit
