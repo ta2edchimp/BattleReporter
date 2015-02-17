@@ -522,6 +522,8 @@ class Battle {
                 "killID" => $killID
             )
         );
+		if ($id === FALSE)
+			return null;
         
         return $id;
     }
