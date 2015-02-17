@@ -94,6 +94,12 @@ $app->group('/autocomplete', function () use ($app, $db) {
     $app->post('/alliNames', function () use ($app, $db) {
         include("views/autocomplete/alliNames.php");
     });
+	
+	// For associating a battle report's combatant
+	// to anything, e.g. pov-footage
+	$app->post('/combatants/:battleReportID', function ($battleReportID) use ($app, $db) {
+		include("views/autocomplete/combatants.php");
+	});
     
 });
 

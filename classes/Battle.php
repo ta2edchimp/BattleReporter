@@ -425,8 +425,42 @@ class Battle {
 		
 		foreach ($results as $video) {
 			$embedVideoUrl = self::getEmbedVideoUrl($video["videoUrl"]);
-			if (!empty($embedVideoUrl))
-				$this->footage[] = $embedVideoUrl;
+			if (empty($embedVideoUrl))
+				continue;
+			
+			$footage = array(
+				"index" => (count($this->footage) + 1),
+				"url" => $embedVideoUrl
+			);
+			
+			if (isset($video["videoPoVCombatantID"]) && !empty($video["videoPoVCombatantID"])) {
+				$combatant = null;
+				$cmbtData = $db->row(
+					"select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
+					"from invGroups as g right outer join invTypes as t " .
+						"on g.groupID = t.groupID " .
+					"right outer join brCombatants as c " .
+						"on t.typeID = c.shipTypeID " .
+					"left outer join brCorporations as cc " .
+						"on c.corporationID = cc.corporationID " .
+					"left outer join brAlliances as a " .
+						"on c.allianceID = a.allianceID " .
+					"where c.brCombatantID = :brCombatantID",
+					array(
+						"brCombatantID" => $video["videoPoVCombatantID"]
+					)
+				);
+				
+				if ($cmbtData !== FALSE)
+					$combatant = new Combatant($cmbtData);
+				
+				if ($combatant !== null) {
+					$footage["combatantID"] = $video["videoPoVCombatantID"];
+					$footage["combatant"] = $combatant;
+				}
+			}
+			
+			$this->footage[] = $footage;
 		}
 		
 	}
@@ -441,30 +475,45 @@ class Battle {
 		$db = Db::getInstance();
 		
 		foreach ($this->footage as $video) {
-			if (empty($video))
+			if (!isset($video["url"]) || empty($video["url"]))
 				continue;
+			
+			$params = array(
+				"battleReportID" => $this->battleReportID,
+				"videoUrl" => $video["url"]
+			);
+			
+			$isPoV = (isset($video["combatantID"]) && !empty($video["combatantID"]));
+			if ($isPoV === true)
+				$params["videoPoVCombatantID"] = $video["combatantID"];
 			
 			$db->query(
 				"insert into brVideos " .
-				"(battleReportID, videoUrl) " .
+				"(battleReportID, videoUrl" . ($isPoV === true ? ", videoPoVCombatantID" : "") . ") " .
 				"values " .
-				"(:battleReportID, :videoUrl)",
-				array(
-					"battleReportID" => $this->battleReportID,
-					"videoUrl" => $video
-				)
+				"(:battleReportID, :videoUrl" . ($isPoV === true ? ", :videoPoVCombatantID" : "") . ")",
+				$params
 			);
 		}
 		
 	}
 	
-	public function addFootage($videos = array()) {
+	public function addFootage($video = array()) {
 		
-		foreach ($videos as $video) {
-			$embedUrl = self::getEmbedVideoUrl($video);
-			if (!in_array($embedUrl, $this->footage))
-				$this->footage[] = $embedUrl;
-		}
+		if (!isset($video["url"]) || empty($video["url"]))
+			return;
+		
+		$embedUrl = self::getEmbedVideoUrl($video["url"]);
+		if (empty($embedUrl))
+			return;
+		
+		$footage = array(
+			"url" => $embedUrl
+		);
+		if (isset($video["combatantID"]) && !empty($video["combatantID"]))
+			$footage["combatantID"] = $video["combatantID"];
+		
+		$this->footage[] = $footage;
 		
 	}
 	
