@@ -254,11 +254,11 @@ class Combatant {
                 if (strtolower($row->name) == strtolower($name)) {
                     $result = intVal($row->characterID);
                     $result = ($result > 0 ? $result : -1);
-                    self::$fetchedEntityNameIds["name#" . strtolower($name)] = $result;
-                    return array(
-                    	"entityName" => $row->name,
+					self::$fetchedEntityNameIds["name#" . strtolower($name)] = array(
+						"entityName" => $row->name,
 						"entityID" => $result
-                    );
+					);
+					return self::$fetchedEntityNameIds["name#" . strtolower($name)];
                 }
             }
         }
