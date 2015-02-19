@@ -129,8 +129,9 @@ class Combatant {
                 "(:characterID, :characterName, :corporationID, :allianceID, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag, :brManuallyAdded, :brDeleted)",
                 $params
             );
-            if ($result !== NULL)
+            if ($result !== NULL && $result !== FALSE && $result == 1)
                 $this->brCombatantID = $db->lastInsertId();
+			// Else fail silently ...
         } else {
             $params["brCombatantID"] = $this->brCombatantID;
             $result = $db->query(
