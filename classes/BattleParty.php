@@ -113,8 +113,14 @@ class BattleParty {
         
         // Fetch team members
         $team = $db->query(
-            "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
-			"from invGroups as g right outer join invTypes as t " .
+            "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName, " .
+				"t.typeName as shipTypeName, t.mass as shipTypeMass, " .
+				"bpg.battlePartyGroupName as shipGroup, bpg.battlePartyGroupOrderKey as shipGroupOrderKey " .
+			"from brBattlePartyGroups as bpg right outer join brBattlePartyGroupShipTypes as bpgst " .
+				"on bpg.battlePartyGroupID = bpgst.brBattlePartyGroupID " .
+			"right outer join invTypes as t " .
+				"on bpgst.shipTypeID = t.typeID " .
+			"inner join invGroups as g " .
 				"on g.groupID = t.groupID " .
 			"right outer join brCombatants as c " .
 				"on t.typeID = c.shipTypeID " .
@@ -123,8 +129,9 @@ class BattleParty {
 			"left outer join brAlliances as a " .
 				"on c.allianceID = a.allianceID " .
             "where c.brBattlePartyID = :brBattlePartyID and (c.brManuallyAdded = 0 or c.brDeleted = 0) " .
-				"and (g.groupName <> 'Capsule' or c.died = 1)" .
-            ($toBeEdited ? "" : " and brHidden = 0"),
+				"and (g.groupName <> 'Capsule' or c.died = 1) " .
+				($toBeEdited ? "" : "and brHidden = 0 ") .
+			"order by bpg.battlePartyGroupOrderKey desc, t.mass desc, t.typeName desc, c.characterName asc, c.died desc",
             array(
                 "brBattlePartyID" => $this->brBattlePartyID
             )

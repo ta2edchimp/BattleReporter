@@ -81,9 +81,9 @@ class Battle {
 		$this->loadFootage();
 		
         // Sort battle parties
-        $this->teamA->sort();
-        $this->teamB->sort();
-        $this->teamC->sort();
+        //$this->teamA->sort();
+        //$this->teamB->sort();
+        //$this->teamC->sort();
         
         // Update certain properties
         $this->updateDetails();
