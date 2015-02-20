@@ -210,16 +210,22 @@ class Combatant {
     }
     
     
-    public static function sorter(Combatant $a, Combatant $b) {
+	public static function sorter(Combatant $a, Combatant $b) {
 		
+		// First, sort by ship group (per default: Capital, Logi, Ewar, default is DPS) ...
 		if ($a->shipGroupOrderKey == $b->shipGroupOrderKey) {
 			
+			// ... then, sort by mass as hint to the ship's hull class (bs, bc, cruiser, frig) ...
 			if ($a->shipTypeMass == $b->shipTypeMass) {
 				
+				// ... and within that group,
+				// sort by ship name (Vexor before Vexor Navy Issue) ...
 				if ($a->shipTypeName == $b->shipTypeName) {
 					
+					// ... by character's name
 					if ($a->characterName == $b->characterName) {
 						
+						// ... and losses first
 						if ($a->died == $b->died)
 							return $a->killID < $b->killID ? 1 : -1;
 						
@@ -234,34 +240,10 @@ class Combatant {
 			
 			return $a->shipTypeMass < $b->shipTypeMass ? 1 : -1;
 		}
+		
 		return $a->shipGroupOrderKey < $b->shipGroupOrderKey ? 1 : -1;
 		
-		
-        if ($a->characterID == $b->characterID) {
-            // If its the same char, sort by dead or alive
-            if ($a->died == $b->died) {
-                // If he didn't die in between, sort by ship
-                if ($a->shipTypeID == $b->shipTypeID) {
-                    // If ships are the same, sort by kill id
-                    return strcmp($a->killID, $b->killID);
-                }
-				// If one of the ships is a pod,
-				// display the non-capsule first
-				if ($a->shipIsPod || $b->shipIsPod) {
-					return $a->shipIsPod ? 1 : -1;
-				}
-                return strcasecmp($a->shipTypeName, $b->shipTypeName);
-            }
-            return ($a->died && !$b->died) ? -1 : 1;
-        }
-        // If one of them is an NPC
-        if ($a->characterID == 0)
-            return 1;
-        if ($b->characterID == 0)
-            return -1;
-        // By default, sort alphabetically
-        return strcasecmp($a->characterName, $b->characterName);
-    }
+	}
     
     private static $lastCombatantID = 0;
     private static function getNextCombatantID() {
