@@ -80,10 +80,10 @@ class Battle {
 		// Load associated footage
 		$this->loadFootage();
 		
-        // Sort battle parties
-        //$this->teamA->sort();
-        //$this->teamB->sort();
-        //$this->teamC->sort();
+		// Sort battle parties
+		// battle parties' objects hold a sort method,
+		// but its use is not necessary anymore, when
+		// loading a complete battle party from the database.
         
         // Update certain properties
         $this->updateDetails();

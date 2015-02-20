@@ -40,7 +40,15 @@ a.direct-link:hover,a.direct-link:focus{opacity:1;}
                 <td class="no-break">{{ battle.date }}</td>
                 <td class="no-break hidden-xxxs text-right">{{ battle.brUniquePilotsTeamA }}</td>
                 <td class="no-break hidden-xxxs text-center">:</td>
-                <td class="no-break hidden-xxxs text-left">{{ battle.brUniquePilotsTeamB + battle.brUniquePilotsTeamC }}</td>
+				<td class="no-break hidden-xxxs text-left">
+					{% if battle.brUniquePilotsTeamC < 1 %}
+					{{ battle.brUniquePilotsTeamB }}
+					{% else %}
+					<span class="badge" title="{{ BR_OWNERCORP_NAME }} 3rd-partied a {{ battle.brUniquePilotsTeamB }} vs. {{ battle.brUniquePilotsTeamC }}">
+						{{ battle.brUniquePilotsTeamB }} : {{ battle.brUniquePilotsTeamC }}
+					</span>
+					{% endif %}
+				</td>
                 {% if battle.efficiency == 1 %}
                     {% set efficiencyClsName = 'text-success' %}
                 {% elseif battle.efficiency > 0.5 %}
