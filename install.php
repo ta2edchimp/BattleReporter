@@ -86,6 +86,17 @@ if (strtolower($br_login_via_eve_sso) == "yes") {
 }
 
 
+// Ask who will be able to login
+out();
+out("Do you want to enable characters from other corporations to login, too?" . PHP_EOL .
+	"This will enable them to post comments." . PHP_EOL .
+	"Creating and editing battle reports still will be limited to corp members!");
+$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps's members to login", "no");
+$config["BR_LOGIN_ONLY_OWNERCORP"] = "true";
+if (strtolower($br_login_othercorps) == "yes")
+	$config["BR_LOGIN_ONLY_OWNERCORP"] = "false";
+
+
 // Specify where to fetch the killmails from
 out();
 out("BattleReporter can fetch the killmails to create its reports from either" . PHP_EOL .
