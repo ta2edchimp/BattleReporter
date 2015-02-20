@@ -60,7 +60,7 @@ class KBFetch {
 	}
     
     public static function testTimespanPattern($timespan) {
-        $didMatch = preg_match('/^[0-9]{4}-([0-1][0-2]|0[1-9])-[0-3][0-9] [0-2][0-9]:[0-5][0-9] - [0-2][0-9]:[0-5][0-9]$/', $timespan, $reMatches, PREG_OFFSET_CAPTURE);
+        $didMatch = preg_match('/^([0-9]{2}){1,2}-([0-1][0-2]|[0]{0,1}[1-9])-[0-3]{0,1}[0-9] [0-2]{0,1}[0-9]:[0-5][0-9] - [0-2]{0,1}[0-9]:[0-5][0-9]$/', $timespan, $reMatches, PREG_OFFSET_CAPTURE);
         
         if ($didMatch === FALSE)
             throw new Exception("Something bad happened when trying to check the given battleTimespan.");
