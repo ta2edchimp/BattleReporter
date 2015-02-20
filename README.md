@@ -2,6 +2,8 @@
 
 Advanced editable BattleReport platform for EVE Online.
 
+- Current Version: `0.2.8`
+
 ## Setup
 
 `BattleReporter` requires an environment running `PHP 5.4`. Version `5.5` is recommended, though.
