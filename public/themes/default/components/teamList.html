@@ -16,7 +16,16 @@
                         <tbody>
                         {% for combatant in currentTeam.members %}
                             <tr class="combatant{% if combatant.died %} danger{% endif %}{% if combatant.brHidden %} hidden-on-br{% endif %}" data-combatant-id="{{ combatant.brCombatantID }}" data-kill-id="{{ combatant.killID }}" data-character-id="{{ combatant.characterID }}">
-                                <td><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+								<td>
+									<div class="ship-icon-container">
+										<img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
+										{% if combatant.shipGroup is defined and combatant.shipGroup != 'DPS' %}
+										<div class="ship-type-icon" title="{{ combatant.shipGroup }}">
+											<span class="glyphicon {% if combatant.shipGroup == 'Capital' %}glyphicon-tower{% elseif combatant.shipGroup == 'Logistics' %}glyphicon-heart{% elseif combatant.shipGroup == 'Ewar' %}glyphicon-flash{% endif %}"></span>
+										</div>
+										{% endif %}
+									</div>
+								</td>
                                 <td style="width:100%">
                                     <div class="combatant-details">
                                         {% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
