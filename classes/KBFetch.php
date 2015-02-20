@@ -60,7 +60,7 @@ class KBFetch {
 	}
     
     public static function testTimespanPattern($timespan) {
-        $didMatch = preg_match('/^[0-9]{4}-([0-1][0-2]|0[1-9])-[0-3][0-9] [0-2][0-9]:[0-5][0-9] - [0-2][0-9]:[0-5][0-9]$/', $timespan, $reMatches, PREG_OFFSET_CAPTURE);
+        $didMatch = preg_match('/^([0-9]{2}){1,2}-([0-1][0-2]|[0]{0,1}[1-9])-[0-3]{0,1}[0-9] [0-2]{0,1}[0-9]:[0-5][0-9] - [0-2]{0,1}[0-9]:[0-5][0-9]$/', $timespan, $reMatches, PREG_OFFSET_CAPTURE);
         
         if ($didMatch === FALSE)
             throw new Exception("Something bad happened when trying to check the given battleTimespan.");
@@ -71,20 +71,38 @@ class KBFetch {
             return false;
     }
     
-    public static function getZKBStartTime($timespan) {
-        return preg_replace(
-            '/^([0-9]{4})-([0-1][0-2]|0[1-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]) - ([0-2][0-9]:[0-5][0-9])$/',
-            '$1$2$3$4$5',
-            $timespan
-        );
-    }
-    
-    public static function getZKBEndTime($timespan) {
-        return preg_replace(
-            '/^([0-9]{4})-([0-1][0-2]|0[1-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]) - ([0-2][0-9]:[0-5][0-9])$/',
-            '$1$2$3$6$7',
-            $timespan
-        );
-    }
-    
+	private static function getDateTime($timespan, $endTime = false) {
+		
+		// Fetch datetime parts from timespan string ...
+		$dtStr = preg_replace(
+			'/^([0-9]{2,4})-([0-1][0-2]|[0]{0,1}[1-9])-([0-3]{0,1}[0-9]) ([0-2]{0,1}[0-9]):([0-5][0-9]) - ([0-2]{0,1}[0-9]):([0-5][0-9])$/',
+			'$1-$2-$3 ' . ($endTime === true ? '$6:$7' : '$4:$5'),
+			$timespan
+		);
+		
+		// Convert into real datetime
+		$dt = new DateTime($dtStr);
+		
+		// Correct datetime when being called for endTime ...
+		if ($endTime === true) {
+			$dtStart = self::getDateTime($timespan);
+			// ... according to possible newday
+			// if endTime < startTime
+			if ($dt->getTimestamp() < $dtStart->getTimestamp())
+				$dt->modify("+1 day");
+		}
+		
+		// Return the result ...
+		return $dt;
+		
+	}
+	
+	public static function getZKBStartTime($timespan) {
+		return self::getDateTime($timespan)->format("YmdHi");
+	}
+	
+	public static function getZKBEndTime($timespan) {
+		return self::getDateTime($timespan, true)->format("YmdHi");
+	}
+
 }

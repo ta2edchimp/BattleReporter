@@ -20,6 +20,10 @@ class Combatant {
     
     public $shipTypeID = 0;
     public $shipTypeName = "";
+	public $shipTypeMass = 0;
+	
+	public $shipGroup = "DPS";
+	public $shipGroupOrderKey = 0;
 	public $shipIsPod = null;
     
     public $died = false;
@@ -29,7 +33,7 @@ class Combatant {
     
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipIsPod", "died", "killID", "killTime", "priceTag");
+    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "died", "killID", "killTime", "priceTag");
     
     public function __construct($props, $killID = "") {
         
@@ -77,9 +81,11 @@ class Combatant {
         if (empty($this->shipTypeName))
             $this->shipTypeName = Item::getNameByID($this->shipTypeID);
         else {
-            if (empty($this->shipTypeID) || $this->shipTypeID <= 0)
+            if (empty($this->shipTypeID) || $this->shipTypeID < 0)
                 $this->shipTypeID = Item::getIDByName($this->shipTypeName);
         }
+		if ($this->shipTypeID == 0)
+			$this->shipTypeName = "Unknown";
 		if ($this->shipIsPod === null)
 			$this->shipIsPod = Item::isCapsule($this->shipTypeID);
             
@@ -205,6 +211,32 @@ class Combatant {
     
     
     public static function sorter(Combatant $a, Combatant $b) {
+		
+		if ($a->shipGroupOrderKey == $b->shipGroupOrderKey) {
+			
+			if ($a->shipTypeMass == $b->shipTypeMass) {
+				
+				if ($a->shipTypeName == $b->shipTypeName) {
+					
+					if ($a->characterName == $b->characterName) {
+						
+						if ($a->died == $b->died)
+							return $a->killID < $b->killID ? 1 : -1;
+						
+						return ($a->died && !$b->died) ? -1 : 1;
+					}
+					
+					return strcasecmp($a->characterName, $b->characterName);
+				}
+				
+				return strcasecmp($a->shipTypeName, $b->shipTypeName);
+			}
+			
+			return $a->shipTypeMass < $b->shipTypeMass ? 1 : -1;
+		}
+		return $a->shipGroupOrderKey < $b->shipGroupOrderKey ? 1 : -1;
+		
+		
         if ($a->characterID == $b->characterID) {
             // If its the same char, sort by dead or alive
             if ($a->died == $b->died) {
