@@ -2,7 +2,7 @@
 
 Advanced editable BattleReport platform for EVE Online.
 
-- Current Version: `0.2.8`
+- Current Version: `0.3.1`
 
 ## Setup
 
