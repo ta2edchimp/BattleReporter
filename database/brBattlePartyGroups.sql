@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `brBattlePartyGroups`;
 CREATE TABLE `brBattlePartyGroups` (
   `battlePartyGroupID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `battlePartyGroupName` mediumtext NOT NULL,

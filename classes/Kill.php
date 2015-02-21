@@ -71,10 +71,20 @@ class Kill {
             return null;
         
         $victim = new Combatant($kill->victim, $kill->killID);
+		
+		if ($victim === null)
+			return;
         
         if (isset($kill->zkb) && isset($kill->zkb->totalValue)) {
             $victim->priceTag = floatVal($kill->zkb->totalValue);
         }
+		
+		if (isset($kill->items)) {
+			foreach ($kill->items as $item) {
+				if (Item::isCyno($item->typeID))
+					$victim->brCyno = true;
+			}
+		}
         
         $attackers = array();
         foreach ($kill->attackers as $atk) {

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `brCorporations`;
 CREATE TABLE `brCorporations` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `corporationID` int(11) NOT NULL,

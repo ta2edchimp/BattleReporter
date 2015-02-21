@@ -159,5 +159,19 @@ class Item {
 		return $shipTypeGroupID == self::$podGroupID;
 		
 	}
+	
+	
+	public static function isCyno($itemTypeID = "") {
+		
+		if (empty($itemTypeID))
+			return false;
+		
+		// (Covert) Cynosural Field Generator I IDs:
+		if ($itemTypeID == 21096 || $itemTypeID == 28646)
+			return true;
+		
+		return false;
+		
+	}
     
 }

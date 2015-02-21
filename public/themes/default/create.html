@@ -68,37 +68,42 @@
         </div>
     </div>
     
-    <div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}primary{% else %}default{% endif %}">
-        <div class="panel-heading">
-            <h3 class="panel-title">Edit Battle</h3>
-        </div>
-        {% if battleTimespan is defined and battleSolarSystem is defined %}
-        {% if battleReport is not defined %}
-        <div class="panel-body">
-            <div class="alert alert-danger">
-                <strong>Dammit!</strong> Something bad happened while trying to prepare the battle report.
-                {% if battleReportError is defined %}
-                <p>{{ battleReportError }}</p>
-                {% endif %}
-            </div>
-        </div>
-        {% else %}
-        {% if battleReport.killsTotal == 0 %}
-        <div class="panel-body">
-            <div class="alert alert-warning">
-                <p><strong>No kills found</strong></p>
-                <p>involving <kbd>{{ BR_OWNERCORP_NAME }}</kbd> for <kbd>{{ battleTimespan }}</kbd> in <kbd>{{ battleSolarSystem.name }}</kbd>.<br>
-                    It's possible that the kills you're looking for have not yet been fetched by <kbd>{{ BR_FETCH_SOURCE_NAME }}</kbd>.<br>
-                    Please try again later.</p>
-            </div>
-        </div>
-        {% else %}
-            {% set BR_CAN_APPEND_COMBATANTS = true %}
-            {% include 'components/brEditPanel.html' %}
-        {% endif %}
-        {% endif %}
-        {% endif %}
-    </div>
+	{% if battleTimespan is defined and battleSolarSystem is defined %}
+	{% if battleReport is not defined %}
+	<div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}primary{% else %}default{% endif %}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Edit Battle</h3>
+		</div>
+		<div class="panel-body">
+			<div class="alert alert-danger">
+				<strong>Dammit!</strong> Something bad happened while trying to prepare the battle report.
+				{% if battleReportError is defined %}
+					<p>{{ battleReportError }}</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% else %}
+		{% if battleReport.killsTotal == 0 %}
+	<div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}primary{% else %}default{% endif %}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Edit Battle</h3>
+		</div>
+		<div class="panel-body">
+			<div class="alert alert-warning">
+				<p><strong>No kills found</strong></p>
+				<p>involving <kbd>{{ BR_OWNERCORP_NAME }}</kbd> for <kbd>{{ battleTimespan }}</kbd> in <kbd>{{ battleSolarSystem.name }}</kbd>.<br>
+					It's possible that the kills you're looking for have not yet been fetched by <kbd>{{ BR_FETCH_SOURCE_NAME }}</kbd>.<br>
+					Please try again later.</p>
+			</div>
+		</div>
+	</div>
+		{% else %}
+			{% set BR_CAN_APPEND_COMBATANTS = true %}
+			{% include 'components/brEditPanel.html' %}
+		{% endif %}
+	{% endif %}
+	{% endif %}
 {% endblock %}
 
 {% block scripts %}

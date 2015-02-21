@@ -14,9 +14,7 @@ CREATE TABLE `brCombatants` (
   `priceTag` decimal(13,2) unsigned NOT NULL DEFAULT '0.00',
   `brManuallyAdded` tinyint(1) DEFAULT '0',
   `brDeleted` tinyint(1) DEFAULT '0',
+  `brCyno` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`brCombatantID`),
-  KEY `brCombatants_IX_characterID` (`characterID`),
-  KEY `brCombatants_IX_corporationID` (`corporationID`),
-  KEY `brCombatants_IX_allianceID` (`allianceID`),
-  KEY `brCombatants_IX_shipTypeID` (`shipTypeID`)
+  KEY `brCombatants_IX_characterID` (`characterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

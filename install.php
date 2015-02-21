@@ -294,6 +294,8 @@ if (!function_exists('password_hash')) {
 			"|n|Your server's PHP version is not up-to-date (less than |w|5.5|n|) and " .
 			"the library to provide downward compatibility could not be loaded.", true, true);
 	}
+} else {
+	$adminPasswordHashed = password_hash($adminPassword, PASSWORD_BCRYPT);
 }
 if (empty($adminPasswordHashed)) {
 	unlink($configFile);
