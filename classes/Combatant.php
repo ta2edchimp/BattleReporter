@@ -33,9 +33,10 @@ class Combatant {
     public $killTime = 0;
     public $priceTag = 0.0;
     
+	public $assignedFootage = 0;
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag");
+    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage");
     
     public function __construct($props, $killID = "") {
         

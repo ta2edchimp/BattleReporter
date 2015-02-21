@@ -4,7 +4,9 @@
 if (!User::can('create'))
     $app->redirect('/');
 
-$output = array();
+$output = array(
+	"BR_PAGE_CREATE" => true
+);
 
 // Get all POST variables
 $parameters = $app->request->post();

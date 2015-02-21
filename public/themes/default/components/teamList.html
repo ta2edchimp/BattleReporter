@@ -38,6 +38,11 @@
                                             {% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
                                         {{ combatant.shipTypeName }}<br>
                                             {% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
+										{% if BR_PAGE_SHOW == true and combatant.assignedFootage > 0 %}
+										<div class="combatant-info-container"><a href="#footage-panel-{{ combatant.assignedFootage }}" class="footage">
+											<span class="glyphicon glyphicon-facetime-video"></span></a>
+										</div>
+										{% endif %}
                                     </div>
                                 </td>
                             </tr>

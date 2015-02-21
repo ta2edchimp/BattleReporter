@@ -54,6 +54,7 @@ switch ($battleReportDetail) {
 }
 
 $app->render("show.html", array(
+	"BR_PAGE_SHOW" => true,
     "battleReport" => $battleReport,
     "battleReportDetail" => $battleReportDetail,
     "battleReportDetailTitle" => $battleReportDetailTitle

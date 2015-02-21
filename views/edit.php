@@ -8,7 +8,9 @@ if (empty($battleReportID) || $battleReportID == 0) {
     $app->stop();
 }
 
-$output = array();
+$output = array(
+	"BR_PAGE_EDIT" => true
+);
 
 // Try to fetch the specified battle report
 $battleReport = new Battle();

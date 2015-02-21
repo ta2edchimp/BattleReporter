@@ -19,8 +19,9 @@
 	.pov-container .collapse-button{display:block;}
 	.pov-container .table{margin:0;}
 	.comment{font-size:12px;background-position:0 0;background-repeat:no-repeat;background-size:48px 48px;padding-left:63px;}
-	.ship-icon-container{position:relative;}
+	.ship-icon-container,.combatant-details{position:relative;}
 	.ship-type-icon{position:absolute;bottom:0;left:0;text-shadow:0 0 2px #000;}
+	.combatant-info-container{position:absolute;top:0;right:0;}
 </style>
 {% endblock %}
 
@@ -43,7 +44,7 @@
 	<div id="footage" class="panel panel-default">
 		<div class="panel-heading">
 			<div style="float:right">
-				<a href="#footage-panel" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
+				<a id="btn-collapse-footage" href="#footage-panel" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
 					<span class="glyphicon glyphicon-chevron-down"></span>
 					<span class="glyphicon glyphicon-chevron-up"></span>
 				</a>
@@ -52,7 +53,7 @@
 		</div>
 		<div id="footage-panel" class="panel-body panel-collapse collapse">
 		{% for video in battleReport.footage %}
-			<div class="battle-footage">
+			<div id="footage-panel-{{ video.id }}" class="battle-footage">
 				<iframe width="480" height="270" frameborder="0" src="{{ video.url }}"></iframe>
 				{% if video.combatant is defined %}
 				{% set combatant = video.combatant %}
@@ -290,6 +291,7 @@
             window.open('{{ BR_FETCH_SOURCE_URL }}' + (!!kid ? ('kill/' + kid) : ('character/' + cid)) + '/', '_blank');
         });
     });
-	!function(l){if((l.hash||('#'+(l.href.split('#')[1]||'')))=='#footage')$('#footage-panel').addClass('in');}(window.location);
+	!function(l){if((l.hash||('#'+(l.href.split('#')[1]||''))).indexOf('#footage')==0&&!$('#footage-panel').hasClass('in'))$('#btn-collapse-footage').trigger('click');}(window.location);
+	!function(f){f.click(function(e){if(!$('#footage-panel').hasClass('in'))$('#btn-collapse-footage').trigger('click');e.preventDefault();e.stopPropagation();$('html,body').scrollTop(Math.max($($(this).attr('href')).offset().top-$('.navbar').height(),0));});}($('.footage'));
 </script>
 {% endblock %}
