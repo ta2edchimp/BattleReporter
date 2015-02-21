@@ -19,9 +19,14 @@
 								<td>
 									<div class="ship-icon-container">
 										<img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
-										{% if combatant.shipGroup is defined and combatant.shipGroup != 'DPS' %}
-										<div class="ship-type-icon" title="{{ combatant.shipGroup }}">
-											<span class="glyphicon {% if combatant.shipGroup == 'Capital' %}glyphicon-tower{% elseif combatant.shipGroup == 'Logistics' %}glyphicon-heart{% elseif combatant.shipGroup == 'Ewar' %}glyphicon-flash{% endif %}"></span>
+										{% if (combatant.shipGroup is defined and combatant.shipGroup != 'DPS') or combatant.brCyno == true %}
+										<div class="ship-type-icon">
+											{% if combatant.brCyno == true %}
+											<span class="glyphicon glyphicon-asterisk" title="Had a Cynosural Field Generator fitted."></span>
+											{% endif %}
+											{% if combatant.shipGroup is defined and combatant.shipGroup != 'DPS' %}
+											<span class="glyphicon {% if combatant.shipGroup == 'Capital' %}glyphicon-tower{% elseif combatant.shipGroup == 'Logistics' %}glyphicon-heart{% elseif combatant.shipGroup == 'Ewar' %}glyphicon-flash{% endif %}" title="{{ combatant.shipGroup }}"></span>
+											{% endif %}
 										</div>
 										{% endif %}
 									</div>
