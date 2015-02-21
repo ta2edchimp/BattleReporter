@@ -429,6 +429,7 @@ class Battle {
 				continue;
 			
 			$footage = array(
+				"id" => $video["videoID"],
 				"index" => (count($this->footage) + 1),
 				"url" => $embedVideoUrl
 			);
