@@ -1,17 +1,18 @@
 {
-	"name": "ta2edchimp/battlereporter",
-	"description": "Advanced editable BattleReport platform for EVE Online.",
-	"license": "Beerware",
+    "name": "ta2edchimp/battlereporter",
+    "description": "Advanced editable BattleReport platform for EVE Online.",
+    "license": "Beerware",
     "require": {
         "twig/twig": "~1.0",
         "slim/slim": "2.*",
         "slim/views": "0.1.*",
         "filp/whoops": "1.*",
-		"zeuxisoo/slim-whoops": "0.*",
+        "zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",
         "phpfastcache/phpfastcache": "dev-final",
-		"erusev/parsedown": "1.*"
+        "erusev/parsedown": "1.*"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "version": "0.3.0"
 }
