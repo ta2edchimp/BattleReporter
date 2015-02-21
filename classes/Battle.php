@@ -353,9 +353,9 @@ class Battle {
         
         foreach ($importedKills as $impKill) {
             
-            //$existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-            //if ($existantBattleID !== null)
-            //    throw new Exception("The fetched events are already part of an existing BattleReport.");
+            $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
+            if ($existantBattleID !== null)
+                throw new Exception("The fetched events are already part of an existing BattleReport.");
             
             $kill = Kill::fromImport($impKill);
             
