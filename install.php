@@ -89,9 +89,9 @@ if (strtolower($br_login_via_eve_sso) == "yes") {
 // Ask who will be able to login
 out();
 out("Do you want to enable characters from other corporations to login, too?" . PHP_EOL .
-	"This will enable them to post comments." . PHP_EOL .
+	"Being logged in is required to post comments." . PHP_EOL .
 	"Creating and editing battle reports still will be limited to corp members!");
-$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps' members to login", "no");
+$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps' members to login", "yes");
 $config["BR_LOGIN_ONLY_OWNERCORP"] = "true";
 if (strtolower($br_login_othercorps) == "yes")
 	$config["BR_LOGIN_ONLY_OWNERCORP"] = "false";
@@ -99,8 +99,8 @@ if (strtolower($br_login_othercorps) == "yes")
 
 // Ask for advanced functions
 out();
-out("Do you want to allow logged in users to comment on BattleReports?");
-$enableComments = prompt("Enter \"yes\" or \"no\"", "no");
+out("Do you want to enable comments on BattleReports?");
+$enableComments = prompt("Enter \"yes\" or \"no\"", "yes");
 if (strtolower($enableComments) == "yes")
 	$config["BR_COMMENTS_ENABLED"] = "true";
 else
