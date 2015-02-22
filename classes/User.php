@@ -34,7 +34,7 @@ class User {
                 "userName" => $userName
             )
         );
-        if ($userInfo === NULL)
+        if ($userInfo === FALSE)
             return false;
         
         if (!empty($userInfo["password"])) {
@@ -128,7 +128,7 @@ class User {
                     "userName" => $userName
                 )
             );
-            if ($userID === NULL)
+            if ($userID === FALSE)
                 return false;
             
             $sessionHashes = $db->query(
@@ -137,7 +137,7 @@ class User {
                     "userID" => $userID
                 )
             );
-            if ($sessionHashes === NULL)
+            if ($sessionHashes === FALSE)
                 return false;
             
             foreach ($sessionHashes as $hash) {
@@ -264,7 +264,7 @@ class User {
             )
         );
         
-        return $result;
+        return ($result === FALSE) ? NULL : $result;
         
     }
     

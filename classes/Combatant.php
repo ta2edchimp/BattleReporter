@@ -131,16 +131,17 @@ class Combatant {
 			"brDeleted" => $this->brDeleted ? 1 : 0,
 			"brCyno" => $this->brCyno ? 1 : 0
         );
-        if ($this->brCombatantID <= 0) {
-            $result = $db->query(
-                "insert into brCombatants ".
-                "(characterID, characterName, corporationID, allianceID, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag, brManuallyAdded, brDeleted, brCyno) " .
-                "values " .
-                "(:characterID, :characterName, :corporationID, :allianceID, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag, :brManuallyAdded, :brDeleted, :brCyno)",
-                $params
-            );
-            if ($result !== NULL && $result !== FALSE && $result == 1)
-                $this->brCombatantID = $db->lastInsertId();
+		if ($this->brCombatantID <= 0) {
+			$result = $db->query(
+				"insert into brCombatants ".
+				"(characterID, characterName, corporationID, allianceID, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag, brManuallyAdded, brDeleted, brCyno) " .
+				"values " .
+				"(:characterID, :characterName, :corporationID, :allianceID, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag, :brManuallyAdded, :brDeleted, :brCyno)",
+				$params,
+				true	// Return last inserted row's ID instead of affected rows' count
+			);
+			if ($result > 0)
+				$this->brCombatantID = $result;
 			// Else fail silently ...
         } else {
             $params["brCombatantID"] = $this->brCombatantID;
