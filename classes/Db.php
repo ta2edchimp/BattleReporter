@@ -15,115 +15,262 @@ class Db {
     
     private $parameters;
     
-    public function __construct($dbname, $user, $password, $host) {
-        $this->connect($dbname, $user, $password, $host);
-    }
-    
-    private function connect($dbname, $user, $password, $host = "127.0.0.1") {
-        $dsn = 'mysql:dbname=' . $dbname . ';host=' . $host . '';
-        try {
-            $this->pdo = new PDO($dsn, $user, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $this->bConnected = true;
-        } catch (PDOException $e) {
+	private $dbname;
+	private $user;
+	private $password;
+	private $host;
+	
+	public function __construct($dbname, $user, $password, $host = "127.0.0.1") {
+		$this->dbname = $dbname;
+		$this->user = $user;
+		$this->password = $password;
+		$this->host = $host;
+	}
+	
+	private function connect() {
+		
+		$dsn = 'mysql:dbname=' . $this->dbname . ';host=' . $this->host . '';
+		
+		try {
+			$this->pdo = new PDO(
+				$dsn,
+				$this->user,
+				$this->password,
+				array(
+					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8, time_zone = '+00:00'",
+					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+					PDO::ATTR_EMULATE_PREPARES => false,
+					PDO::ATTR_PERSISTENT => true
+				)
+			);
+			$this->bConnected = true;
+		} catch (PDOException $e) {
 			throw new Exception("Exception while connection to the database: " . $e->getMessage());
-        }
-    }
-    
-    public function closeConnection() {
-        $this->pdo = null;
-    }
-    
-    private function init($query, $parameters = "") {
-        if (!$this->bConnected)
-            $this->connect();
-        
-        $this->parameters = array();
-        
-        try {
-            $this->sQuery = $this->pdo->prepare($query);
-            $this->bindMore($parameters);
-            if (!empty($this->parameters)) {
-                foreach ($this->parameters as $param) {
-                    $parameters = explode("\x7F", $param);
-                    $this->sQuery->bindParam($parameters[0], $parameters[1]);
-                }
-            }
-            $this->success = $this->sQuery->execute();
-        } catch (PDOException $e) {
-			throw new Exception("Exception while initializing database query: " . $e->getMessage());
-        }
-    }
-    
-    private function bind($param, $value) {
-        $this->parameters[sizeof($this->parameters)] = ":" . $param . "\x7F" . utf8_encode($value);
-    }
-    
-    private function bindMore($parray) {
-        if (empty($this->parameters) && is_array($parray)) {
-            $columns = array_keys($parray);
-            foreach ($columns as $i => &$column) {
-                $this->bind($column, $parray[$column]);
-            }
-        }
-    }
-    
-    public function query($query, $params = null, $fetchmode = PDO::FETCH_ASSOC) {
-        $query = trim($query);
-        
-        $this->init($query, $params);
-        
-        $rawStatement = explode(" ", $query);
-        
-        $statement = strtolower($rawStatement[0]);
-        
-        if ($statement === 'select' || $statement === 'show') {
-            return $this->sQuery->fetchAll($fetchmode);
-        } elseif ($statement === 'insert' || $statement === 'update' || $statement === 'delete') {
-            return $this->sQuery->rowCount();
-        } else {
-            return NULL;
-        }
-    }
-    
-    public function lastInsertId() {
-        return $this->pdo->lastInsertId();
-    }
-    
-    public function column($query, $params = null) {
-        $this->init($query, $params);
-        $columns = $this->sQuery->fetchAll(PDO::FETCH_NUM);
-        
-        $column = null;
-        
-        foreach ($columns as $cells) {
-            $column[] = $cells[0];
-        }
-        
-        return $column;
-    }
-    
-    public function row($query, $params = null, $fetchmode = PDO::FETCH_ASSOC) {
-        $this->init($query, $params);
-        return $this->sQuery->fetch($fetchmode);
-    }
-    
-    public function single($query, $params = null) {
-        $this->init($query, $params);
-        return $this->sQuery->fetchColumn();
-    }
+		}
+		
+	}
+	
+	public function closeConnection() {
+		$this->bConnected = false;
+		$this->sQuery = null;
+		$this->pdo = null;
+	}
+	
+	private function init($query, array $parameters = array()) {
+		
+		if (!$this->bConnected)
+			$this->connect();
+		
+		try {
+			$this->sQuery = $this->pdo->prepare($query);
+		} catch (PDOException $e) {
+			throw new Exception("Exception while preparing database query: " . $e->getMessage());
+		}
+		$queryParams = array();
+		if (sizeof($parameters) > 0) {
+			foreach ($parameters as $paramName => $paramValue)
+				$queryParams[":" . $paramName] = $paramValue;
+		}
+		try {
+			$this->success = $this->sQuery->execute($queryParams);
+		} catch (PDOException $e) {
+			throw new Exception("Exception while executing database query: " . $e->getMessage());
+		}
+		
+	}
+	
+	private function performQuery($query, array $params = array(), $fetchmode = PDO::FETCH_ASSOC) {
+		
+		$this->init($query, $params);
+		
+		if ($this->sQuery->errorCode() != 0)
+			throw new Exception("Exception while querying statement: " . $this->sQuery->errorInfo(), $this->sQuery->errorCode());
+		
+		$result = $this->sQuery->fetchAll($fetchmode);
+		
+		// Close the cursor, necessary because
+		// of the use of BUFFERED QUERIES
+		$this->sQuery->closeCursor();
+		
+		return $result;
+		
+	}
+	
+	private function performExecution($query, array $params = array(), $returnID = false) {
+		
+		if (!$this->bConnected)
+			$this->connect();
+		
+		$this->pdo->beginTransaction();
+		
+		$this->init($query, $params);
+		
+		// init to be called before ...
+		if ($this->sQuery->errorCode() != 0) {
+			// Rollback the query, important because of 
+			// MYSQL_ATTR_USE_BUFFERED_QUERY being set to true
+			$this->pdo->rollBack();
+			
+			throw new Exception("Exception while executing statement: " . $this->sQuery->errorInfo(), $this->sQuery->errorCode());
+		}
+		
+		$lastInsertID = $returnID ? $this->pdo->lastInsertId() : 0;
+		
+		// Since there has been no error, commit
+		$this->pdo->commit();
+		
+		$rowCount = $this->sQuery->rowCount();
+		
+		// Close the cursor, necessary because
+		// of the use of BUFFERED QUERIES
+		$this->sQuery->closeCursor();
+		
+		return $returnID ? $lastInsertID : $rowCount;
+		
+	}
+	
+	public function query($query, array $params = array(), $varParam = null) {
+		
+		$query = trim($query);
+		
+		$rawStatement = explode(" ", $query);
+		$statement = strtolower($rawStatement[0]);
+		
+		$fetchmode = PDO::FETCH_ASSOC;
+		$returnID = false;
+		
+		if ($statement === 'select' || $statement === 'show') {
+			if ($varParam !== null)
+				$fetchmode = $varParam;
+			return $this->performQuery($query, $params, $fetchmode);
+		} else {
+			if ($varParam !== null)
+				$returnID = $varParam;
+			return $this->performExecution($query, $params, $returnID);
+		}
+		
+		return NULL;
+		
+	}
+	
+	public function lastInsertId() {
+		throw new Exception("The use of Db::lastInsertId() is obsolete! Use Db::query() with its third parameter \$varParam as \"returnID\" set to true, instead.");
+	}
+	
+	public function column($query, array $params = array()) {
+		
+		$this->init($query, $params);
+		$columns = $this->sQuery->fetchAll(PDO::FETCH_NUM);
+		
+		// Close the cursor, necessary because
+		// of the use of BUFFERED QUERIES
+		$this->sQuery->closeCursor();
+		
+		$column = null;
+		
+		foreach ($columns as $cells) {
+			$column[] = $cells[0];
+		}
+		
+		return $column;
+		
+	}
+	
+	public function row($query, array $params = array(), $fetchmode = PDO::FETCH_ASSOC) {
+		
+		$result = $this->query($query, $params, $fetchmode);
+		
+		if ($result === FALSE || sizeof($result) == 0)
+			return FALSE;
+		
+		return $result[0];
+		
+	}
+	
+	public function single($query, array $params = array()) {
+		
+		$result = $this->query($query, $params);
+		
+		if ($result === FALSE || sizeof($result) == 0)
+			return FALSE;
+		
+		$row = $result[0];
+		
+		foreach ($row as $field)
+			return $field;
+		
+		return FALSE;
+		
+	}
+	
+	public function import($sqlFile = "") {
+		
+		if (empty($sqlFile))
+			return false;
+		
+		$handle = fopen($sqlFile, "r");
+		$query = "";
+		
+		while ($buffer = fgets($handle)) {
+			
+			// Skip comments and empty lines ...
+			if (substr($buffer, 0, 2) == '--' || substr($buffer, 0, 1) == '#' || $buffer == '')
+				continue;
+			
+			// ... anything else gets concatenated
+			// to the resulting statement
+			$query .= trim($buffer);
+			
+			if (substr($query, -1, 1) == ';') {
+				
+				$query = trim(substr($query, 0, -1));
+				$rawStatement = explode(" ", $query);
+				$statement = strtolower($rawStatement[0]);
+				
+				// Omit lock and unlock statements as
+				// they interfere heavily with out db handler
+				if ($statement != "lock" && $statement != "unlock")
+					$this->query($query);
+				
+				$query = "";
+				
+			}
+			
+		}
+		
+		fclose($handle);
+		
+		return true;
+		
+	}
 	
 	
-	private static $instance = null;
+	//private static $instance = null;
+	
+	private static $dbName;
+	private static $dbHost;
+	private static $dbUserName;
+	private static $dbUserPwd;
+	
+	public static function setCredentials($dbname = "", $user = "", $password = "", $host = "") {
+		
+		self::$dbName = $dbname;
+		self::$dbHost = $host;
+		self::$dbUserName = $user;
+		self::$dbUserPwd = $password;
+		
+	}
 	
 	public static function getInstance($dbname = "", $user = "", $password = "", $host = "") {
 		
-		if (self::$instance === null)
-			self::$instance = new self($dbname, $user, $password, $host);
+		$dbname = empty($dbname) ? self::$dbName : $dbname;
+		$user = empty($user) ? self::$dbUserName : $dbuser;
+		$password = empty($password) ? self::$dbUserPwd : $password;
+		$host = empty($host) ? self::$dbHost : $host;
 		
-		return self::$instance;
+		return new self($dbname, $user, $password, $host);
 		
 	}
-    
+	
 }

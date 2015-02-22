@@ -155,20 +155,21 @@ class BattleParty {
         
         $db = Db::getInstance();
         
-        // Save basic battle report properties
-        if ($this->brBattlePartyID <= 0) {
-            $result = $db->query(
-                "insert into brBattleParties ".
-                "(battleReportID, brTeamName) " .
-                "values " .
-                "(:battleReportID, :brTeamName)",
-                array(
-                    "battleReportID" => $brID,
-                    "brTeamName" => $this->name
-                )
-            );
-            if ($result != NULL)
-                $this->brBattlePartyID = $db->lastInsertId();
+		// Save basic battle report properties
+		if ($this->brBattlePartyID <= 0) {
+			$result = $db->query(
+				"insert into brBattleParties ".
+				"(battleReportID, brTeamName) " .
+				"values " .
+				"(:battleReportID, :brTeamName)",
+				array(
+					"battleReportID" => $brID,
+					"brTeamName" => $this->name
+				),
+				true	// Return last inserted row's ID instead of affected rows' count
+			);
+			if ($result > 0)
+				$this->brBattlePartyID = $result;
         } else {
             $result = $db->query(
                 "update brBattleParties " .

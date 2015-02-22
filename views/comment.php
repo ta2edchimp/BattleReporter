@@ -34,11 +34,12 @@ $result = $db->query(
 		"commentUserID" => User::getUserID(),
 		"commentMessage" => $commentMessage,
 		"commentTime" => (new DateTime())->format("Y-m-d G:i:s")
-	)
+	),
+	true	// Return last inserted row's ID instead of affected rows' count
 );
-if ($result === FALSE || $result != 1)
+if ($result <= 0)
 	throw new Exception("Something bad happened while saving comment to database");
 
-$commentID = $db->lastInsertId();
+$commentID = $result;
 
 $app->redirect("/show/$battleReportID/comments#comment-$commentID");

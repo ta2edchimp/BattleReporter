@@ -126,24 +126,25 @@ class Battle {
 			$values["brDeleteTime"] = time();
 		}
 		
-        // Save basic battle report properties
-        if ($this->battleReportID <= 0) {
+		// Save basic battle report properties
+		if ($this->battleReportID <= 0) {
 			$values["brCreatorUserID"] = $this->creatorUserID;
-            $result = $db->query(
-                "insert into brBattles ".
-                "(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID, " .
+			$result = $db->query(
+				"insert into brBattles ".
+				"(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID, " .
 					"brUniquePilotsTeamA, brUniquePilotsTeamB, brUniquePilotsTeamC" .
 					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
 				") " .
-                "values " .
-                "(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
+				"values " .
+				"(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
 					":brUniquePilotsTeamA, :brUniquePilotsTeamB, :brUniquePilotsTeamC" .
 					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
 				")",
-                $values
-            );
-            if ($result != NULL)
-                $this->battleReportID = $db->lastInsertId();
+				$values,
+				true	// Return last inserted row's ID instead of affected rows' count
+			);
+			if ($result > 0)
+				$this->battleReportID = $result;
         } else {
 			$values["battleReportID"] = $this->battleReportID;
             $result = $db->query(
