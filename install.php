@@ -89,12 +89,22 @@ if (strtolower($br_login_via_eve_sso) == "yes") {
 // Ask who will be able to login
 out();
 out("Do you want to enable characters from other corporations to login, too?" . PHP_EOL .
-	"This will enable them to post comments." . PHP_EOL .
+	"Being logged in is required to post comments." . PHP_EOL .
 	"Creating and editing battle reports still will be limited to corp members!");
-$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps's members to login", "no");
+$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps' members to login", "yes");
 $config["BR_LOGIN_ONLY_OWNERCORP"] = "true";
 if (strtolower($br_login_othercorps) == "yes")
 	$config["BR_LOGIN_ONLY_OWNERCORP"] = "false";
+
+
+// Ask for advanced functions
+out();
+out("Do you want to enable comments on BattleReports?");
+$enableComments = prompt("Enter \"yes\" or \"no\"", "yes");
+if (strtolower($enableComments) == "yes")
+	$config["BR_COMMENTS_ENABLED"] = "true";
+else
+	$config["BR_COMMENTS_ENABLED"] = "false";
 
 
 // Specify where to fetch the killmails from
@@ -146,16 +156,6 @@ out("By default, a user account named \"admin\" will be created." . PHP_EOL .
 $adminPassword = "";
 while (empty($adminPassword))
 	$adminPassword = prompt("Enter admin password", "");
-
-
-// Ask for advanced functions
-out();
-out("Do you want to allow logged in users to comment on BattleReports?");
-$enableComments = prompt("Enter \"yes\" or \"no\"", "no");
-if (strtolower($enableComments) == "yes")
-	$config["BR_COMMENTS_ENABLED"] = "true";
-else
-	$config["BR_COMMENTS_ENABLED"] = "false";
 
 
 // Write config to file
@@ -259,17 +259,7 @@ try {
 		
 		$sqlFile = "$basePath/database/$file";
 		
-		$handle = fopen($sqlFile, "r");
-		$query = "";
-		while ($buffer = fgets($handle)) {
-			$query .= $buffer;
-			if (strpos($query, ";") !== false) {
-				$query = str_replace(";", "", $query);
-				$db->query($query);
-				$query = "";
-			}
-		}
-		fclose($handle);
+		$db->import($sqlFile);
 		
 		out("|g|done");
 	}
