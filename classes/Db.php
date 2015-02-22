@@ -37,7 +37,7 @@ class Db {
 				$this->user,
 				$this->password,
 				array(
-					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET time_zone = '+00:00",
+					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8, time_zone = '+00:00'",
 					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_EMULATE_PREPARES => false,
@@ -93,13 +93,14 @@ class Db {
 		// of the use of BUFFERED QUERIES
 		$this->sQuery->closeCursor();
 		
-		$this->closeConnection();
-		
 		return $result;
 		
 	}
 	
 	private function performExecution($query, array $params = array(), $returnID = false) {
+		
+		if (!$this->bConnected)
+			$this->connect();
 		
 		$this->pdo->beginTransaction();
 		
@@ -125,8 +126,6 @@ class Db {
 		// of the use of BUFFERED QUERIES
 		$this->sQuery->closeCursor();
 		
-		$this->closeConnection();
-		
 		return $returnID ? $lastInsertID : $rowCount;
 		
 	}
@@ -145,7 +144,7 @@ class Db {
 			if ($varParam !== null)
 				$fetchmode = $varParam;
 			return $this->performQuery($query, $params, $fetchmode);
-		} elseif ($statement === 'insert' || $statement === 'update' || $statement === 'delete') {
+		} else {
 			if ($varParam !== null)
 				$returnID = $varParam;
 			return $this->performExecution($query, $params, $returnID);
