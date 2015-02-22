@@ -15,25 +15,33 @@ class Db {
     
     private $parameters;
     
-    public function __construct($dbname, $user, $password, $host) {
-        $this->connect($dbname, $user, $password, $host);
-    }
-    
-	private function connect($dbname, $user, $password, $host = "127.0.0.1") {
+	private $dbname;
+	private $user;
+	private $password;
+	private $host;
+	
+	public function __construct($dbname, $user, $password, $host = "127.0.0.1") {
+		$this->dbname = $dbname;
+		$this->user = $user;
+		$this->password = $password;
+		$this->host = $host;
+	}
+	
+	private function connect() {
 		
-		$dsn = 'mysql:dbname=' . $dbname . ';host=' . $host . '';
+		$dsn = 'mysql:dbname=' . $this->dbname . ';host=' . $this->host . '';
 		
 		try {
 			$this->pdo = new PDO(
 				$dsn,
-				$user,
-				$password,
+				$this->user,
+				$this->password,
 				array(
 					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET time_zone = '+00:00",
 					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_EMULATE_PREPARES => false,
-					PDO::ATTR_PERSISTENT => false
+					PDO::ATTR_PERSISTENT => true
 				)
 			);
 			$this->bConnected = true;
@@ -43,11 +51,13 @@ class Db {
 		
 	}
 	
-    public function closeConnection() {
-        $this->pdo = null;
-    }
-    
-    private function init($query, array $parameters = array()) {
+	public function closeConnection() {
+		$this->bConnected = false;
+		$this->sQuery = null;
+		$this->pdo = null;
+	}
+	
+	private function init($query, array $parameters = array()) {
 		
 		if (!$this->bConnected)
 			$this->connect();
@@ -83,6 +93,8 @@ class Db {
 		// of the use of BUFFERED QUERIES
 		$this->sQuery->closeCursor();
 		
+		$this->closeConnection();
+		
 		return $result;
 		
 	}
@@ -112,6 +124,8 @@ class Db {
 		// Close the cursor, necessary because
 		// of the use of BUFFERED QUERIES
 		$this->sQuery->closeCursor();
+		
+		$this->closeConnection();
 		
 		return $returnID ? $lastInsertID : $rowCount;
 		
