@@ -204,6 +204,47 @@ class Db {
 		
 	}
 	
+	public function import($sqlFile = "") {
+		
+		if (empty($sqlFile))
+			return false;
+		
+		$handle = fopen($sqlFile, "r");
+		$query = "";
+		
+		while ($buffer = fgets($handle)) {
+			
+			// Skip comments and empty lines ...
+			if (substr($buffer, 0, 2) == '--' || substr($buffer, 0, 1) == '#' || $buffer == '')
+				continue;
+			
+			// ... anything else gets concatenated
+			// to the resulting statement
+			$query .= trim($buffer);
+			
+			if (substr($query, -1, 1) == ';') {
+				
+				$query = trim(substr($query, 0, -1));
+				$rawStatement = explode(" ", $query);
+				$statement = strtolower($rawStatement[0]);
+				
+				// Omit lock and unlock statements as
+				// they interfere heavily with out db handler
+				if ($statement != "lock" && $statement != "unlock")
+					$this->query($query);
+				
+				$query = "";
+				
+			}
+			
+		}
+		
+		fclose($handle);
+		
+		return true;
+		
+	}
+	
 	
 	//private static $instance = null;
 	
