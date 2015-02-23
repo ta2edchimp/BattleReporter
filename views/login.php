@@ -5,7 +5,7 @@ if (User::isLoggedIn())
 
 if (!$app->request->isPost()) {
     $app->render("login.html", array(
-    	"loginReferer" => $_SERVER["HTTP_REFERER"]
+    	"loginReferer" => isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""
     ));
 } else {
     
