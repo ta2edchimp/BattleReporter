@@ -23,7 +23,7 @@ The dependencies will be met by the use of [Composer](http://getcomposer.org/) d
 
 Ensure to have url rewriting enabled and set up properly in your web server for `Slim` to function as expected (see the corresponding [documentation](https://github.com/codeguy/Slim#setup-your-web-server) for more information on how to set this up correctly).
 
-### Setup:
+### Installation:
 
 As of release `0.1.6`, a basic installer comes with BattleReporter. Run
 
@@ -40,6 +40,16 @@ When registering your BattleReporter installation in the EVE-Dev. portal, ensure
 	http://br.yourcorp.net/login/eve-sso-auth
 
 After hitting `Create Application`, you'll acquire a `Client ID` and a `Secret Key`. These are the values required during BattleReporter's installation process.
+
+### Update:
+
+As of release `0.3.3`, an update script will assist you in the process of updating BattleReporter's components. Run
+
+	$ php update.php
+
+to launch it. It will update [Composer](http://getcomposer.org), update existing and install new dependencies, as well as update the database tables.
+
+You may use the updater to update or modify the EVE Online Data at anytime. Just replace the files within `/database` and run the update script again. (_Hint:_ the tables required for operation are `mapSolarSystems`, `invGroups` and `invTypes`).
 
 ## Acknowledgements & Legal Stuff
 
