@@ -13,8 +13,6 @@ class Db {
     
     private $bConnected = false;
     
-    private $parameters;
-    
 	private $dbname;
 	private $user;
 	private $password;
