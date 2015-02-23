@@ -1,5 +1,17 @@
-# Release develop
+# Release 0.3.3
 
+661120f Version Bump.
+9bfa1af Merge branch 'feature/updater-basic' into develop
+83677a3 Updated ...
+d2dd1f3 Create updater, closes #29
+36c1638 Fixed indetation ...
+3ded070 Fixes #59
+8a1ce2d Merge branch 'feature/proper-logging' into develop
+7a0112b Added `DateTimeFileLogger` to enable proper loggin, closes #56
+44ffb64 Reworked default `phpFastCache` options to be more consistent.
+ea6d0d9 Fixed version property location within json.
+26859e9 Remove obsolete variable. Closes #57
+63ed2d3 Version Bump.
 
 # Release 0.3.2
 
