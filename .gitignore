@@ -4,5 +4,6 @@
 /composer.lock
 vendor/
 cache/
+logs/
 public/test.php
 public/.htaccess

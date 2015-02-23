@@ -7,10 +7,7 @@ class Session implements SessionHandlerInterface {
     private $ttl = 7200;
     
     public function __construct() {
-        $this->cache = new phpFastCache("files", array(
-           "path" => __DIR__ . "/../cache",
-		   "htaccess" => false
-        ));
+        $this->cache = phpFastCache();
     }
     
     public function open($savePath, $sessionName) {
