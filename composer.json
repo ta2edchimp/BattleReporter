@@ -6,6 +6,7 @@
         "twig/twig": "~1.0",
         "slim/slim": "2.*",
         "slim/views": "0.1.*",
+        "slim/logger": "0.1.*",
         "filp/whoops": "1.*",
         "zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",

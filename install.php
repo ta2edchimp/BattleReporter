@@ -302,11 +302,19 @@ try {
 }
 out("|g|success");
 
+
 out();
 out("Creating cache directories ... ", false);
 @mkdir("$basePath/cache/");
 @mkdir("$basePath/cache/pheal/");
 out("|g|success");
+
+
+out();
+out("Creating log directory ...", false);
+@mkdir("$basePath/logs/");
+out("|g|success");
+
 
 out();
 out("|g|BattleReporter successfully installed");

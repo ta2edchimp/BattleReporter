@@ -20,7 +20,13 @@ Db::setCredentials(DB_NAME, DB_USER, DB_PASS, DB_HOST);
 $db = Db::getInstance();
 
 // Global (Slim) application object
-$app = new \Slim\Slim();
+$app = new \Slim\Slim(array(
+	'log.enabled' => true,
+	'log.level' => $BR_DEBUGMODE === true ? \Slim\Log::DEBUG : \Slim\Log::WARN,
+	'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
+		'path' => "$basePath/logs"
+	))
+));
 
 $app->config('debug', $BR_DEBUGMODE);
 
@@ -36,8 +42,9 @@ $app->config(array("templates.path" => "$basePath/public/themes/$theme"));
 $app->view(new \Slim\Views\Twig());
 
 // Give us pretty error messages ... (if in debug mode)
-if ($BR_DEBUGMODE === true)
-    $app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
+if ($BR_DEBUGMODE === true) {
+	$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
+}
 
 // Configuring PhealNG
 // Enable Caching -- ATTENTION: Directory MUST exist already!!
