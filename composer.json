@@ -2,6 +2,7 @@
     "name": "ta2edchimp/battlereporter",
     "description": "Advanced editable BattleReport platform for EVE Online.",
     "license": "Beerware",
+    "version": "0.3.1",
     "require": {
         "twig/twig": "~1.0",
         "slim/slim": "2.*",
@@ -13,6 +14,5 @@
         "erusev/parsedown": "1.*"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "version": "0.3.1"
+    "prefer-stable": true
 }
