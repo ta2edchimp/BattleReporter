@@ -6,6 +6,15 @@ date_default_timezone_set("UTC");
 // Global base path holder
 $basePath = dirname(__FILE__);
 
+// Global caching settings
+phpFastCache::setup(array(
+	'storage' => 'file',
+	'htaccess' => false,
+	'path' => "$basePath/cache",
+	'securityKey' => 'battleReporter'
+));
+phpFastCache::$default_chmod = 0777;
+
 // Global database access wrapper object
 Db::setCredentials(DB_NAME, DB_USER, DB_PASS, DB_HOST);
 $db = Db::getInstance();
@@ -32,6 +41,6 @@ if ($BR_DEBUGMODE === true)
 
 // Configuring PhealNG
 // Enable Caching -- ATTENTION: Directory MUST exist already!!
-\Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage(__DIR__ . '/cache/pheal/');
+\Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage("$basePath/cache/pheal/");
 // Enable AccessMask Check
 \Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();

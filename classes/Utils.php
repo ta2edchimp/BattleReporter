@@ -70,10 +70,9 @@ class Utils {
         $cache = null;
         
         if ($caching === true) {
-            if (isset($options["cachePath"]))
-                $cache = new phpFastCache("files", array("path" => $options["cachePath"]));
-            else
-                $cache = new phpFastCache("files");
+			// `cachePath` option now deprecated,
+			// use application's default cache path for phpFastCache
+			$cache = phpFastCache();
             if ($cache !== null)
                 $result = $cache->get($url);
         }
