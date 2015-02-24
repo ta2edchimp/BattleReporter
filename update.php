@@ -32,11 +32,7 @@ out("The updater will make an update of the existing BattleReporter database," .
 
 prompt("Please hit enter to you are ready to proceed");
 
-/**
-	REMOVE
-**/ if (1==2) { /**
-	/REMOVE
-**/
+
 // Updating Composer ...
 out();
 out("Updating Composer ... ");
@@ -60,11 +56,7 @@ try {
 	out("Could not update dependencies via Composer:" . PHP_EOL . $ex->getMessage(), true, true);
 }
 out("|g|success");
-/**
-	REMOVE
-**/ } /**
-	/REMOVE
-**/
+
 
 // Load configuration
 out("Trying to include the current configuration ... ", false, false);
