@@ -166,7 +166,7 @@ foreach ($config as $key => $value)
 	$configFileContents = str_replace("%$key%", $value, $configFileContents);
 
 out();
-out("Writing config file ... ", false);
+out("Writing config file ... ", false, false);
 
 if (file_put_contents($configFile, $configFileContents) === false)
 	out("|r|failed" . PHP_EOL . "Could not write config file $configFile", true, true);
@@ -176,7 +176,7 @@ out("|g|success");
 
 // Test the configured settings
 out();
-out("Testing configured settings ... ", false);
+out("Testing configured settings ... ");
 
 try {
 	require_once($configFile);
@@ -190,7 +190,7 @@ out("|g|success");
 
 // Run composer to meet all dependencies
 out();
-out("Installing dependencies via composer ...", false);
+out("Installing dependencies via composer ...");
 try {
 	// Check if composer isn't already installed
 	$location = exec("which composer");
@@ -225,7 +225,7 @@ out("|g|success");
 
 // Test the database connection
 out();
-out("Initializing and testing database connection ... ", false);
+out("Initializing and testing database connection ... ", false, false);
 try {
 	chdir($basePath);
 	require_once("$basePath/classes/Db.php");
@@ -271,7 +271,7 @@ try {
 
 
 out();
-out("Setting up |w|admin|n| user account ... ", false);
+out("Setting up |w|admin|n| user account ... ", false, false);
 $adminPasswordHashed = "";
 // ... and finally set up the admin user account
 if (!function_exists('password_hash')) {
@@ -304,14 +304,14 @@ out("|g|success");
 
 
 out();
-out("Creating cache directories ... ", false);
+out("Creating cache directories ... ", false, false);
 @mkdir("$basePath/cache/");
 @mkdir("$basePath/cache/pheal/");
 out("|g|success");
 
 
 out();
-out("Creating log directory ...", false);
+out("Creating log directory ...", false, false);
 @mkdir("$basePath/logs/");
 out("|g|success");
 
