@@ -33,6 +33,16 @@ out("The updater will make an update of the existing BattleReporter database," .
 prompt("Please hit enter to you are ready to proceed");
 
 
+out();
+out("Checking for required cache and log directories ... ", false, false);
+$requiredFolders = array("$basePath/cache/", "$basePath/cache/pheal/", "$basePath/logs/");
+foreach ($requiredFolders as $folder) {
+	if (!file_exists($folder))
+		@mkdir($folder);
+}
+out("|g|done");
+
+
 // Updating Composer ...
 out();
 out("Updating Composer ... ");
