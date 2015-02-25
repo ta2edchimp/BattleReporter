@@ -1,5 +1,7 @@
 <?php
 
+define('BR_VERSION', '0.3.4');
+
 require_once('vendor/autoload.php');
 
 require_once('classes/Db.php');
