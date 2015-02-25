@@ -1,3 +1,15 @@
+# Release 0.3.4
+
+- d8272d9 Change suffix to support Markdown detection on this file.
+- edd2573 Changed to Markdown.
+- 927910b Set phpFastCache dependency to fixed version, closes #58
+- 598c991 Remove version field, as it is recommended to leave it out.
+- b30b180 Added check for required folders, create them if necessary.
+- 617754a Corrected some line-breaks ...
+- 468d97c Bugfix .. stupid me.
+- c7c76c3 Fixed version info and Changelog ...
+- 661120f Version Bump.
+
 # Release 0.3.3
 
 - 661120f Version Bump.
