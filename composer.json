@@ -10,7 +10,7 @@
         "filp/whoops": "1.*",
         "zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",
-        "phpfastcache/phpfastcache": "dev-final",
+        "phpfastcache/phpfastcache": "2.*",
         "erusev/parsedown": "1.*"
     },
     "minimum-stability": "stable",
