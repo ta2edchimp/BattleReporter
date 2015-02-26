@@ -177,9 +177,7 @@ class User {
 			$pheal = new \Pheal\Pheal(null, null, "eve");
 			$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
 		} catch (PhealException $ex) {
-			/*
-			 * This should be logged properly!
-			 */
+			$app->log->warn("Could not fetch CharacterInfo for charName \"" . $characterName . "\", charID " . $characterID . "!");
 			
 			// Either way, as the user can't
 			// be verified, this will be the end ...
@@ -243,6 +241,8 @@ class User {
 		
 		if ($userInfo["isAdmin"] == 1 || (BR_LOGIN_ONLY_OWNERCORP !== true || $apiLookUp->corporationID == BR_OWNERCORP_ID)) {
 			$_SESSION["isLoggedIn"] = $userInfo["userID"];
+			// Try to update SSO users' rights
+			self::updatePermissionsByRoles();
 			return true;
 		}
 		
@@ -280,6 +280,8 @@ class User {
     
     public static function can($right = "") {
         
+		$right = strtoupper($right);
+		
         if (empty($right))
             return false;
         
@@ -293,12 +295,116 @@ class User {
         
         // Rights to "create" and "edit" battle reports is
         // restricted to users of the same corporation
-        if ($userInfos["corporationID"] == BR_OWNERCORP_ID)
+        if (($right == "CREATE" || $right == "EDIT") && $userInfos["corporationID"] == BR_OWNERCORP_ID)
             return true;
         
+		$db = Db::getInstance();
+		$result = $db->row(
+			"SELECT * FROM brUserPermissions WHERE brUserID = :brUserID AND brPermission = :brPermission",
+			array(
+				"brUserID" => self::getUserID(),
+				"brPermission" => $right
+			)
+		);
+		if ($result !== FALSE)
+			return true;
+		
         return false;
         
     }
+	
+	public static function is($what = "") {
+		
+		return self::can($what);
+		
+	}
+	
+	public static function updatePermissionsByRoles() {
+		
+		if (BR_LOGINMETHOD_EVE_SSO !== true)
+			return false;
+		
+		$app = \Slim\Slim::getInstance();
+		$db = Db::getInstance();
+		
+		$roleCheckKey = $db->row("SELECT * FROM brEveApiKeys WHERE brApiKeyName = 'RoleCheck' AND brApiKeyOwnerID = 0 AND brApiKeyActive = 1");
+		
+		// If there's no (active) RoleCheck API Key: bye bye
+		if ($roleCheckKey === FALSE)
+			return false;
+		
+		try {
+			$pheal = new \Pheal\Pheal($roleCheckKey["keyID"], $roleCheckKey["vCode"], "corp");
+			$result = $pheal->MemberSecurity();
+		} catch (PhealException $ex) {
+			$app->log->error("Could not fetch MemberSecurity because of an Exception:\n" . $ex);
+			return false;
+		}
+		
+		// Delete all sso users' permissions
+		$db->query(
+			"DELETE FROM brUserPermissions " .
+			"WHERE brUserID IN (" .
+				"SELECT brUserID FROM brUsers WHERE characterID IS NOT NULL AND corporationID = :corporationID" .
+			")",
+			array(
+				"corporationID" => BR_OWNERCORP_ID
+			)
+		);
+		
+		// Loop through all current corp members
+		foreach ($result->members as $character) {
+			
+			$roleDirector = false;
+			
+			foreach ($character->roles as $role) {
+				if ($role->roleName == "roleDirector") {
+					$roleDirector = true;
+					break;
+				}
+			}
+			
+			//$app->log->debug(
+			echo "<p>Found \"" . $character->name . "\" #" . $character->characterID .
+				($roleDirector === true ? " IS " : " IS NOT ") .
+				"a director.</p>";
+			//);
+			
+			if ($roleDirector !== true)
+				continue;
+			
+			$userID = $db->single(
+				"SELECT userID FROM brUsers " .
+				"WHERE userName = :userName AND characterID = :characterID AND corporationID = :corporationID",
+				array(
+					"userName" => $character->name,
+					"characterID" => $character->characterID,
+					"corporationID" => BR_OWNERCORP_ID
+				)
+			);
+			
+			if ($userID === FALSE)
+				continue;
+			
+			$insRes = $db->query(
+				"INSERT INTO brUserPermissions (brUserID, brPermission) " .
+				"VALUES " .
+				"(:brDeleteUserID, :brDeletePermission), " .
+				"(:brDirectorUserID, :brDirectorPermission)",
+				array(
+					"brDeleteUserID" => $userID,
+					"brDeletePermission" => "DELETE",
+					"brDirectorUserID" => $userID,
+					"brDirectorPermission" => "DIRECTOR"
+				)
+			);
+			
+			if ($insRes !== 2)
+				$app->log->warn("Could not insert 'DELETE' and 'DIRECTOR' permissions for user with ID " . $userID);
+			
+		}
+		
+	}
     
     public static function getIP() {
         
