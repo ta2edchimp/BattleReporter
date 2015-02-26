@@ -127,3 +127,12 @@ if (User::isAdmin()) {
 		
 	});
 }
+
+// Slack.com Integration
+if (BR_API_SLACK_ENABLED === true && BR_API_SLACK_TOKEN !== '') {
+	$app->map('/api/slack', function () use ($app) {
+		
+		include("api/slack.php");
+		
+	})->via('GET', 'POST');
+}
