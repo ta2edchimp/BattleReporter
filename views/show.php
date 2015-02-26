@@ -25,10 +25,12 @@ if ($battleReport->published === false) {
 }
 	
 // ... but only admins and owners may actually edit this one.
-if (User::isLoggedIn() && (User::isAdmin() || $battleReport->creatorUserID == User::getUserID())) {
+$userIsAdminOrDirector = User::isAdmin() || User::is("Director");
+if (User::isLoggedIn() && ($userIsAdminOrDirector || $battleReport->creatorUserID == User::getUserID())) {
 	$twigEnv = $app->view()->getEnvironment();
 	$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
 	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
+	$twigEnv->addGlobal("BR_USER_CAN_DELETE", $userIsAdminOrDirector);
 }
 
 $battleReportDetailTitle = "Battle Overview";

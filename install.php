@@ -97,6 +97,36 @@ if (strtolower($br_login_othercorps) == "yes")
 	$config["BR_LOGIN_ONLY_OWNERCORP"] = "false";
 
 
+// Ask, whether to store an api key to check characters' roles within the owner corp
+out();
+out("If you wish, you may provide an API Key now." . PHP_EOL .
+	"It will allow you to enable BattleReporter to permit deleting battle reports" . PHP_EOL .
+	"to users who are |w|Directors|n| of |w|" . $config["BR_OWNERCORP_NAME"] . "|n|.");
+$apiKeyID = "";
+$apiKeyvCode = "";
+$apiKeyActive = false;
+$apiSetup = strtolower(prompt("Would you like to set it up? Enter \"yes\" or \"no\"", "yes"));
+if ($apiSetup == "y" || $apiSetup == "yes") {
+	
+	out();
+	out("Please browse to |b|https://community.eveonline.com/support/api-key/|n| and create" . PHP_EOL .
+		"a new API Key for your |w|corporation|n| (NOT character!) with at least access" . PHP_EOL .
+		"granted to |w|MemberSecurity|n| (AccessMask = 512)." . PHP_EOL .
+		"If you leave a field empty, API Key configuration will be cancelled.");
+	
+	$apiKeyID = prompt("API Key ID:", "");
+	if (!empty($apiKeyID))
+		$apiKeyvCode = prompt("API Key vCode", "");
+	
+	if (!empty($apiKeyID) && !empty($apiKeyvCode)) {
+		out();
+		$result = strtolower(prompt("Do you want to permit deleting reports to |y|Directors|n|?", "yes"));
+		$apiKeyActive = ($result == "y" || $result == "yes");
+	}
+	
+}
+
+
 // Ask for advanced functions
 out();
 out("Do you want to enable comments on BattleReports?");
@@ -303,6 +333,36 @@ try {
 out("|g|success");
 
 
+// If provided and configured, save the RoleCheck API Key and set it to active
+if (($apiSetup == "y" || $apiSetup == "yes") && !empty($apiKeyID) && !empty($apiKeyvCode)) {
+	
+	$result = $db->query(
+		"INSERT INTO brEveApiKeys " .
+			"(brApiKeyName, brApiKeyOwnerID, brApiKeyActive, keyID, vCode) " .
+		"VALUES " .
+			"(:brApiKeyName, :brApiKeyOwnerID, :brApiKeyActive, :keyID, :vCode)",
+		array(
+			"brApiKeyName" => "RoleCheck",
+			"brApiKeyOwnerID" => 0,
+			"brApiKeyActive" => $apiKeyActive ? 1 : 0,
+			"keyID" => $apiKeyID,
+			"vCode" => $apiKeyvCode
+		)
+	);
+	
+	if ($result === 1) {
+		out("|g|successfully stored API Key in database");
+		if ($apiKeyActive === true)
+			out("|g|successfully enabled character role check");
+	} else {
+		out("|r|storing API Key in database failed");
+		if ($apiKeyActive === true)
+			out("|r|enabling character role check failed");
+	}
+	
+}
+
+
 out();
 out("Creating cache directories ... ", false, false);
 @mkdir("$basePath/cache/");
@@ -330,11 +390,12 @@ out("You may now browse to your BattleReporter's site and login as admin.");
 function out($message = "", $die = false, $newline = true) {
 	
 	$colors = array(
-		"|w|" => "1;37",	//White
-		"|b|" => "0;34",	//Blue
-		"|g|" => "0;32",	//Green
-		"|r|" => "0;31",	//Red
-		"|n|" => "0"		//Neutral
+		"|w|" => "1;37",	// White
+		"|b|" => "0;34",	// Blue
+		"|y|" => "0;33",	// Yellow
+		"|g|" => "0;32",	// Green
+		"|r|" => "0;31",	// Red
+		"|n|" => "0"		// Neutral
 	);
 	
 	$message = "$message|n|";
