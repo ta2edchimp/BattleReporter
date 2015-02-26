@@ -1,3 +1,13 @@
+# Release 0.3.5
+
+- 5c800ec Merge branch 'feature/corproles-accountpermissions' into develop
+- ada9f74 Updated for new corp roles feature.
+- 840eef5 Update to new roles per API feature.
+- 738d1af Update user permissions by role in corp.
+- 51971dd db schema for user roles besides normal and admin.
+- 38add76 db schema for storing api keys.
+- 40a445e Merge branch 'release/0.3.4' into develop
+
 # Release 0.3.4
 
 - d8272d9 Change suffix to support Markdown detection on this file.
