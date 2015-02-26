@@ -211,6 +211,88 @@ try {
 }
 
 
+// Check, if there's a Corporation API Key for checking character roles saved ...
+out();
+out("Checking for API Key to check character's corp roles ... ", false, false);
+try {
+	
+	$result = $db->row("SELECT * FROM brEveApiKeys WHERE brApiKeyName = 'RoleCheck' AND brApiKeyOwnerID = 0");
+	
+	if ($result === FALSE) {
+		
+		out("|y|not found");
+		
+		out();
+		out("You may enter an API Key now." . PHP_EOL .
+			"It will allow you to enable BattleReporter to permit deleting battle reports" . PHP_EOL .
+			"to users who are |w|Directors|n| of |w|" . BR_OWNERCORP_NAME . "|n|.");
+		
+		$setupNow = strtolower(prompt("Would you like to set it up now? (y)es or (n)o", "y"));
+		
+		if ($setupNow == "y" || $setupNow == "yes") {
+			
+			out();
+			out("Please browse to |b|https://community.eveonline.com/support/api-key/|n| and create" . PHP_EOL .
+				"a new API Key for your |w|corporation|n| (NOT character!) with at least access" . PHP_EOL .
+				"granted to |w|MemberSecurity|n| (AccessMask = 512)." . PHP_EOL .
+				"If you leave a field empty, API Key configuration will be cancelled.");
+			
+			$keyID = "";
+			$vCode = "";
+			$keyActive = false;
+			
+			$keyID = prompt("API Key ID:", "");
+			if (!empty($keyID))
+				$vCode = prompt("API Key vCode", "");
+			
+			if (!empty($keyID) && !empty($vCode)) {
+				
+				out();
+				$result = strtolower(prompt("Do you want to permit deleting reports to |y|Directors|n|?", "y"));
+				$keyActive = ($result == "y" || $result == "yes");
+				
+				$result = $db->query(
+					"INSERT INTO brEveApiKeys " .
+						"(brApiKeyName, brApiKeyOwnerID, brApiKeyActive, keyID, vCode) " .
+					"VALUES " .
+						"(:brApiKeyName, :brApiKeyOwnerID, :brApiKeyActive, :keyID, :vCode)",
+					array(
+						"brApiKeyName" => "RoleCheck",
+						"brApiKeyOwnerID" => 0,
+						"brApiKeyActive" => $keyActive ? 1 : 0,
+						"keyID" => $keyID,
+						"vCode" => $vCode
+					)
+				);
+				
+				if ($result === 1) {
+					out("|g|successfully stored API Key in database");
+					if ($keyActive === true)
+						out("|g|successfully enabled character role check");
+				} else {
+					out("|r|storing API Key in database failed");
+					if ($keyActive === true)
+						out("|r|enabling character role check failed");
+				}
+				
+			} else {
+				out("|y|API Key configuration and character role check setup cancelled");
+			}
+			
+		}
+		
+	} elseif ($result === NULL) {
+		out("|r|failed");
+	} else {
+		out("|g|success");
+	}
+	
+} catch (Exception $ex) {
+	out(" |r|failure" . PHP_EOL .
+		$ex);
+}
+
+
 /*
 ** Disabling any kind of maintenance mode or sth.
 ** should go here.

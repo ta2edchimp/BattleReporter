@@ -41,7 +41,13 @@ When registering your BattleReporter installation in the EVE-Dev. portal, ensure
 
 After hitting `Create Application`, you'll acquire a `Client ID` and a `Secret Key`. These are the values required during BattleReporter's installation process.
 
-### Update:
+#### User Permissions by Role in Corp
+
+As of release `0.3.5`, it is possible to provide an EVE Online API Key to let BattleReporter check its owner corporation's members and their roles. Users logging in with characters who possess the `Director` role can then get the permission to edit, (un)publish and delete other users' battle reports.
+
+For this to work, when setting up an [API Key](https://community.eveonline.com/support/api-key/), it is required to be of type `Corporation` and having access to `MemberSecurity` (AccessMask: `512`).
+
+## Update:
 
 As of release `0.3.3`, an update script will assist you in the process of updating BattleReporter's components. Run
 

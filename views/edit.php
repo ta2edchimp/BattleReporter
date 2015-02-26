@@ -22,17 +22,19 @@ if ($battleReport->load($battleReportID, false, true) === false) {
 // Admins may edit every battle report,
 // normal users may only edit their own battle reports.
 $twigEnv = $app->view()->getEnvironment();
-if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
+$userIsAdminOrDirector = User::isAdmin() || User::is("Director");
+if ($userIsAdminOrDirector || $battleReport->creatorUserID == User::getUserID()) {
 	
 	$twigEnv->addGlobal("BR_USER_CAN_EDIT", true);
 	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", true);
+	$twigEnv->addGlobal("BR_USER_CAN_DELETE", $userIsAdminOrDirector);
 	
 	if (strtolower($battleReportEditAction) == "unpublish") {
 		$battleReport->unpublish();
 		$app->redirect("/");
 	}
 	
-	if (User::isAdmin() && strtolower($battleReportEditAction) == "delete") {
+	if ($userIsAdminOrDirector && strtolower($battleReportEditAction) == "delete") {
 		$battleReport->delete();
 		$app->redirect("/");
 	}
@@ -40,6 +42,7 @@ if (User::isAdmin() || $battleReport->creatorUserID == User::getUserID()) {
 } else {
 	$twigEnv->addGlobal("BR_USER_CAN_EDIT", false);
 	$twigEnv->addGlobal("BR_USER_CAN_UNPUBLISH", false);
+	$twigEnv->addGlobal("BR_USER_CAN_DELETE", false);
 }
 
 // User posted changes to the current battle report
