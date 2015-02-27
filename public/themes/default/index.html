@@ -26,18 +26,26 @@ a.direct-link:hover,a.direct-link:focus{opacity:1;}
     <table id="battleReports-overview" class="panel-body table table-striped table-hover ">
         <tbody>
         {% for battle in battleList %}
-            <tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} title="BattleReport is unpublished"{% endif %}>
-                <td><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">
+			<tr data-battle-report-id="{{ battle.battleReportID }}"{% if battle.published == 0 %} title="BattleReport is unpublished"{% endif %}>
+				<td style="width:100%"><a href="/show/{{ battle.battleReportID }}" class="br-inv-link">
 					{% if battle.published == 0 %}<span class="label label-info">UNPUBLISHED</span>{% endif %}
 					{% if battle.title != '' %}{{ battle.title }}{% else %}<em>(Untitled)</em>{% endif %}
 					</a></td>
+				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
 				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
-				<td class="no-break hidden-xs">{% if battle.footageCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}#footage"><span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span></a>{% endif %}</td>
+				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
+				<td class="no-break hidden-xxs">{% if battle.footageCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}#footage"><span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span><span class="hidden-xs"> {{ battle.footageCount }}</span></a>{% endif %}</td>
 				{% if BR_COMMENTS_ENABLED == true %}
-				<td class="no-break hidden-xs">{% if battle.commentCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}/comments"><span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span></a>{% endif %}</td>
+				<td class="no-break hidden-xxs">{% if battle.commentCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}/comments"><span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span><span class="hidden-xs"> {{ battle.commentCount }}</span></a>{% endif %}</td>
 				{% endif %}
+				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
                 <td class="no-break hidden-xxs">{{ battle.solarSystemName }}</td>
-                <td class="no-break">{{ battle.date }}</td>
+				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
+				<td class="no-break">{{ battle.startTime|date('Y-m-d') }}</td>
+				<td class="no-break hidden-xs">{{ battle.startTime|date('H:i') }}</td>
+				<td class="no-break hidden-sm hidden-xs hidden-xxs">-</td>
+				<td class="no-break hidden-sm hidden-xs hidden-xxs">{{ battle.endTime|date('H:i') }}</td>
+				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
                 <td class="no-break hidden-xxxs text-right">{{ battle.brUniquePilotsTeamA }}</td>
                 <td class="no-break hidden-xxxs text-center">:</td>
 				{% if battle.brUniquePilotsTeamC < 1 %}
@@ -49,6 +57,7 @@ a.direct-link:hover,a.direct-link:focus{opacity:1;}
 					{{ battle.brUniquePilotsTeamC }}
 				</td>
 				{% endif %}
+				<td class="hidden-sm hidden-xs hidden-xxs hidden-xxxs">&nbsp;</td>
                 {% if battle.efficiency == 1 %}
                     {% set efficiencyClsName = 'text-success' %}
                 {% elseif battle.efficiency > 0.5 %}
