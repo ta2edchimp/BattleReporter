@@ -1,3 +1,13 @@
+# Release 0.3.6
+
+- bcb840d Merge branch 'feature/slack-integration' into develop
+- 117d71a Updated for instructions on `Slack` integration.
+- 2345f4d Implement `Slack` support (`Slash Command` and `Incoming WebHook`).
+- 1713d2e Basic Slash Command support for `Slack`.
+- e0c50e5 Basic posting to `Slack`.
+- 149b42e Basic Slack Webhook/Slash Command Implementation
+- 08ca91c Merge branch 'release/0.3.5' into develop
+
 # Release 0.3.5
 
 - 5c800ec Merge branch 'feature/corproles-accountpermissions' into develop
