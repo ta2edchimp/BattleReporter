@@ -108,7 +108,11 @@ You may proceed to configure the `Slash Command` in Slack. Recommended settings 
 
 * **Activate** `Show this command in the autocomplete list`.
 * Set **Description** to sth. like `Post BattleReports`.
-* Give **Usage hints**: `[help] [list] [latest] [id]`.
+* Give **Usage hints**: `[help, list, latest, id]`.
+
+**Usage:**
+
+Type `/battlereporter help` into the current channel's chat to get a list of options; Basically: enter `/battlereporter` (with or without appended `latest`) to post the latest created BattleReport, enter `/battlereporter list` to get a list of the 25 most recently created reports, or use `/battlereporter 123` to post the BattleReport with Id #123.
 
 ## Acknowledgements & Legal Stuff
 
