@@ -39,7 +39,7 @@ $app->map('/create', function () use ($app) {
 })->via('GET', 'POST');
 
 // Editing existing (and newly created) battle reports
-$app->map('/edit/:battleReportID(/:editAction)', function ($battleReportID, $battleReportEditAction = "") use ($app) {
+$app->map('/edit/:battleReportID(/:editAction)', function ($battleReportID, $battleReportEditAction = "") use ($app, $basePath) {
     
     include("views/edit.php");
     
@@ -126,4 +126,13 @@ if (User::isAdmin()) {
 		include("views/admin/admin.php");
 		
 	});
+}
+
+// Slack.com Integration
+if (BR_API_SLACK_ENABLED === true && BR_API_SLACK_TOKEN !== '') {
+	$app->map('/api/slack', function () use ($app, $basePath) {
+		
+		include("api/slack.php");
+		
+	})->via('GET', 'POST');
 }

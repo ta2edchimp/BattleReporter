@@ -76,14 +76,38 @@ if ($app->request->isPost()) {
 		
 		$battleReport->addFootage($footage);
 	}
-    
-    if ($success) {
-        $battleReport->publish();
+	
+	if ($success) {
+		
+		$previouslyUnpublished = !$battleReport->published;
+		
+		$battleReport->publish();
+		
+		// Check, whether to broadcast the newly published battle report
+		if ($previouslyUnpublished === true) {
+			
+			// Post to Slack?
+			if (BR_API_SLACK_ENABLED === true) {
+				
+				require_once ("$basePath/classes/API/Slack.php");
+				
+				$slack = new Slack(BR_API_SLACK_CHANNEL);
+				if ($slack->postBattleWithID($battleReport->battleReportID) === null) {
+					$app->log->warn("Something went wrong when trying to post the successfully published BattleReport #$battleReportID to Slack.");
+				}
+				
+			}
+			
+		}
+		
 		// No need to reload the battle report records
 		// as here comes the redirect, right away ...
-        $app->redirect("/show/$battleReportID");
-    } else {
-        $output["battleReportSavingError"] = true;
+		$app->redirect("/show/$battleReportID");
+		
+	} else {
+		
+		$output["battleReportSavingError"] = true;
+		
 	}
     
 }
