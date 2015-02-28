@@ -1,3 +1,19 @@
+# Release 0.3.8
+
+- 64c9e8e Merge branch 'feature/battle-summary' into develop
+- 4b71bd5 Markdown explanation added, closes #26
+- 3b3e1d1 Display summaries; show a preview and expandable rest on longer summaries.
+- 8c0d789 Merge branch 'hotfix/0.3.7' into develop
+- 5c6ffad Implement battle summary.
+- 92b1da6 Foundation for `continue reading` expander filter.
+- 62ad03b Implement a markdown filter.
+- 3e0e955 Include `battle summary` column.
+- fd2e14b Show # of videos in and comments on a br, closes #61.
+- b9774cb Of course, comments should not be teased on index, instead of footage, when `comments` are disabled.
+- ebdee60 Added basic instructions for the use of the new `Slack` Slash Command.
+- ffb3338 Add fallback for Slack messages to be shown in notifications.
+- 2e6ecdf Merge branch 'release/0.3.6' into develop
+
 # Release 0.3.7
 
 - 032c625 Fix #62
