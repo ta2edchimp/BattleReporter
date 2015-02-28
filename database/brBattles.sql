@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `brBattles`;
 CREATE TABLE `brBattles` (
   `battleReportID` int(11) NOT NULL AUTO_INCREMENT,
   `brTitle` text,
+  `brSummary` text,
   `brStartTime` int(11) NOT NULL DEFAULT '0',
   `brEndTime` int(11) NOT NULL DEFAULT '0',
   `solarSystemID` int(11) NOT NULL DEFAULT '0',
