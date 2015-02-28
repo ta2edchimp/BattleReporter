@@ -80,3 +80,11 @@ $twig_enable_urls_in_html_filter = new Twig_SimpleFilter('enable_urls', function
 	
 }, array('pre_escape' => 'html', 'is_safe' => array('html')));
 $twigEnv->addFilter($twig_enable_urls_in_html_filter);
+
+$twig_enable_markdown_filter = new Twig_SimpleFilter('enable_markdown', function ($string) {
+	
+	$pd = new Parsedown();
+	return $pd->text(htmlentities($string));
+	
+}, array('pre_escape' => 'html', 'is_safe' => array('html')));
+$twigEnv->addFilter($twig_enable_markdown_filter);
