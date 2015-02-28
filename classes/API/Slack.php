@@ -3,15 +3,13 @@
 class Slack {
 	
 	private $channelUrl;
-	private $token = "";
 	
-	public function __construct($channelUrl = "", $token = "") {
+	public function __construct($channelUrl = "") {
 		
 		if (empty($channelUrl))
 			throw new Exception("Could not instantiate Slack Integration, no Channel URL specified!");
 		
 		$this->channelUrl	= $channelUrl;
-		$this->token		= $token;
 		
 	}
 	
