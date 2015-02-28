@@ -602,16 +602,21 @@ class Battle {
 	
 	public static function getList(array $options = array()) {
 		
+		$params			= array();
+		
 		$onlyPublished	= isset($options["onlyPublished"]) && is_bool($options["onlyPublished"]) ? $options["onlyPublished"] : true;
 		$onlyIDs		= isset($options["onlyIDs"]) && is_bool($options["onlyIDs"]) ? $options["onlyIDs"] : false;
-		$limit			= isset($options["count"]) && is_int($options["count"]) ? (" limit " . intval($options["count"])) : "";
 		$id				= isset($options["id"]) && is_int($options["id"]) ? intval($options["id"]) : null;
-		
-		$params			= array();
+		$limit			= "";
 		
 		if ($id !== null) {
 			$limit = " limit 1";
 			$params["brID"] = $id;
+		} else {
+			if (isset($options["count"]) && is_int($options["count"])) {
+				$limit = " limit :limit";
+				$params["limit"] = intval($options["count"]);
+			}
 		}
 		
 		$db = Db::getInstance();
