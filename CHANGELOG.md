@@ -1,3 +1,9 @@
+# Release 0.3.7
+
+- 032c625 Fix #62
+- 01bebbb Fix #63
+- c2f454b Fix #64
+
 # Release 0.3.6
 
 - bcb840d Merge branch 'feature/slack-integration' into develop
