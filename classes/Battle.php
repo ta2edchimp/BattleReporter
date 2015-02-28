@@ -292,61 +292,6 @@ class Battle {
     }
     
     
-    public function getTimeline() {
-        
-        $timeline = array();
-        
-        $teams = array("teamA", "teamB", "teamC");
-        foreach ($teams as $team) {
-            foreach ($this->$team->members as $combatant) {
-                if ($combatant->died) {
-                    $timeline[] = array(
-                        "occurredToTeamA" => ($team == "teamA"),
-                        "occurredToTeamB" => ($team == "teamB"),
-                        "occurredToTeamC" => ($team == "teamC"),
-                        "timeStamp" => $combatant->killTime,
-                        "timeStampString" => date("H:i", $combatant->killTime),
-						"killID" => $combatant->killID,
-                        "combatantEventOccuredTo" => $combatant
-                    );
-                }
-            }
-        }
-        usort($timeline, 'Battle::timelineSorter');
-        
-        return $timeline;
-        
-    }
-	
-	
-	public function getComments() {
-		
-		$db = Db::getInstance();
-		
-		if ($this->battleReportID <= 0 || BR_COMMENTS_ENABLED !== true)
-			return array();
-		
-		$results = $db->query(
-			"select c.*, u.userID, u.userName, u.characterID, u.corporationID, cc.corporationName, u.allianceID, al.allianceName " .
-			"from brComments as c inner join brUsers as u " .
-				"on c.commentUserID = u.userID left outer join brCorporations as cc " .
-				"on u.corporationID = cc.corporationID left outer join brAlliances as al " .
-				"on u.allianceID = al.allianceID " .
-			"where c.battleReportID = :battleReportID and c.commentDeleteTime is NULL " .
-			"order by c.commentTime asc",
-			array(
-				"battleReportID" => $this->battleReportID
-			)
-		);
-		
-		if ($results === FALSE)
-			return array();
-		
-		return $results;
-		
-	}
-    
-    
     public function import($importedKills) {
         
         if (count($importedKills) <= 0)
@@ -406,6 +351,61 @@ class Battle {
         $this->updateDetails();
 		
     }
+	
+	
+	public function getTimeline() {
+		
+		$timeline = array();
+		
+		$teams = array("teamA", "teamB", "teamC");
+		foreach ($teams as $team) {
+			foreach ($this->$team->members as $combatant) {
+				if ($combatant->died) {
+					$timeline[] = array(
+						"occurredToTeamA" => ($team == "teamA"),
+						"occurredToTeamB" => ($team == "teamB"),
+						"occurredToTeamC" => ($team == "teamC"),
+						"timeStamp" => $combatant->killTime,
+						"timeStampString" => date("H:i", $combatant->killTime),
+						"killID" => $combatant->killID,
+						"combatantEventOccuredTo" => $combatant
+					);
+				}
+			}
+		}
+		usort($timeline, 'Battle::timelineSorter');
+		
+		return $timeline;
+		
+	}
+	
+	
+	public function getComments() {
+		
+		$db = Db::getInstance();
+		
+		if ($this->battleReportID <= 0 || BR_COMMENTS_ENABLED !== true)
+			return array();
+		
+		$results = $db->query(
+			"select c.*, u.userID, u.userName, u.characterID, u.corporationID, cc.corporationName, u.allianceID, al.allianceName " .
+			"from brComments as c inner join brUsers as u " .
+				"on c.commentUserID = u.userID left outer join brCorporations as cc " .
+				"on u.corporationID = cc.corporationID left outer join brAlliances as al " .
+				"on u.allianceID = al.allianceID " .
+			"where c.battleReportID = :battleReportID and c.commentDeleteTime is NULL " .
+			"order by c.commentTime asc",
+			array(
+				"battleReportID" => $this->battleReportID
+			)
+		);
+		
+		if ($results === FALSE)
+			return array();
+		
+		return $results;
+		
+	}
 	
 	
 	public function loadFootage() {
