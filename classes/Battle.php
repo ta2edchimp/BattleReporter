@@ -292,7 +292,13 @@ class Battle {
     }
     
     
-    public function import($importedKills) {
+	public function import($importedKills) {
+		
+		$this->append($importedKills, true);
+		
+	}
+	
+	public function append($importedKills, $exclusively = false) {
         
         if (count($importedKills) <= 0)
             return;
@@ -302,9 +308,9 @@ class Battle {
         
         foreach ($importedKills as $impKill) {
             
-            $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-            if ($existantBattleID !== null)
-                throw new Exception("The fetched events are already part of an existing BattleReport.");
+			$existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
+			if (($exclusively === true && $existantBattleID !== null) || $existantBattleID != $this->battleReportID)
+				throw new Exception("The fetched events are already part of another already existing BattleReport.");
             
             $kill = Kill::fromImport($impKill);
             

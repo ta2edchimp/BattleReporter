@@ -4,36 +4,40 @@ class KBFetch {
     
     private static $availableParams = array("corporationID", "solarSystemID", "startTime", "endTime");
     
-    public static function fetchBattle($params = array()) {
-        
-        $parameters = array();
-        
-        foreach ($params as $key => $val) {
-            if (in_array($key, self::$availableParams))
-                $parameters[$key] = $val;
-        }
-        
-        $fetchedResult = Utils::curl(
-            BR_FETCH_SOURCE_URL . "api",
-            $parameters,
-            array(
-                "queryParams" => false,
-                "caching" => "auto",
-                "cachePath" => __DIR__ . '/../cache'
-            )
-        );
-        
-        if (empty($fetchedResult))
-            $fetchedResult = "[]";
-        
-        $fetchedResult = json_decode($fetchedResult);
+    public static function fetchBattle(array $params = array()) {
         
         $battle = new Battle();
-        $battle->import($fetchedResult);
+        $battle->import(self::fetchKills($params));
         
         return $battle;
         
     }
+	
+	public static function fetchKills($params = array()) {
+		
+		$parameters = array();
+		
+		foreach ($params as $key => $val) {
+			if (in_array($key, self::$availableParams))
+				$parameters[$key] = $val;
+		}
+		
+		$fetchedResult = Utils::curl(
+			BR_FETCH_SOURCE_URL . "api",
+			$parameters,
+			array(
+				"queryParams" => false,
+				"caching" => "auto",
+				"cachePath" => __DIR__ . '/../cache'
+			)
+		);
+		
+		if (empty($fetchedResult))
+			$fetchedResult = "[]";
+		
+		return json_decode($fetchedResult);
+		
+	}
 	
 	public static function fetchKill($killID = "") {
 		
