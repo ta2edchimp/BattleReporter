@@ -84,22 +84,25 @@ $twigEnv->addFilter($twig_enable_urls_in_html_filter);
 $twig_enable_markdown_filter = new Twig_SimpleFilter('enable_markdown', function ($string) {
 	
 	$pd = new Parsedown();
-	return $pd->text(htmlentities($string));
+	return $pd->text($string);
 	
 }, array('pre_escape' => 'html', 'is_safe' => array('html')));
 $twigEnv->addFilter($twig_enable_markdown_filter);
 
-$twig_enable_collapsable_preview_filter = new Twig_SimpleFilter('enable_collapsable_preview', function ($string) {
+$twig_paragraphs_filter = new Twig_SimpleFilter('paragraphs', function ($string, $start = 1, $length = 0) {
 	
-	$output = preg_replace(
-		"/(<p(>|\s+[^>]*>).*?<\/p>)/i",
-		"$1",	// "continue reading" expander should go here ...
-		$string
-	);
-	if ($output !== NULL)
-		return "<p>SUCCESS</p>" . $output;
+	// Dude, it's all paragraphs, from the first to the last one
+	if ($start <= 1 && $length == 0)
+		return $string;
 	
-	return "<p>FAILED</p>" . $string;
+	// Get all paragraphs
+	$result = preg_match_all("/(<p(>|\s+[^>]*>)[\w\W]*?<\/p>[\w\W]*?)/i", $string, $matches, PREG_PATTERN_ORDER);
+	// If existing, get *length* paragraphs, starting from *start*
+	if ($result !== FALSE && $result > 1 && count($matches) > 0 && count($matches[0]) > 0)
+		return implode("", $length > 0 ? array_splice($matches[0], $start - 1, $length) : array_splice($matches[0], $start - 1));
+	
+	// Fallback
+	return $string;
 	
 }, array('is_safe' => array('html')));
-$twigEnv->addFilter($twig_enable_collapsable_preview_filter);
+$twigEnv->addFilter($twig_paragraphs_filter);

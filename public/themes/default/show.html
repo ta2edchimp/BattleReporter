@@ -294,5 +294,6 @@
     });
 	!function(l){if((l.hash||('#'+(l.href.split('#')[1]||''))).indexOf('#footage')==0&&!$('#footage-panel').hasClass('in'))$('#btn-collapse-footage').trigger('click');}(window.location);
 	!function(f){f.click(function(e){if(!$('#footage-panel').hasClass('in'))$('#btn-collapse-footage').trigger('click');e.preventDefault();e.stopPropagation();$('html,body').scrollTop(Math.max($($(this).attr('href')).offset().top-$('.navbar').height(),0));});}($('.footage'));
+	$('#summary-continue-reading').click(function () { $(this).parent().animate({ height: '0px' }, { complete: function () { $(this).remove(); } }); });
 </script>
 {% endblock %}

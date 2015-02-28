@@ -4,7 +4,19 @@
 			<h3 class="panel-title">Summary</h3>
 		</div>
 		<div class="panel-body">
-			{{ battleReport.summary|enable_markdown|enable_collapsable_preview }}
+			{% set summaryPreview = battleReport.summary|enable_markdown|paragraphs(1,2) %}
+			{% set summaryContinued = battleReport.summary|enable_markdown|paragraphs(3) %}
+			{{ summaryPreview|raw }}
+			{% if summaryPreview != summaryContinued %}
+			<div class="text-center">
+				<a id="summary-continue-reading" href="#summary-continued" data-toggle="collapse" class="btn btn-xs btn-primary collapsed">
+					<span class="glyphicon glyphicon-chevron-down"></span> continue reading <span class="glyphicon glyphicon-chevron-down"></span>
+				</a>
+			</div>
+			<div id="summary-continued" class="collapse">
+				{{ summaryContinued|raw }}
+			</div>
+			{% endif %}
 		</div>
 	</div>
 {% endif %}
