@@ -101,6 +101,9 @@ class Slack {
 			
 		}
 		
+		// Set fallback information
+		$payload["fallback"] = "BattleReport posted: " . (!empty($battleToShow["title"]) ? $battleToShow["title"] : ("Battle of " . $battleToShow["solarSystemName"]));
+		
 		// Colored bar
 		$efficiency	= 0.0;
 		$totalLost	= $battleToShow["iskLostTeamA"] + $battleToShow["iskLostTeamB"] + $battleToShow["iskLostTeamC"];

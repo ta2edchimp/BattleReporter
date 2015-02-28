@@ -5,6 +5,7 @@ class Battle {
     public $battleReportID = 0;
     
     public $title = "";
+	public $summary = "";
     
     public $killsTotal = 0;
     
@@ -72,6 +73,7 @@ class Battle {
 		$this->createTime		= $result["brCreateTime"];
         $this->battleReportID   = $result["battleReportID"];
         $this->title            = $result["brTitle"];
+		$this->summary			= $result["brSummary"];
         $this->startTime        = $result["brStartTime"];
         $this->endTime          = $result["brEndTime"];
         $this->solarSystemID    = $result["solarSystemID"];
@@ -113,6 +115,7 @@ class Battle {
         
 		$values = array(
             "title" => $this->title,
+			"summary" => $this->summary,
             "startTime" => $this->startTime,
             "endTime" => $this->endTime,
             "solarSystemID" => $this->solarSystemID,
@@ -131,12 +134,12 @@ class Battle {
 			$values["brCreatorUserID"] = $this->creatorUserID;
 			$result = $db->query(
 				"insert into brBattles ".
-				"(brTitle, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID, " .
+				"(brTitle, brSummary, brStartTime, brEndTime, SolarSystemID, brPublished, brCreatorUserID, " .
 					"brUniquePilotsTeamA, brUniquePilotsTeamB, brUniquePilotsTeamC" .
 					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
 				") " .
 				"values " .
-				"(:title, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
+				"(:title, :summary :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
 					":brUniquePilotsTeamA, :brUniquePilotsTeamB, :brUniquePilotsTeamC" .
 					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
 				")",
@@ -149,7 +152,7 @@ class Battle {
 			$values["battleReportID"] = $this->battleReportID;
             $result = $db->query(
                 "update brBattles " .
-                "set brTitle = :title, brStartTime = :startTime, brEndTime = :endTime, " .
+                "set brTitle = :title, brSummary = :summary, brStartTime = :startTime, brEndTime = :endTime, " .
 					"SolarSystemID = :solarSystemID, brPublished = :published, " .
 					"brUniquePilotsTeamA = :brUniquePilotsTeamA, " .
 					"brUniquePilotsTeamB = :brUniquePilotsTeamB, " .
