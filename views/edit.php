@@ -56,6 +56,7 @@ if ($app->request->isPost()) {
         $success = $battleReport->applyChanges($brChanges);
     
     $battleReport->title = $parameters["battleTitle"];
+	$battleReport->summary = $parameters["battleSummary"];
 	
 	$videoUrls = $parameters["battleFootageUrl"];
 	$povCmbtID = $parameters["battleFootageCombatantID"];

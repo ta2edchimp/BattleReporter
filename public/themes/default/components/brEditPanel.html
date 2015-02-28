@@ -8,6 +8,16 @@
 				<label for="battleTitle" class="control-label">Title:</label>
 				<input class="form-control" id="battleTitle" name="battleTitle" value="{{ battleReport.title }}">
 			</div>
+			<div class="form-group">
+				<div style="float:right">
+					<span class="label label-danger" title="HTML is forbidden!">HTML: <span class="glyphicon glyphicon-remove"></span></span>
+					<span class="label label-success" title="Markdown is completely enabled.">Markdown: <span class="glyphicon glyphicon-ok"></span></span>
+				</div>
+				<label for="battleSummary" class="control-label">
+					Summary:
+				</label>
+				<textarea class="form-control" id="battleSummary" name="battleSummary" rows="6">{{ battleReport.summary }}</textarea>
+			</div>
 			<input type="hidden" id="battleReportChanges" name="battleReportChanges" value="">
 		</div>
 	</div>
