@@ -88,3 +88,18 @@ $twig_enable_markdown_filter = new Twig_SimpleFilter('enable_markdown', function
 	
 }, array('pre_escape' => 'html', 'is_safe' => array('html')));
 $twigEnv->addFilter($twig_enable_markdown_filter);
+
+$twig_enable_collapsable_preview_filter = new Twig_SimpleFilter('enable_collapsable_preview', function ($string) {
+	
+	$output = preg_replace(
+		"/(<p(>|\s+[^>]*>).*?<\/p>)/i",
+		"$1",	// "continue reading" expander should go here ...
+		$string
+	);
+	if ($output !== NULL)
+		return "<p>SUCCESS</p>" . $output;
+	
+	return "<p>FAILED</p>" . $string;
+	
+}, array('is_safe' => array('html')));
+$twigEnv->addFilter($twig_enable_collapsable_preview_filter);
