@@ -50,9 +50,9 @@ define('BR_LOGINMETHOD_EVE_SSO_SECRET', '%BR_LOGINMETHOD_EVE_SSO_SECRET%');
  */
 define('BR_COMMENTS_ENABLED', %BR_COMMENTS_ENABLED%);
 // Slack.com Integration
-//define('BR_API_SLACK_ENABLED', %BR_API_SLACK_ENABLED%);	// true/false
-//define('BR_API_SLACK_TOKEN', '%BR_API_SLACK_TOKEN%');		// Slash Command Token provided by Slack
-//define('BR_API_SLACK_CHANNEL', '%BR_API_SLACK_CHANNEL%');	// Webhook URL provided by Slack
+define('BR_API_SLACK_ENABLED', false);		// true/false
+define('BR_API_SLACK_TOKEN', '');			// Slash Command Token provided by Slack
+define('BR_API_SLACK_CHANNEL', '');			// Webhook URL provided by Slack
 
 
 /*
