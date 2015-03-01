@@ -75,7 +75,7 @@ class KBFetch {
             return false;
     }
     
-	private static function getDateTime($timespan, $endTime = false) {
+	public static function getDateTime($timespan, $endTime = false) {
 		
 		// Fetch datetime parts from timespan string ...
 		$dtStr = preg_replace(

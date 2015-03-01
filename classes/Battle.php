@@ -139,9 +139,9 @@ class Battle {
 					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
 				") " .
 				"values " .
-				"(:title, :summary :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
+				"(:title, :summary, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
 					":brUniquePilotsTeamA, :brUniquePilotsTeamB, :brUniquePilotsTeamC" .
-					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
+					($this->deleted ? ", :brDeleteUserID, :brDeleteTime" : "") .
 				")",
 				$values,
 				true	// Return last inserted row's ID instead of affected rows' count
@@ -298,7 +298,7 @@ class Battle {
 		
 	}
 	
-	public function append($importedKills, $exclusively = false) {
+	public function append($importedKills, $importMode = false) {
         
         if (count($importedKills) <= 0)
             return;
@@ -309,8 +309,19 @@ class Battle {
         foreach ($importedKills as $impKill) {
             
 			$existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-			if (($exclusively === true && $existantBattleID !== null) || $existantBattleID != $this->battleReportID)
-				throw new Exception("The fetched events are already part of another already existing BattleReport.");
+			// Check if that kill has been imported already
+			if ($existantBattleID !== null) {
+				
+				// If in "import mode", completely abort ...
+				if ($importMode === true)
+					throw new Exception("The fetched events are already part of another already existing BattleReport.");
+				
+				// If in "append mode", omit this kill,
+				// regardless of the battle report it is already
+				// in, it must not be imported again.
+				continue;
+				
+			}
             
             $kill = Kill::fromImport($impKill);
             
@@ -322,6 +333,10 @@ class Battle {
                 // Oh no, its a loss for the owner corp :(
                 if ($kill->victim->corporationID == BR_OWNERCORP_ID)
                     $tgt = "teamA";
+				
+				// To be sure: If in "append mode", the victim must NOT be in any of the teams already
+				if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
+					continue;
                 
                 $this->$tgt->add($kill->victim);
                 
@@ -329,6 +344,10 @@ class Battle {
                     $tgt = "teamB";
                     if ($attacker->corporationID == BR_OWNERCORP_ID)
                         $tgt = "teamA";
+					
+					// Again, be sure to not readd a combatant in *append mode*
+					if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
+						continue;
                     
                     $this->$tgt->add($attacker);
                 }
@@ -347,9 +366,33 @@ class Battle {
             }
         }
         
-        $this->startTime = $earliestKillTime;
-        $this->endTime = $latestKillTime;
-        
+		if ($importMode === false) {
+			// ... and check whether to kick some of the combatants ...
+			$teams = array('teamA', 'teamB', 'teamC');
+			foreach ($teams as $team) {
+				foreach ($this->$team->members as $combatant) {
+					
+					if ($combatant->died === false)
+						continue;
+					
+					// when they did not die within the new timespan ...
+					if ($combatant->killTime < $this->startTime || $combatant->killTime > $this->endTime) {
+						$combatant->removeFromDatabase();
+					} else {
+						$killTime = $combatant->killTime;
+						if ($earliestKillTime == 0 || $killTime < $earliestKillTime)
+							$earliestKillTime = $killTime;
+						if ($killTime > $latestKillTime)
+							$latestKillTime = $killTime;
+					}
+					
+				}
+			}
+		}
+		
+		$this->startTime	= $earliestKillTime;
+		$this->endTime		= $latestKillTime;
+		
         $this->teamA->sort();
         $this->teamB->sort();
         $this->teamC->sort();
@@ -357,6 +400,31 @@ class Battle {
         $this->updateDetails();
 		
     }
+	
+	
+	public function refetch($newTimeSpan = "") {
+		
+		if (empty($newTimeSpan) || !KBFetch::testTimespanPattern($newTimeSpan))
+			return false;
+		
+		$allKills = KBFetch::fetchKills(
+			array(
+				"corporationID"	=> BR_OWNERCORP_ID,
+				"solarSystemID"	=> $this->solarSystemID,
+				"startTime"		=> KBFetch::getZKBStartTime($newTimeSpan),
+				"endTime"		=> KBFetch::getZKBEndTime($newTimeSpan)
+			)
+		);
+		
+		// Get timestamps of the given timespan ...
+		$this->startTime	= KBFetch::getDateTime($newTimeSpan)->getTimestamp();
+		$this->endTime		= KBFetch::getDateTime($newTimeSpan, true)->getTimestamp();
+		
+		$this->append($allKills);
+		
+		return true;
+		
+	}
 	
 	
 	public function getTimeline() {

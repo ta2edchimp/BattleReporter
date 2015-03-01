@@ -19,6 +19,34 @@ class BattleParty {
     }
     
     
+	public function getMember(Combatant $combatant) {
+		
+		if (count($this->members) > 0 && $combatant->characterID >= 0) {
+			foreach ($this->members as &$member) {
+				if ($member->characterID == $combatant->characterID) {
+					if ($member->shipTypeID == $combatant->shipTypeID) {
+						// If this char is already on the list in the same ship, but this time
+						// is the victim, he basically counts as another combatant ...
+						if ($member->died === false && $combatant->died === true)
+							continue;
+						
+						// If he is on the list, in the same ship, died this time
+						// and the latter, but the killIDs differ, well, he died again
+						if ($member->died && $combatant->died && $member->killID != $combatant->killID)
+							continue;
+						
+						// Either way, he's already on the list
+						return $member;
+					}
+				}
+			}
+		}
+		
+		// Combatant is definitely not in yet
+		return null;
+		
+	}
+	
     public function add(Combatant $combatant) {
         
         // Test, if combatant has not yet been added
