@@ -1,3 +1,14 @@
+# Release 0.4
+
+- ef45de9 Version Bump.
+- 3bf28a6 Added update hint for non-updated pre `1.0` config values.
+- 4195fcd Add nl at eof, closes #65
+- 9b12e4f Merge branch 'feature/modify-battle-timespan' into develop
+- 496976b Adjust timespans and refetch kill mails. Closes #49
+- 8b658d0 Merge branch 'release/0.3.8' into develop
+- 5c25c99 Functionality rearrangement to support appending of events besides exclusive report creation.
+- 2d9fa70 Reordered methods more logically.
+
 # Release 0.3.8
 
 - 64c9e8e Merge branch 'feature/battle-summary' into develop
