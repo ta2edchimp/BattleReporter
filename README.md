@@ -57,6 +57,8 @@ to launch it. It will update [Composer](http://getcomposer.org), update existing
 
 You may use the updater to update or modify the EVE Online Data at anytime. Just replace the files within `/database` and run the update script again. (_Hint:_ the tables required for operation are `mapSolarSystems`, `invGroups` and `invTypes`).
 
+**Important Note when updating any pre `1.0` version:** Please ensure, all configuration variables from `/config.blueprint.php` are mentioned in your `/config.php` after running BattleReporter's update script (For example all variables with the `Slack` default values, when updating from `0.3` to `0.4`).
+
 ## Further Configuration
 
 Some of BattleReporter's functions are not yet covered by the `install` and `update` scripts. You'll have to setup and configure them manually by customizing your `config.php` file accordingly.
