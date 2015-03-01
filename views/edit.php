@@ -78,6 +78,25 @@ if ($app->request->isPost()) {
 		$battleReport->addFootage($footage);
 	}
 	
+	
+	$reloadBattleReport = false;
+	
+	// Test if the timeSpan has been changed
+	if (isset($parameters["battleTimespan"])) {
+		
+		$brTimeSpan = $parameters["battleTimespan"];
+		
+		if (!empty($brTimeSpan) && $brTimeSpan != $battleReport->timeSpan) {
+			
+			$battleReport->refetch($brTimeSpan);
+			$battleReport->save();
+			
+			$reloadBattleReport = true;
+			
+		}
+		
+	}
+	
 	if ($success) {
 		
 		$previouslyUnpublished = !$battleReport->published;
@@ -103,7 +122,12 @@ if ($app->request->isPost()) {
 		
 		// No need to reload the battle report records
 		// as here comes the redirect, right away ...
-		$app->redirect("/show/$battleReportID");
+		if ($reloadBattleReport !== true)
+			$app->redirect("/show/$battleReportID");
+		
+		// Reload for further editing
+		$battleReport = new Battle();
+		$battleReport->load($battleReportID, false, true);
 		
 	} else {
 		

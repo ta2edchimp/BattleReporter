@@ -34,6 +34,8 @@ class Combatant {
     public $priceTag = 0.0;
     
 	public $assignedFootage = 0;
+	
+	private $hasBeenRemoved = false;
     
     private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
     private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage");
@@ -93,10 +95,23 @@ class Combatant {
 			$this->shipIsPod = Item::isCapsule($this->shipTypeID);
             
         
-        if (!empty($killID)) {
-            $this->died = true;
-            $this->killID = $killID;
-        }
+		if (!empty($killID)) {
+			$this->died = true;
+			$this->killID = $killID;
+		}
+		
+		// Ensure boolean type for certain values
+		if (!is_bool($this->brHidden))
+			$this->brHidden = ($this->brHidden == 1);
+		if (!is_bool($this->brDeleted))
+			$this->brDeleted = ($this->brDeleted == 1);
+		if (!is_bool($this->brManuallyAdded))
+			$this->brManuallyAdded = ($this->brManuallyAdded == 1);
+		if (!is_bool($this->brCyno))
+			$this->brCyno = ($this->brCyno == 1);
+		if (!is_bool($this->died))
+			$this->died = ($this->died == 1);
+		
     }
     
     
@@ -132,6 +147,13 @@ class Combatant {
 			"brCyno" => $this->brCyno ? 1 : 0
         );
 		if ($this->brCombatantID <= 0) {
+			
+			// This case should not happen: Combatant has not been saved, but was removed due to a reimported battle.
+			if ($this->hasBeenRemoved === true) {
+				$app->log->warn("Combatant::save() - A Combatant who has not been saved yet, but has been removed due to a reimported Battle.");
+				return;
+			}
+			
 			$result = $db->query(
 				"insert into brCombatants ".
 				"(characterID, characterName, corporationID, allianceID, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag, brManuallyAdded, brDeleted, brCyno) " .
@@ -140,10 +162,23 @@ class Combatant {
 				$params,
 				true	// Return last inserted row's ID instead of affected rows' count
 			);
+			
 			if ($result > 0)
 				$this->brCombatantID = $result;
 			// Else fail silently ...
         } else {
+			
+			// In case this combatant has been removed, due to a reimported battle, delete it from the database
+			if ($this->hasBeenRemoved === true) {
+				$result = $db->query(
+					"delete from brCombatants where brCombatantID = :brCombatantID",
+					array(
+						"brCombatantID" => $this->brCombatantID
+					)
+				);
+				return;
+			}
+			
             $params["brCombatantID"] = $this->brCombatantID;
             $result = $db->query(
                 "update brCombatants " .
@@ -151,6 +186,7 @@ class Combatant {
                 "where brCombatantID = :brCombatantID",
                 $params
             );
+			
         }
 		
 		if ($this->corporationID > 0) {
@@ -199,6 +235,13 @@ class Combatant {
 		}
         
     }
+	
+	
+	public function removeFromDatabase() {
+		
+		$this->hasBeenRemoved = true;
+		
+	}
     
     
     public function toJSON() {

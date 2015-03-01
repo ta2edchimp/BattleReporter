@@ -139,9 +139,9 @@ class Battle {
 					($this->deleted ? ", brDeleteUserID, brDeleteTime" : "") .
 				") " .
 				"values " .
-				"(:title, :summary :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
+				"(:title, :summary, :startTime, :endTime, :solarSystemID, :published, :brCreatorUserID, " .
 					":brUniquePilotsTeamA, :brUniquePilotsTeamB, :brUniquePilotsTeamC" .
-					($this->deleted ? ", :brDeleteUserID, brDeleteTime" : "") .
+					($this->deleted ? ", :brDeleteUserID, :brDeleteTime" : "") .
 				")",
 				$values,
 				true	// Return last inserted row's ID instead of affected rows' count
@@ -292,31 +292,166 @@ class Battle {
     }
     
     
-    public function getTimeline() {
+	public function import($importedKills) {
+		
+		$this->append($importedKills, true);
+		
+	}
+	
+	public function append($importedKills, $importMode = false) {
         
-        $timeline = array();
+        if (count($importedKills) <= 0)
+            return;
         
-        $teams = array("teamA", "teamB", "teamC");
-        foreach ($teams as $team) {
-            foreach ($this->$team->members as $combatant) {
-                if ($combatant->died) {
-                    $timeline[] = array(
-                        "occurredToTeamA" => ($team == "teamA"),
-                        "occurredToTeamB" => ($team == "teamB"),
-                        "occurredToTeamC" => ($team == "teamC"),
-                        "timeStamp" => $combatant->killTime,
-                        "timeStampString" => date("H:i", $combatant->killTime),
-						"killID" => $combatant->killID,
-                        "combatantEventOccuredTo" => $combatant
-                    );
+        $earliestKillTime = 0;
+        $latestKillTime = 0;
+        
+        foreach ($importedKills as $impKill) {
+            
+			$existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
+			// Check if that kill has been imported already
+			if ($existantBattleID !== null) {
+				
+				// If in "import mode", completely abort ...
+				if ($importMode === true)
+					throw new Exception("The fetched events are already part of another already existing BattleReport.");
+				
+				// If in "append mode", omit this kill,
+				// regardless of the battle report it is already
+				// in, it must not be imported again.
+				continue;
+				
+			}
+            
+            $kill = Kill::fromImport($impKill);
+            
+            if ($kill !== null) {
+                
+                // Per default, the victim is member of teamB
+                $tgt = "teamB";
+                
+                // Oh no, its a loss for the owner corp :(
+                if ($kill->victim->corporationID == BR_OWNERCORP_ID)
+                    $tgt = "teamA";
+				
+				// To be sure: If in "append mode", the victim must NOT be in any of the teams already
+				if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
+					continue;
+                
+                $this->$tgt->add($kill->victim);
+                
+                foreach ($kill->attackers as $attacker) {
+                    $tgt = "teamB";
+                    if ($attacker->corporationID == BR_OWNERCORP_ID)
+                        $tgt = "teamA";
+					
+					// Again, be sure to not readd a combatant in *append mode*
+					if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
+						continue;
+                    
+                    $this->$tgt->add($attacker);
                 }
+                
+                if (isset($kill->killTime)) {
+                    $killTime = $kill->killTime;
+                    if ($earliestKillTime == 0 || $killTime < $earliestKillTime)
+                        $earliestKillTime = $killTime;
+                    if ($killTime > $latestKillTime)
+                        $latestKillTime = $killTime;
+                }
+                
+                if (isset($kill->solarSystemID))
+                    $this->solarSystemID = $kill->solarSystemID;
+                
             }
         }
-        usort($timeline, 'Battle::timelineSorter');
         
-        return $timeline;
+		if ($importMode === false) {
+			// ... and check whether to kick some of the combatants ...
+			$teams = array('teamA', 'teamB', 'teamC');
+			foreach ($teams as $team) {
+				foreach ($this->$team->members as $combatant) {
+					
+					if ($combatant->died === false)
+						continue;
+					
+					// when they did not die within the new timespan ...
+					if ($combatant->killTime < $this->startTime || $combatant->killTime > $this->endTime) {
+						$combatant->removeFromDatabase();
+					} else {
+						$killTime = $combatant->killTime;
+						if ($earliestKillTime == 0 || $killTime < $earliestKillTime)
+							$earliestKillTime = $killTime;
+						if ($killTime > $latestKillTime)
+							$latestKillTime = $killTime;
+					}
+					
+				}
+			}
+		}
+		
+		$this->startTime	= $earliestKillTime;
+		$this->endTime		= $latestKillTime;
+		
+        $this->teamA->sort();
+        $this->teamB->sort();
+        $this->teamC->sort();
         
+        $this->updateDetails();
+		
     }
+	
+	
+	public function refetch($newTimeSpan = "") {
+		
+		if (empty($newTimeSpan) || !KBFetch::testTimespanPattern($newTimeSpan))
+			return false;
+		
+		$allKills = KBFetch::fetchKills(
+			array(
+				"corporationID"	=> BR_OWNERCORP_ID,
+				"solarSystemID"	=> $this->solarSystemID,
+				"startTime"		=> KBFetch::getZKBStartTime($newTimeSpan),
+				"endTime"		=> KBFetch::getZKBEndTime($newTimeSpan)
+			)
+		);
+		
+		// Get timestamps of the given timespan ...
+		$this->startTime	= KBFetch::getDateTime($newTimeSpan)->getTimestamp();
+		$this->endTime		= KBFetch::getDateTime($newTimeSpan, true)->getTimestamp();
+		
+		$this->append($allKills);
+		
+		return true;
+		
+	}
+	
+	
+	public function getTimeline() {
+		
+		$timeline = array();
+		
+		$teams = array("teamA", "teamB", "teamC");
+		foreach ($teams as $team) {
+			foreach ($this->$team->members as $combatant) {
+				if ($combatant->died) {
+					$timeline[] = array(
+						"occurredToTeamA" => ($team == "teamA"),
+						"occurredToTeamB" => ($team == "teamB"),
+						"occurredToTeamC" => ($team == "teamC"),
+						"timeStamp" => $combatant->killTime,
+						"timeStampString" => date("H:i", $combatant->killTime),
+						"killID" => $combatant->killID,
+						"combatantEventOccuredTo" => $combatant
+					);
+				}
+			}
+		}
+		usort($timeline, 'Battle::timelineSorter');
+		
+		return $timeline;
+		
+	}
 	
 	
 	public function getComments() {
@@ -345,67 +480,6 @@ class Battle {
 		return $results;
 		
 	}
-    
-    
-    public function import($importedKills) {
-        
-        if (count($importedKills) <= 0)
-            return;
-        
-        $earliestKillTime = 0;
-        $latestKillTime = 0;
-        
-        foreach ($importedKills as $impKill) {
-            
-            $existantBattleID = self::getBattleReportIDByKillID($impKill->killID);
-            if ($existantBattleID !== null)
-                throw new Exception("The fetched events are already part of an existing BattleReport.");
-            
-            $kill = Kill::fromImport($impKill);
-            
-            if ($kill !== null) {
-                
-                // Per default, the victim is member of teamB
-                $tgt = "teamB";
-                
-                // Oh no, its a loss for the owner corp :(
-                if ($kill->victim->corporationID == BR_OWNERCORP_ID)
-                    $tgt = "teamA";
-                
-                $this->$tgt->add($kill->victim);
-                
-                foreach ($kill->attackers as $attacker) {
-                    $tgt = "teamB";
-                    if ($attacker->corporationID == BR_OWNERCORP_ID)
-                        $tgt = "teamA";
-                    
-                    $this->$tgt->add($attacker);
-                }
-                
-                if (isset($kill->killTime)) {
-                    $killTime = $kill->killTime;
-                    if ($earliestKillTime == 0 || $killTime < $earliestKillTime)
-                        $earliestKillTime = $killTime;
-                    if ($killTime > $latestKillTime)
-                        $latestKillTime = $killTime;
-                }
-                
-                if (isset($kill->solarSystemID))
-                    $this->solarSystemID = $kill->solarSystemID;
-                
-            }
-        }
-        
-        $this->startTime = $earliestKillTime;
-        $this->endTime = $latestKillTime;
-        
-        $this->teamA->sort();
-        $this->teamB->sort();
-        $this->teamC->sort();
-        
-        $this->updateDetails();
-		
-    }
 	
 	
 	public function loadFootage() {
