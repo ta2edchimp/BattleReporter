@@ -13,7 +13,6 @@ phpFastCache::setup(array(
 	'path' => "$basePath/cache",
 	'securityKey' => 'battleReporter'
 ));
-phpFastCache::$default_chmod = 0777;
 
 // Global database access wrapper object
 Db::setCredentials(DB_NAME, DB_USER, DB_PASS, DB_HOST);
@@ -21,6 +20,8 @@ $db = Db::getInstance();
 
 // Global (Slim) application object
 $app = new \Slim\Slim(array(
+	'mode' => $BR_DEBUGMODE === true ? 'development' : 'production',
+	'debug' => ($BR_DEBUGMODE === true),
 	'log.enabled' => true,
 	'log.level' => $BR_DEBUGMODE === true ? \Slim\Log::DEBUG : \Slim\Log::WARN,
 	'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
