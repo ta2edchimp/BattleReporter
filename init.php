@@ -13,7 +13,6 @@ phpFastCache::setup(array(
 	'path' => "$basePath/cache",
 	'securityKey' => 'battleReporter'
 ));
-phpFastCache::$default_chmod = 0777;
 
 // Global database access wrapper object
 Db::setCredentials(DB_NAME, DB_USER, DB_PASS, DB_HOST);
