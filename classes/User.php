@@ -364,11 +364,11 @@ class User {
 				}
 			}
 			
-			//$app->log->debug(
-			echo "<p>Found \"" . $character->name . "\" #" . $character->characterID .
+			$app->log->debug(
+				"Found \"" . $character->name . "\" #" . $character->characterID .
 				($roleDirector === true ? " IS " : " IS NOT ") .
-				"a director.</p>";
-			//);
+				"a director."
+			);
 			
 			if ($roleDirector !== true)
 				continue;
