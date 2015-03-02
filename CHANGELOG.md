@@ -1,3 +1,17 @@
+# Release 0.4.1
+
+- b8ade90 Fixed log output.
+- f50c038 Updated `phpFastCache` dependency, removed unnecessary default chmod value.
+- d1f3a89 Proper mode configuration for `Slim`.
+- 38f8818 Merge branch 'feature/preview-descriptions' into develop
+- 86c5998 Added robots rules.
+- 91d12fe Added keywords, default title and description meta tags.
+- 68f87db Provide proper preview information.
+- 21ca5e8 Add descriptive meta tags for Open Graph and Twitter Cards, to deliver proper previews.
+- 9bde7a0 Fixed comparison, closes #68
+- cbfdf60 Version Bump.
+- 39432a2 Merge branch 'release/0.4' into develop
+
 # Release 0.4
 
 - ef45de9 Version Bump.
