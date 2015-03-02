@@ -55,8 +55,32 @@ switch ($battleReportDetail) {
 		break;
 }
 
+
+
+// Compile preview data
+$previewMeta = array();
+
+$previewNumberOfPilots = $battleReport->teamA->uniquePilots . " vs. " . $battleReport->teamB->uniquePilots . ($battleReport->teamC->uniquePilots > 0 ? (" vs. " . $battleReport->teamC->uniquePilots) : "") . " pilots";
+
+$previewISKdestroyed = $battleReport->totalLost;
+if ($previewISKdestroyed < 1000000000000) {
+	if ($previewISKdestroyed < 1000000000) {
+		$previewISKdestroyed = number_format($previewISKdestroyed / 1000000, 2, '.', ',') . " million ISK destroyed";
+	} else {
+		$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000, 2, '.', ',') . " billion ISK destroyed";
+	}
+} else {
+	$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000000, 2, '.', ',') . " trillion ISK destroyed";
+}
+
+$previewMeta['title'] = (empty($battleReport->title) ? ("Battle in " . $battleReport->solarSystemName) : $battleReport->title);
+$previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->efficiency * 100, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
+$previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID . "_128.png";
+	
+
 $app->render("show.html", array(
 	"BR_PAGE_SHOW" => true,
+	"previewMeta" => $previewMeta,
     "battleReport" => $battleReport,
     "battleReportDetail" => $battleReportDetail,
     "battleReportDetailTitle" => $battleReportDetailTitle
