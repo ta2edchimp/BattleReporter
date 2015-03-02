@@ -21,6 +21,8 @@ $db = Db::getInstance();
 
 // Global (Slim) application object
 $app = new \Slim\Slim(array(
+	'mode' => $BR_DEBUGMODE === true ? 'development' : 'production',
+	'debug' => ($BR_DEBUGMODE === true),
 	'log.enabled' => true,
 	'log.level' => $BR_DEBUGMODE === true ? \Slim\Log::DEBUG : \Slim\Log::WARN,
 	'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
