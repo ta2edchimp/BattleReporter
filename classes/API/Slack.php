@@ -53,8 +53,11 @@ class Slack {
 			$brTitle = "Battle: " . $battleToShow["title"];
 
 		// Message text
-		$payload["text"] = "<" . $brLink . "|" . $brTitle . ">";
-
+		$payload["attachments"] = array();
+		$payload["attachments"][0] = array();
+		$payload["attachments"][0]["title"] = $brTitle;
+		$payload["attachments"][0]["title_link"] = $brLink;
+		
 		// Extra Info Fields
 		$totalIskDestroyed = ($battleToShow["iskLostTeamA"] + $battleToShow["iskLostTeamB"] + $battleToShow["iskLostTeamC"]);
 		if ($totalIskDestroyed < 1000000000000) {
@@ -67,7 +70,7 @@ class Slack {
 			$totalIskDestroyed = number_format($totalIskDestroyed / 1000000000000, 2, '.', ',') . " trillion";
 		}
 		$totalIskDestroyed .= " ISK";
-		$payload["fields"] = array(
+		$payload["attachments"][0]["fields"] = array(
 			// Timespan
 			array(
 				"title" => "Timespan",
@@ -97,7 +100,7 @@ class Slack {
 		// Invoking User's info
 		if (isset($options["invUserID"]) && isset($options["invUserName"])) {
 			
-			$payload["pretext"] = "<@" . $options["invUserID"] . "|" . $options["invUserName"] . "> posted:";
+			$payload["text"] = "<@" . $options["invUserID"] . "|" . $options["invUserName"] . "> posted:";
 			
 		}
 		
@@ -111,13 +114,13 @@ class Slack {
 			$efficiency = 1.0 - $battleToShow["iskLostTeamA"] / $totalLost;
 		
 		if ($efficiency == 1)
-			$payload["color"] = "#5cb85c";
+			$payload["attachments"][0]["color"] = "#5cb85c";
 		elseif ($efficiency > 0.5)
-			$payload["color"] = "#5bc0de";
+			$payload["attachments"][0]["color"] = "#5bc0de";
 		elseif ($efficiency > 0.1)
-			$payload["color"] = "#f0ad4e";
+			$payload["attachments"][0]["color"] = "#f0ad4e";
 		else
-			$payload["color"] = "#d9534f";
+			$payload["attachments"][0]["color"] = "#d9534f";
 		
 		// Channel redirect
 		if (isset($options["channel"]))
