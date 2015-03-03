@@ -86,50 +86,50 @@
 	</div>
 	</form>
 	<div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                Assign Battle-Parties 
-            </h3>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-xs-4">
-                    {% set currentTeamName = "Team A" %}
-                    {% set currentTeamID = "teamA" %}
-                    {% set currentTeam = battleReport.teamA %}
-                    {% include 'components/teamList.html' %}
-                </div>
-                <div class="col-xs-4">
-                    {% set currentTeamName = "Team B" %}
-                    {% set currentTeamID = "teamB" %}
-                    {% set currentTeam = battleReport.teamB %}
-                    {% include 'components/teamList.html' %}
-                </div>
-                <div class="col-xs-4">
-                    {% set currentTeamName = "Team C" %}
-                    {% set currentTeamID = "teamC" %}
-                    {% set currentTeam = battleReport.teamC %}
-                    {% include 'components/teamList.html' %}
-                </div>
-            </div>
-        </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-xs-6 text-left">
-                {% if BR_USER_CAN_UNPUBLISH and battleReport.published == true %}
-                    <a id="br-btn-unpublish" href="/edit/{{ battleReport.battleReportID }}/unpublish" class="btn btn-warning">Unpublish</a>
-                {% endif %}
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Assign Battle-Parties 
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-xs-4">
+					{% set currentTeamName = "Team A" %}
+					{% set currentTeamID = "teamA" %}
+					{% set currentTeam = battleReport.teamA %}
+					{% include 'components/teamList.html' %}
+				</div>
+				<div class="col-xs-4">
+					{% set currentTeamName = "Team B" %}
+					{% set currentTeamID = "teamB" %}
+					{% set currentTeam = battleReport.teamB %}
+					{% include 'components/teamList.html' %}
+				</div>
+				<div class="col-xs-4">
+					{% set currentTeamName = "Team C" %}
+					{% set currentTeamID = "teamC" %}
+					{% set currentTeam = battleReport.teamC %}
+					{% include 'components/teamList.html' %}
+				</div>
+			</div>
+		</div>
+		<div class="panel-footer">
+			<div class="row">
+				<div class="col-xs-6 text-left">
+				{% if BR_USER_CAN_UNPUBLISH and battleReport.published == true %}
+					<a id="br-btn-unpublish" href="/edit/{{ battleReport.battleReportID }}/unpublish" class="btn btn-warning">Unpublish</a>
+				{% endif %}
 				{% if BR_USER_CAN_DELETE %}
 					{% if battleReport.published == true %}
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					{% endif %}
 					<a id="br-btn-delete" href="/edit/{{ battleReport.battleReportID }}/delete" class="btn btn-danger">Delete</a>
 				{% endif %}
-                </div>
-                <div class="col-xs-6 text-right">
-                    <a href="{% if BR_USER_CAN_UNPUBLISH or battleReport.published == true %}/show/{{ battleReport.battleReportID }}{% else %}/{% endif %}" class="btn btn-default">Dismiss</a>
-                    <button class="btn btn-primary" id="save-br">Save {% if battleReport.published == false %}and Publish {% endif %}BattleReport</button>
-                </div>
-            </div>
-        </div>
+				</div>
+				<div class="col-xs-6 text-right">
+					<a href="{% if BR_USER_CAN_UNPUBLISH or battleReport.published == true %}/show/{{ battleReport.battleReportID }}{% else %}/{% endif %}" class="btn btn-default">Dismiss</a>
+					<button class="btn btn-primary" id="save-br">Save {% if battleReport.published == false %}and Publish {% endif %}BattleReport</button>
+				</div>
+			</div>
+		</div>
 	</div>
