@@ -181,8 +181,10 @@
             $('#battleReportChanges').val(JSON.stringify(changes));
             $('#battleReportEditor').submit();
         });
-    }({{ battleReport.toJSON()|raw }});
+    }(typeof battleReport == 'undefined' ? null : battleReport);
 	!function(tpl, add){
+		if (typeof battleReport == 'undefined')
+			return;
 		function deleteFtg() {
 			$(this).closest('.battle-footage-container').remove();
 		}
@@ -210,7 +212,7 @@
 			var inp = el.find('input[name^=battleFootageCombatantCharName]'),
 				id = el.find('input[name^=battleFootageCombatantID]');
 			inp.autocomplete({
-				serviceUrl: '/autocomplete/combatants/{{ battleReport.battleReportID }}',
+				serviceUrl: '/autocomplete/combatants/' + battleReport.battleReportID,
 				type: 'POST',
 				onSelect: function (suggestion) {
 					id.val('');

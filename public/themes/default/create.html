@@ -112,8 +112,8 @@
 {% block scripts %}
 {% include 'components/brEditor.html' %}
 <script src="/js/jquery.autocomplete.min.js"></script>
-<script>
 {% if battleTimespan is not defined or battleSolarSystem is not defined %}
+<script>
     $('#battleSolarSystemName').autocomplete({
         serviceUrl: '/autocomplete/solarSystems',
         type: 'POST',
@@ -132,9 +132,13 @@
                 $('#battleSolarSystemId').val(suggestion.data);
         }
     });
-{% endif %}
-{% if battleTimespan is defined and battleSolarSystem is defined and battleReport is defined and battleReport.killsTotal > 0 %}
-{% include 'components/brEditor.js' %}
-{% endif %}
 </script>
+{% endif %}
+
+{% if battleTimespan is defined and battleSolarSystem is defined and battleReport is defined and battleReport.killsTotal > 0 %}
+<script>
+var battleReport = {{ battleReport.toJSON()|raw }};
+</script>
+<script src="/js/br.editor.js"></script>
+{% endif %}
 {% endblock %}
