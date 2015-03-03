@@ -41,7 +41,7 @@
 <script>
 var battleReport = {{ battleReport.toJSON()|raw }};
 </script>
-<script src="/js/br.editor.js"></script>
+<script src="/js/br.editor.min.js"></script>
 {% if BR_USER_CAN_UNPUBLISH %}
 $('#br-btn-unpublish').click(function (event) { if (!confirm('Do you really want to unpublish this BattleReport?')) event.preventDefault(); });
 {% endif %}
