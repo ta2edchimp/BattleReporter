@@ -12,6 +12,9 @@ $twig->parserOptions = array(
 
 $twigEnv = $twig->getEnvironment();
 
+if (defined('BR_VERSION'))
+	$twigEnv->addGlobal("BR_VERSION", BR_VERSION);
+
 if (defined('BR_OWNER'))
     $twigEnv->addGlobal("BR_OWNER", BR_OWNER);
     
