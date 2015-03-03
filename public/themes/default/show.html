@@ -35,7 +35,7 @@
 		<div id="footage-panel" class="panel-body panel-collapse collapse">
 		{% for video in battleReport.footage %}
 			<div id="footage-panel-{{ video.id }}" class="battle-footage">
-				<iframe width="480" height="270" frameborder="0" src="{{ video.url }}"></iframe>
+				<iframe width="480" height="270" frameborder="0" allowfullscreen src="{{ video.url }}"></iframe>
 				{% if video.combatant is defined %}
 				{% set combatant = video.combatant %}
 				<div class="pov-container">
