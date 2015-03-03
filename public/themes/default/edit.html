@@ -5,12 +5,12 @@
 
 {% block head %}
 <style>
-    .autocomplete-suggestions { border:1px solid #999;background:#fff;overflow:auto;color:#333; }
-    .autocomplete-suggestion { padding:2px 5px;white-space:nowrap;overflow:hidden; }
-    .autocomplete-selected { background:#f0f0f0; }
-    .autocomplete-suggestions strong { font-weight:normal;color: #3399FF; }
-    .autocomplete-group { padding:2px 5px; }
-    .autocomplete-group strong { display:block;border-bottom:1px solid #000; }
+	.autocomplete-suggestions { border:1px solid #999;background:#fff;overflow:auto;color:#333; }
+	.autocomplete-suggestion { padding:2px 5px;white-space:nowrap;overflow:hidden; }
+	.autocomplete-selected { background:#f0f0f0; }
+	.autocomplete-suggestions strong { font-weight:normal;color: #3399FF; }
+	.autocomplete-group { padding:2px 5px; }
+	.autocomplete-group strong { display:block;border-bottom:1px solid #000; }
 	.ship-icon-container{position:relative;}
 	.ship-type-icon{position:absolute;bottom:0;left:0;text-shadow:0 0 2px #000;}
 	.label a{text-decoration:underline;color:#fff;}
@@ -18,36 +18,30 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Edit BattleReport</h1>
+	<h1>Edit BattleReport</h1>
 	{% if BR_USER_CAN_EDIT == false %}
 	<div class="alert alert-danger">
 		<strong>Error!</strong> You are not permitted to alter BattleReports that are not your own!
 	</div>
 	{% else %}
-    {% if battleReportSavingError == true %}
-    <div class="alert alert-danger">
-        <strong>Dammit!</strong> Something bad happened while trying to save the battle report. Please try again.
-    </div>
-    {% endif %}
-    {% include 'components/brStatistics.html' %}
-    {% set BR_CAN_APPEND_COMBATANTS = true %}
-    {% include 'components/brEditPanel.html' %}
+	{% if battleReportSavingError == true %}
+	<div class="alert alert-danger">
+		<strong>Dammit!</strong> Something bad happened while trying to save the battle report. Please try again.
+	</div>
+	{% endif %}
+	{% include 'components/brStatistics.html' %}
+	{% set BR_CAN_APPEND_COMBATANTS = true %}
+	{% include 'components/brEditPanel.html' %}
 	{% endif %}
 {% endblock %}
 
 {% block scripts %}
 {% include 'components/brEditor.html' %}
 <script src="/js/jquery.autocomplete.min.js"></script>
-<script>
-var battleReport = {{ battleReport.toJSON()|raw }};
-</script>
+<script>var battleReport = {{ battleReport.toJSON()|raw }};</script>
 <script src="/js/br.editor.min.js"></script>
 <script>
-{% if BR_USER_CAN_UNPUBLISH %}
-$('#br-btn-unpublish').click(function (event) { if (!confirm('Do you really want to unpublish this BattleReport?')) event.preventDefault(); });
-{% endif %}
-{% if BR_USER_CAN_DELETE %}
-$('#br-btn-delete').click(function (event) { if (!confirm('Do you really want to completely delete this BattleReport?')) event.preventDefault(); });
-{% endif %}
+{% if BR_USER_CAN_UNPUBLISH %}$('#br-btn-unpublish').click(function (event) { if (!confirm('Do you really want to unpublish this BattleReport?')) event.preventDefault(); });{% endif %}
+{% if BR_USER_CAN_DELETE %}$('#br-btn-delete').click(function (event) { if (!confirm('Do you really want to completely delete this BattleReport?')) event.preventDefault(); });{% endif %}
 </script>
 {% endblock %}
