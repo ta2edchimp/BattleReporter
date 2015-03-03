@@ -112,9 +112,7 @@
 </script>
 {% endif %}
 {% if battleTimespan is defined and battleSolarSystem is defined and battleReport is defined and battleReport.killsTotal > 0 %}
-<script>
-var battleReport = {{ battleReport.toJSON()|raw }};
-</script>
+<script>var battleReport = {{ battleReport.toJSON()|raw }};</script>
 <script src="/js/br.editor.min.js"></script>
 {% endif %}
 {% endblock %}
