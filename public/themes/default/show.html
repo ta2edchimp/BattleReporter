@@ -2,28 +2,8 @@
 
 {% set pageTitle = 'Show BattleReport' %}
 {% if battleReport.title != '' %}
-    {% set pageTitle = battleReport.title %}
+	{% set pageTitle = battleReport.title %}
 {% endif %}
-
-{% block head %}
-<style>
-	.collapse-button .glyphicon-chevron-down{display:none;}
-	.collapse-button .glyphicon-chevron-up{display:inline-block;}
-	.collapse-button.collapsed .glyphicon-chevron-down{display:inline-block;}
-	.collapse-button.collapsed .glyphicon-chevron-up{display:none;}
-	.battle-footage{position:relative;margin-top:15px;width:100%;padding-top:56.35%;}
-	.battle-footage:first-child{margin-top:0;}
-	.battle-footage iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
-	.pov-container{position:absolute;top:15px;left:15px;width:250px;}
-	@media(max-width:640px){.pov-container{width:auto;right:15px;}}
-	.pov-container .collapse-button{display:block;}
-	.pov-container .table{margin:0;}
-	.comment{font-size:12px;background-position:0 0;background-repeat:no-repeat;background-size:48px 48px;padding-left:63px;}
-	.ship-icon-container,.combatant-details{position:relative;}
-	.ship-type-icon{position:absolute;bottom:0;left:0;text-shadow:0 0 2px #000;}
-	.combatant-info-container{position:absolute;top:0;right:0;}
-</style>
-{% endblock %}
 
 {% block content %}
 	<h1>

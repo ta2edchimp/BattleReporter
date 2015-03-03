@@ -2,18 +2,6 @@
 
 {% set pageTitle = 'Overview' %}
 
-{% block head %}
-<style>
-	table#battleReports-overview a.br-inv-link{text-decoration:none}
-	table#battleReports-overview a:not(.btn){text-decoration:none}
-	td.no-break{white-space:nowrap}
-	@media(max-width:420px){.hidden-xxxs{display:none!important;}}
-	@media(max-width:640px){.hidden-xxs{display:none!important;}}
-	a.direct-link,a.direct-link:link,a.direct-link:visited{opacity:0.7;}
-	a.direct-link:hover,a.direct-link:focus{opacity:1;}
-</style>
-{% endblock %}
-
 {% block content %}
 	<h1>{{ BR_OWNER }}'s BattleReports</h1>
 	{% if battleList|length == 0 %}

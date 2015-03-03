@@ -3,20 +3,6 @@
 {% set pageTitle = 'Edit BattleReport' %}
 {% set battleInReview = true %}
 
-{% block head %}
-<style>
-	.autocomplete-suggestions { border:1px solid #999;background:#fff;overflow:auto;color:#333; }
-	.autocomplete-suggestion { padding:2px 5px;white-space:nowrap;overflow:hidden; }
-	.autocomplete-selected { background:#f0f0f0; }
-	.autocomplete-suggestions strong { font-weight:normal;color: #3399FF; }
-	.autocomplete-group { padding:2px 5px; }
-	.autocomplete-group strong { display:block;border-bottom:1px solid #000; }
-	.ship-icon-container{position:relative;}
-	.ship-type-icon{position:absolute;bottom:0;left:0;text-shadow:0 0 2px #000;}
-	.label a{text-decoration:underline;color:#fff;}
-</style>
-{% endblock %}
-
 {% block content %}
 	<h1>Edit BattleReport</h1>
 	{% if BR_USER_CAN_EDIT == false %}
