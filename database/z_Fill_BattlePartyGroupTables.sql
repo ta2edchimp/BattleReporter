@@ -26,14 +26,6 @@ FROM `invTypes`
 WHERE `typeName` IN ('Inquisitor', 'Bantam', 'Navitas', 'Burst', 'Augoror', 'Osprey', 'Exequror', 'Scythe', 'Guardian', 'Basilisk', 'Oneiros', 'Scimitar')
 ORDER BY `mass` DESC, `typeName` ASC;
 
-# Insert ECM ships into Ewar group
-INSERT INTO `brBattlePartyGroupShipTypes` (`shipTypeID`, `brBattlePartyGroupID`)
-SELECT `typeID` AS `shipTypeID`,
-	(SELECT `battlePartyGroupID` FROM `brBattlePartyGroups` WHERE `battlePartyGroupName` = 'Ewar' LIMIT 1) AS `brBattlePartyGroupID`
-FROM `invTypes` 
-WHERE `typeName` IN ('Widow', 'Falcon', 'Rook', 'Kitsune', 'Scorpion', 'Blackbird', 'Griffin')
-ORDER BY `mass` DESC, `typeName` ASC;
-
 # Insert ships into Ewar group
 INSERT INTO `brBattlePartyGroupShipTypes` (`shipTypeID`, `brBattlePartyGroupID`)
 SELECT `typeID` AS `shipTypeID`,
