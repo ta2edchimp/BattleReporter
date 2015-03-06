@@ -321,7 +321,8 @@ class Combatant {
             foreach ($response->characters as $row) {
                 if (strtolower($row->name) == strtolower($name)) {
                     $result = intVal($row->characterID);
-                    $result = ($result > 0 ? $result : -1);
+					if ($result <= 0)
+						return null;
 					self::$fetchedEntityNameIds["name#" . strtolower($name)] = array(
 						"entityName" => $row->name,
 						"entityID" => $result
