@@ -24,6 +24,12 @@
 	<meta name="twitter:description" content="{{ previewMeta.description }}">
 	<meta name="twitter:image" content="{{ previewMeta.image }}">
 	{% endif %}
+	<link rel="icon" href="/themes/default/icns/favicon.png">
+	<link rel="apple-touch-icon" href="/themes/default/icns/favicon.png">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter"> 
+	<meta name="msapplication-TileImage" content="/themes/default/icns/win-tile.png">
+	<meta name="msapplication-TileColor" content="#2b3e50">
 	<style>
 	#character-portrait{width:40px;height:40px;margin:-9.5px 5px -9.5px -15px;}
 	@media(max-width:767px){ #character-portrait{margin-left:0px} }
