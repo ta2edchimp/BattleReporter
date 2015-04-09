@@ -141,8 +141,8 @@ class BattleParty {
         
         // Fetch team members
         $team = $db->query(
-            "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName, " .
-				"t.typeName as shipTypeName, t.mass as shipTypeMass, " .
+			"select distinct c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, " .
+				"ifnull(a.allianceName, '') as allianceName, t.typeName as shipTypeName, t.mass as shipTypeMass, " .
 				"bpg.battlePartyGroupName as shipGroup, bpg.battlePartyGroupOrderKey as shipGroupOrderKey, " .
 				"(select videoID from brVideos where videoPoVCombatantID = c.brCombatantID order by videoID limit 1) as assignedFootage " .
 			"from brBattlePartyGroups as bpg right outer join brBattlePartyGroupShipTypes as bpgst " .

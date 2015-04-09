@@ -150,7 +150,7 @@ class Combatant {
 			
 			// This case should not happen: Combatant has not been saved, but was removed due to a reimported battle.
 			if ($this->hasBeenRemoved === true) {
-				$app->log->warn("Combatant::save() - A Combatant who has not been saved yet, but has been removed due to a reimported Battle.");
+				\Slim\Slim::getInstance()->log->warn("Combatant::save() - A Combatant who has not been saved yet, but has been removed due to a reimported Battle.");
 				return;
 			}
 			
@@ -308,15 +308,21 @@ class Combatant {
         
         if (isset(self::$fetchedEntityNameIds["name#" . strtolower($name)]))
             return self::$fetchedEntityNameIds["name#" . strtolower($name)];
-
-        $pheal = new \Pheal\Pheal();
-        $response = $pheal->eveScope->CharacterID(array("names" => $name));
+		
+		try {
+			$pheal = new \Pheal\Pheal();
+			$response = $pheal->eveScope->CharacterID(array("names" => $name));
+		} catch (\Pheal\Exceptions\PhealException $pex) {
+			\Slim\Slim::getInstance()->log->warn("Combatant::getEntityByName() - EVE API Fetch for \"" . json_encode($name) . "\" raised an Exception:\n" . $pex);
+			return null;
+		}
         
         if ($response !== null && $response->characters !== null) {
             foreach ($response->characters as $row) {
                 if (strtolower($row->name) == strtolower($name)) {
                     $result = intVal($row->characterID);
-                    $result = ($result > 0 ? $result : -1);
+					if ($result <= 0)
+						return null;
 					self::$fetchedEntityNameIds["name#" . strtolower($name)] = array(
 						"entityName" => $row->name,
 						"entityID" => $result
@@ -362,8 +368,13 @@ class Combatant {
 		);
 		
 		
-		$pheal = new \Pheal\Pheal();
-		$response = $pheal->corpScope->CorporationSheet(array("corporationID" => $corp["entityID"]));
+		try {
+			$pheal = new \Pheal\Pheal();
+			$response = $pheal->corpScope->CorporationSheet(array("corporationID" => $corp["entityID"]));
+		} catch (\Pheal\Exceptions\PhealException $pex) {
+			\Slim\Slim::getInstance()->log->warn("Combatant::getCorpInfoByName() - EVE API Fetch for \"" . json_encode($name) . "\" raised an Exception:\n" . $pex);
+			return $result;
+		}
 		
 		if ($response !== null && $response->allianceID !== null && $response->allianceName !== null) {
 			$result["allianceID"] = $response->allianceID;

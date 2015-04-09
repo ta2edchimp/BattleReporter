@@ -44,6 +44,7 @@ $app->view(new \Slim\Views\Twig());
 
 // Give us pretty error messages ... (if in debug mode)
 if ($BR_DEBUGMODE === true) {
+	$app->config('whoops.editor', 'textmate');
 	$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 }
 

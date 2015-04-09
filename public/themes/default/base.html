@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter{% if pageTitle is defined %} - {{ pageTitle }}{% endif %}</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter{% if pageTitle is defined %} - {{ pageTitle }}{% endif %}</title>
 	<meta name="robots" content="index,follow">
-    <link href="/themes/default/css/bootstrap-superhero.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+	<link href="/themes/default/css/bootstrap-superhero.min.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<link href="/themes/default/css/br.bootstrap-additions.min.css" rel="stylesheet">
 	<meta name="keywords" content="eve-online, eve, ccp, ccp games, kill, kills, killmails, killboard, battle, battles, battlereport, battlereports, report, reports, space, spaceships, isk, efficiency, {{ BR_OWNER|lower }}, {{ BR_OWNERCORP_NAME|lower }}">
 	{% if previewMeta is defined %}
 	<meta name="title" content="{{ previewMeta.title }}">
@@ -23,18 +24,22 @@
 	<meta name="twitter:description" content="{{ previewMeta.description }}">
 	<meta name="twitter:image" content="{{ previewMeta.image }}">
 	{% endif %}
+	<link rel="icon" href="/themes/default/icns/favicon.png">
+	<link rel="apple-touch-icon" href="/themes/default/icns/favicon.png">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="{% if BR_OWNER is defined %}{{ BR_OWNER }}'s {% endif %}BattleReporter"> 
+	<meta name="msapplication-TileImage" content="/themes/default/icns/win-tile.png">
+	<meta name="msapplication-TileColor" content="#2b3e50">
 	<style>
 	#character-portrait{width:40px;height:40px;margin:-9.5px 5px -9.5px -15px;}
-	@media(max-width:767px){
-		#character-portrait{margin-left:0px}
-	}
+	@media(max-width:767px){ #character-portrait{margin-left:0px} }
 	.dropdown-menu{min-width:120px}
 	</style>
-    {% block head %}{% endblock %}
+	{% block head %}{% endblock %}
 </head>
 <body style="padding-top:70px">
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-main">
 					<span class="sr-only">Toggle navigation</span>
@@ -73,26 +78,24 @@
 					<li><a href="/info"><span class="glyphicon glyphicon-question-sign"></span></a></li>
 				</ul>
 			</div>
-        </div>
-    </div>
-    <div class="container">
-        {% block content %}Hello, fellow capsuleer o/{% endblock %}
-    </div>
-    <div>&nbsp;</div>
-    <div class="container">
-        <div class="footer text-center">
-            <p><small><a href="https://github.com/ta2edchimp/BattleReporter" target="_blank">BattleReporter</a> by <a href="http://gate.eveonline.com/Profile/Erwin%20Krym'L" target="_blank">Erwin Krym'L</a>. Made with <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>, <a href="http://jquery.com" target="_blank">jQuery</a>, <a href="http://slimframework.com/" target="_blank">SlimFramework</a> and <a href="http://twig.sensiolabs.org/" target="_blank">Twig</a>.<br>
-            All <a id="legal-ccp" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to BattleReporter to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, BattleReporter. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website." data-original-title="CCP Legal Notice">EVE related materials</a> are property of <a href="http://ccpgames.com" target="_blank">CCP Games</a>.<br>
-            EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights reserved.</small></p>
-        </div>
-    </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/themes/default/js/bootstrap.min.js"></script>
-    <script>
-        $('a[data-toggle=popover]').popover();
-    </script>
-    {% block scripts %}{% endblock %}
+		</div>
+	</div>
+	<div class="container">
+		{% block content %}Hello, fellow capsuleer o/{% endblock %}
+	</div>
+	<div>&nbsp;</div>
+	<div class="container">
+		<div class="footer text-center">
+			<p><small><kbd><a href="https://github.com/ta2edchimp/BattleReporter" target="_blank">BattleReporter</a> v{{ BR_VERSION }}</kbd></small></p>
+			<p><small>
+				Made by <a href="http://gate.eveonline.com/Profile/Erwin%20Krym'L" target="_blank">Erwin Krym'L</a> / <a href="https://github.com/ta2edchimp">ta2edchimp</a>, using <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>, <a href="http://jquery.com" target="_blank">jQuery</a>, <a href="http://slimframework.com/" target="_blank">SlimFramework</a> and <a href="http://twig.sensiolabs.org/" target="_blank">Twig</a>.<br>
+				All <a id="legal-ccp" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to BattleReporter to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, BattleReporter. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website." data-original-title="CCP Legal Notice">EVE related materials</a> are property of <a href="http://ccpgames.com" target="_blank">CCP Games</a>.<br>
+				EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights reserved.</small></p>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="/themes/default/js/bootstrap.min.js"></script>
+	<script>$('a[data-toggle=popover]').popover();</script>
+	{% block scripts %}{% endblock %}
 </body>
 </html>

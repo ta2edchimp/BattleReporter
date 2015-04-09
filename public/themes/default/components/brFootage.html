@@ -1,0 +1,48 @@
+	{% if battleReport.footage|length > 0 %}
+	<div id="footage" class="panel panel-default">
+		<div class="panel-heading">
+			<div style="float:right">
+				<a id="btn-collapse-footage" href="#footage-panel" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
+					<span class="glyphicon glyphicon-chevron-down"></span>
+					<span class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</div>
+			<h3 class="panel-title">Battle Footage</h3>
+		</div>
+		<div id="footage-panel" class="panel-body panel-collapse collapse">
+		{% for video in battleReport.footage %}
+			<div id="footage-panel-{{ video.id }}" class="battle-footage">
+				<iframe width="480" height="270" frameborder="0" allowfullscreen src="{{ video.url }}"></iframe>
+				{% if video.combatant is defined %}
+				{% set combatant = video.combatant %}
+				<div class="pov-container">
+					<div>
+						<a href="#footage-{{ video.index }}-combatant" data-toggle="collapse" class="btn btn-xs btn-default collapsed collapse-button">
+							<span class="glyphicon glyphicon-chevron-down"></span>
+							<span class="glyphicon glyphicon-chevron-up"></span>
+						</a>
+					</div>
+					<div id="footage-{{ video.index }}-combatant" class="collapse in">
+						<table id="battlereport-{{ currentTeamID }}" class="table table-striped table-hover battlereport-combatants">
+							<tbody>
+								<tr class="combatant">
+									<td><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+									<td style="width:100%">
+										<div class="combatant-details">
+											{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
+											<small>{{ combatant.corporationName }}
+												{% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
+												{{ combatant.shipTypeName }}
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+	{% endif %}

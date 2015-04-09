@@ -176,8 +176,8 @@ class User {
 			// login per EVE SSO
 			$pheal = new \Pheal\Pheal(null, null, "eve");
 			$apiLookUp = $pheal->CharacterInfo(array("characterID" => $characterID));
-		} catch (PhealException $ex) {
-			$app->log->warn("Could not fetch CharacterInfo for charName \"" . $characterName . "\", charID " . $characterID . "!");
+		} catch (\Pheal\Exceptions\PhealException $ex) {
+			$app->log->warn("Could not fetch CharacterInfo for charName \"" . $characterName . "\", charID " . $characterID . ":\n" . $ex);
 			
 			// Either way, as the user can't
 			// be verified, this will be the end ...
@@ -336,7 +336,7 @@ class User {
 		try {
 			$pheal = new \Pheal\Pheal($roleCheckKey["keyID"], $roleCheckKey["vCode"], "corp");
 			$result = $pheal->MemberSecurity();
-		} catch (PhealException $ex) {
+		} catch (\Pheal\Exceptions\PhealException $ex) {
 			$app->log->error("Could not fetch MemberSecurity because of an Exception:\n" . $ex);
 			return false;
 		}

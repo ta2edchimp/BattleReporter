@@ -1,3 +1,33 @@
+# Release 0.4.2
+
+- 444fe09 Added use of `endPoint` to API calls due to changes in zKB/EveKill API "changes". zKillboard API fetching not working atm.
+- 656112a Closes #69
+- 9ad932d Fix for entities not found by name, closes #75
+- da8b8c7 PhealExceptions caught properly, closes #74
+- 32113e4 Improved debug config.
+- 7d48596 Prevent combatant doublettes.
+- 3e7fe20 Corrected partial double setup of ewar group (wtf did i do there?).
+- beb42cf Whitespace tweaking.
+- 2bdf3ea Tweaked popover layout.
+- 272a5d3 Updated general page footer.
+- 8924f41 Separated battle footage into `components` sub directory.
+- 40613f4 Allow embedded videos to expand to fullscreen.
+- e65d34e Centralized and unified additional css.
+- 3349593 Centralized and unified additional css.
+- 349891b Whitespace clean up.
+- 4518371 Whitespace clean up.
+- ec3896b Whitespace clean up.
+- dce7153 Whitespace clean up.
+- 4f58806 Whitespace clean up.
+- afdbc6d Fixed bug caused by uncautious script exclusion.
+- 3897c9b Manual minifying of js block.
+- 4cc0480 Provide minified editor js, shrunken to ~60% of original file size.
+- 479cbb4 Cleansed code from unnecessary 4-spaces indentations, replaced them by tabs.
+- b175c72 Extracted editor js from templates.
+- 8fb23ef Correct identification of direct messages.
+- e891b9f Changed layout of messages sent to `Slack`.
+- ec2df5e Merge branch 'release/0.4.1' into develop
+
 # Release 0.4.1
 
 - b8ade90 Fixed log output.

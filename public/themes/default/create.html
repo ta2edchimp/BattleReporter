@@ -3,74 +3,60 @@
 {% set pageTitle = 'Create New BattleReport' %}
 {% set battleInReview = true %}
 
-{% block head %}
-<style>
-    .autocomplete-suggestions { border:1px solid #999;background:#fff;overflow:auto;color:#333; }
-    .autocomplete-suggestion { padding:2px 5px;white-space:nowrap;overflow:hidden; }
-    .autocomplete-selected { background:#f0f0f0; }
-    .autocomplete-suggestions strong { font-weight:normal;color: #3399FF; }
-    .autocomplete-group { padding:2px 5px; }
-    .autocomplete-group strong { display:block;border-bottom:1px solid #000; }
-	.ship-icon-container{position:relative;}
-	.ship-type-icon{position:absolute;bottom:0;left:0;text-shadow:0 0 2px #000;}
-	.label a{text-decoration:underline;color:#fff;}
-</style>
-{% endblock %}
-
 {% block content %}
-    <h1>Create New BattleReport</h1>
-    <div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}default{% else %}primary{% endif %}">
-        <div class="panel-heading">
-            <h3 class="panel-title">{% if battleReport is not defined %}Search for Battle{% else %}Detected Battle{% endif %}</h3>
-        </div>
-        <div class="panel-body row">
-            
-            {% if battleTimespanError == true %}
-            <div class="alert alert-danger">
-                <strong>Oh snap!</strong> Please correct the timespan according to the shown pattern and try submitting again.
-            </div>
-            {% endif %}
-            
-            {% if battleSolarSystemError == true %}
-            <div class="alert alert-danger">
-                <strong>Darn!</strong> The system name &quot;{{ inputBattleSolarSystemName }}&quot; causes headache! Please correct it and try submitting again.
-            </div>
-            {% endif %}
-            
-            {% if battleTimespan is not defined or battleSolarSystem is not defined %}
-            <form method="post" action="/create">
-                <div class="col-xs-6">
-                    <div class="form-group{% if battleTimespanError == true %} has-error{% endif %}">
-                        <label for="battleTimespan" class="control-label">Timespan:</label>
-                        <input class="form-control" id="battleTimespan" name="battleTimespan" placeholder="YYYY-MM-DD HH:MM - HH:MM" pattern="([0-9]{2}){1,2}-([0-1][0-2]|[0]{0,1}[1-9])-[0-3]{0,1}[0-9] [0-2]{0,1}[0-9]:[0-5][0-9] - [0-2]{0,1}[0-9]:[0-5][0-9]" value="{{ inputBattleTimespan }}">
-                    </div>
-                </div>
-                <div class="col-xs-6">
-                    <div class="form-group{% if battleSolarSystemError == true %} has-error{% endif %}">
-                        <label for="battleTimespan" class="control-label">Solar System:</label>
-                        <div class="input-group">
-                            <input class="form-control" id="battleSolarSystemName" name="battleSolarSystemName" value="{{ inputBattleSolarSystemName }}">
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" type="submit">Search ...</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" id="battleSolarSystemId" name="battleSolarSystemId" value="">
-            </form>
-            {% else %}
-                <div class="col-xs-6">
-                    <label class="control-label">Timespan:</label>
-                    <div>{% if battleReport is defined and battleReport.timeSpan != '' %}{{ battleReport.timeSpan }}{% else %}{{ battleTimespan }}{% endif %}</div>
-                </div>
-                <div class="col-xs-6">
-                    <label class="control-label">Solar System:</label>
-                    <div>{% if battleReport is defined and battleReport.solarSystemName != '' %}{{ battleReport.solarSystemName }}{% else %}{{ battleSolarSystem.name }}{% endif %}</div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-    
+	<h1>Create New BattleReport</h1>
+	<div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}default{% else %}primary{% endif %}">
+		<div class="panel-heading">
+			<h3 class="panel-title">{% if battleReport is not defined %}Search for Battle{% else %}Detected Battle{% endif %}</h3>
+		</div>
+		<div class="panel-body row">
+			
+			{% if battleTimespanError == true %}
+			<div class="alert alert-danger">
+				<strong>Oh snap!</strong> Please correct the timespan according to the shown pattern and try submitting again.
+			</div>
+			{% endif %}
+			
+			{% if battleSolarSystemError == true %}
+			<div class="alert alert-danger">
+				<strong>Darn!</strong> The system name &quot;{{ inputBattleSolarSystemName }}&quot; causes headache! Please correct it and try submitting again.
+			</div>
+			{% endif %}
+			
+			{% if battleTimespan is not defined or battleSolarSystem is not defined %}
+			<form method="post" action="/create">
+				<div class="col-xs-6">
+					<div class="form-group{% if battleTimespanError == true %} has-error{% endif %}">
+						<label for="battleTimespan" class="control-label">Timespan:</label>
+						<input class="form-control" id="battleTimespan" name="battleTimespan" placeholder="YYYY-MM-DD HH:MM - HH:MM" pattern="([0-9]{2}){1,2}-([0-1][0-2]|[0]{0,1}[1-9])-[0-3]{0,1}[0-9] [0-2]{0,1}[0-9]:[0-5][0-9] - [0-2]{0,1}[0-9]:[0-5][0-9]" value="{{ inputBattleTimespan }}">
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group{% if battleSolarSystemError == true %} has-error{% endif %}">
+						<label for="battleTimespan" class="control-label">Solar System:</label>
+						<div class="input-group">
+							<input class="form-control" id="battleSolarSystemName" name="battleSolarSystemName" value="{{ inputBattleSolarSystemName }}">
+							<span class="input-group-btn">
+								<button class="btn btn-primary" type="submit">Search ...</button>
+							</span>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="battleSolarSystemId" name="battleSolarSystemId" value="">
+			</form>
+			{% else %}
+				<div class="col-xs-6">
+					<label class="control-label">Timespan:</label>
+					<div>{% if battleReport is defined and battleReport.timeSpan != '' %}{{ battleReport.timeSpan }}{% else %}{{ battleTimespan }}{% endif %}</div>
+				</div>
+				<div class="col-xs-6">
+					<label class="control-label">Solar System:</label>
+					<div>{% if battleReport is defined and battleReport.solarSystemName != '' %}{{ battleReport.solarSystemName }}{% else %}{{ battleSolarSystem.name }}{% endif %}</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+	
 	{% if battleTimespan is defined and battleSolarSystem is defined %}
 	{% if battleReport is not defined %}
 	<div class="panel panel-{% if battleTimespan is defined and battleSolarSystem is defined %}primary{% else %}default{% endif %}">
@@ -112,29 +98,21 @@
 {% block scripts %}
 {% include 'components/brEditor.html' %}
 <script src="/js/jquery.autocomplete.min.js"></script>
-<script>
 {% if battleTimespan is not defined or battleSolarSystem is not defined %}
-    $('#battleSolarSystemName').autocomplete({
-        serviceUrl: '/autocomplete/solarSystems',
-        type: 'POST',
-        transformResult: function(response) {
-            var s = [];
-            if (!!response && !!(response = $.parseJSON(response)))
-                s = $.map(response.solarSystems, function(item) {
-                    return { value: item.name, data: item.id };
-                });
-            return {
-                suggestions: s
-            };
-        },
-        onSelect: function (suggestion) {
-            if (!!suggestion.data)
-                $('#battleSolarSystemId').val(suggestion.data);
-        }
-    });
+<script>
+	$('#battleSolarSystemName').autocomplete({
+		serviceUrl: '/autocomplete/solarSystems', type: 'POST',
+		transformResult: function(response) {
+			var s = []; if (!!response && !!(response = $.parseJSON(response))) s = $.map(response.solarSystems, function(item) { return { value: item.name, data: item.id }; });
+			return { suggestions: s };
+		}, onSelect: function (suggestion) {
+			if (!!suggestion.data) $('#battleSolarSystemId').val(suggestion.data);
+		}
+	});
+</script>
 {% endif %}
 {% if battleTimespan is defined and battleSolarSystem is defined and battleReport is defined and battleReport.killsTotal > 0 %}
-{% include 'components/brEditor.js' %}
+<script>var battleReport = {{ battleReport.toJSON()|raw }};</script>
+<script src="/js/br.editor.min.js"></script>
 {% endif %}
-</script>
 {% endblock %}

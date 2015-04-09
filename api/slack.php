@@ -27,16 +27,20 @@ $command		= "/battlereporter";
 $mode			= "latest";
 $battleReportID	= -1;
 
+$channelName	= "";
+
 $slackOpts		= array();
 
-if (isset($params["channel_name"])) {
+if (isset($params["channel_name"]) && isset($params["channel_id"])) {
 	
-	$slackOpts["channel"] = "#" . $params['channel_name'];
+	$channelName = "#" . $params['channel_name'];
 	
-	if ($slackOpts["channel"] == "#privategroup") {
+	if (strtolower($channelName) == "#privategroup") {
 		echo "_Sorry_, I cannot post to private groups.";
 		$app->stop();
 	}
+	
+	$slackOpts["channel"] = $params["channel_id"];
 	
 }
 
@@ -186,5 +190,5 @@ if ($battleToShow === null) {
 echo "Posted Battle" .
 	 (!empty($battleToShow["title"]) ? (" \"" . $battleToShow["title"] . "\"") : (" in " . $battleToShow["solarSystemName"])) .
 	 " to Slack" .
-	 (isset($slackOpts["channel"]) ? (", channel `" . $slackOpts["channel"] . "`") : "") .
+	 (!empty($channelName) && strtolower($channelName) != "#directmessage" ? (", channel `" . $channelName . "`") : "") .
 	 ".";
