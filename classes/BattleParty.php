@@ -151,14 +151,16 @@ class BattleParty {
 				"on bpgst.shipTypeID = t.typeID " .
 			"inner join invGroups as g " .
 				"on g.groupID = t.groupID " .
-			"right outer join brCombatants as c " .
+			"right outer join (" .
+					"select * from brCombatants " .
+					"where brBattlePartyID = :brBattlePartyID and (brManuallyAdded = 0 or brDeleted = 0)" .
+				") as c " .
 				"on t.typeID = c.shipTypeID " .
 			"left outer join brCorporations as cc " .
 				"on c.corporationID = cc.corporationID " .
 			"left outer join brAlliances as a " .
 				"on c.allianceID = a.allianceID " .
-            "where c.brBattlePartyID = :brBattlePartyID and (c.brManuallyAdded = 0 or c.brDeleted = 0) " .
-				"and (g.groupName <> 'Capsule' or c.died = 1) " .
+            "where (g.groupName <> 'Capsule' or c.died = 1) " .
 				($toBeEdited ? "" : "and brHidden = 0 ") .
 			"order by bpg.battlePartyGroupOrderKey desc, t.mass desc, t.typeName desc, c.characterName asc, c.died desc",
             array(
