@@ -1,3 +1,9 @@
+# Release 0.4.3
+
+- 5a1c7ed Credited Bitslix in "About" infomation ... ;P
+- 1a8277f Fetch statement slightly optimized, closes #78
+- 081e35c Merge branch 'release/0.4.2' into develop
+
 # Release 0.4.2
 
 - 444fe09 Added use of `endPoint` to API calls due to changes in zKB/EveKill API "changes". zKillboard API fetching not working atm.
