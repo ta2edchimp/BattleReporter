@@ -2,7 +2,7 @@
 
 _An enhanced BattleReport platform for [EVE Online](http://eveonline.com)._
 
-BattleReporter is made by [Erwin Krym'L](http://gate.eveonline.com/Profile/Erwin%20Krym'L) aka [ta2edchimp](https://github.com/ta2edchimp) and is released unde the [Beerware License](https://tldrlegal.com/license/beerware-license); So, as long as you keep the included author information, feel free to do anything you want with the source codes.
+BattleReporter is made by [Erwin Krym'L](http://gate.eveonline.com/Profile/Erwin%20Krym'L) of [Bitslix](http://bitslix.net/) aka [ta2edchimp](https://github.com/ta2edchimp) and is released unde the [Beerware License](https://tldrlegal.com/license/beerware-license); So, as long as you keep the included author information, feel free to do anything you want with the source codes.
 
 ![Beerware License Logo](http://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/BeerWare_Logo.svg/116px-BeerWare_Logo.svg.png) __"THE BEER-WARE LICENSE" (Revision 42):__
 
