@@ -623,25 +623,32 @@ class Battle {
 		return;
 		
 	}
-    
-    
-    public function toJSON() {
-        return '{' .
-            '"type":"battle",' .
-            '"battleReportID":' . $this->battleReportID . ',' .
-            '"title":"' . $this->title . '",' .
-            '"killsTotal":' . $this->killsTotal . ',' .
-            '"startTime":' . $this->startTime . ',' .
-            '"endTime":' . $this->endTime . ',' .
-            '"timeSpan":"' . $this->timeSpan . '",' .
-            '"solarSystemName":"' . $this->solarSystemName . '",' .
-            '"teamA":' . $this->teamA->toJSON() . ',' .
-            '"teamB":' . $this->teamB->toJSON() . ',' .
-            '"teamC":' . $this->teamC->toJSON() .
-        '}';
-    }
-    
-    
+	
+	public function toJSON() {
+		
+		return json_encode($this->toArray());
+		
+	}
+	
+	private function toArray() {
+		
+		return array(
+			"type" => "battle",
+			"battleReportID" => $this->battleReportID,
+			"title" => $this->title,
+			"killsTotal" => $this->killsTotal,
+			"startTime" => $this->startTime,
+			"endTime" => $this->endTime,
+			"timeSpan" => $this->timeSpan,
+			"solarSystemName" => $this->solarSystemName,
+			"teamA" => $this->teamA->toArray(),
+			"teamB" => $this->teamB->toArray(),
+			"teamC" => $this->teamC->toArray()
+		);
+		
+	}
+	
+	
     public static function getBattleReportIDByKillID($killID = "") {
         if (empty($killID))
             return null;

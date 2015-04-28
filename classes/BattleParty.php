@@ -218,19 +218,24 @@ class BattleParty {
             $combatant->save($this->brBattlePartyID);
         
     }
-    
-    
-    public function toJSON() {
-        
-        $members = array();
-        foreach ($this->members as $combatant)
-            $members[] = $combatant->toJSON();
-        
-        return '{' .
-            '"type":"party",' .
-            '"name":"' . $this->name . '",' .
-            '"members":[' . implode(",", $members) . ']' .
-        '}';
-    }
-    
+	
+	public function toArray() {
+		
+		$members = array();
+		foreach ($this->members as $combatant)
+			$members[] = $combatant->toArray();
+		
+		return array(
+			"type" => "party",
+			"name" => $this->name,
+			"members" => $members
+		);
+		
+	}
+	
+	public function toJSON() {
+		
+		return json_encode($this->toArray());
+	}
+	
 }

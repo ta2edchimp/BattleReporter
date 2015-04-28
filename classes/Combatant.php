@@ -242,22 +242,29 @@ class Combatant {
 		$this->hasBeenRemoved = true;
 		
 	}
-    
-    
-    public function toJSON() {
-        $props = array();
-        
-        foreach ($this->availableProps as $key) {
-            if (isset($this->$key))
-                $props[$key] = $this->$key;
-        }
-        
-        $props["type"] = "combatant";
-        
-        return json_encode($props);
-    }
-    
-    
+	
+	public function toArray() {
+		
+		$props = array();
+		
+		foreach ($this->availableProps as $key) {
+			if (isset($this->$key))
+				$props[$key] = $this->$key;
+		}
+		
+		$props["type"] = "combatant";
+		
+		return $props;
+		
+	}
+		
+	public function toJSON() {
+		
+		return json_encode($this->toArray());
+		
+	}
+	
+	
 	public static function sorter(Combatant $a, Combatant $b) {
 		
 		// First, sort by ship group (per default: Capital, Logi, Ewar, default is DPS) ...
