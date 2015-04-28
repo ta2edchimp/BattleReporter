@@ -1,3 +1,8 @@
+# Release 0.4.4
+
+- 064fe64 "toJSON" Rework.
+- a101f5b Merge branch 'release/0.4.3' into develop
+
 # Release 0.4.3
 
 - 5a1c7ed Credited Bitslix in "About" infomation ... ;P
