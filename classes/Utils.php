@@ -5,6 +5,7 @@
  */
 
 class Utils {
+	
     
     public static function objectToArray($d) {
         
@@ -26,10 +27,36 @@ class Utils {
             return $d;
         
     }
+	
+	private static $fetcher = null;
+	
+	public static function setFetcher($fetcher) {
+		
+		self::$fetcher = $fetcher;
+		
+	}
+	
+	public static function getFetcher() {
+		
+		if (self::$fetcher === null) {
+			self::setFetcher(new \Utils\Fetcher\Curl());
+		}
+		
+		return self::$fetcher;
+		
+	}
+	
+	public static function fetch($url = "", $parameters = array(), $options = array()) {
+		
+		return self::getFetcher()->fetch($url, $parameters, $options);
+		
+	}
 
     public static function curl($url = "", $parameters = array(), $options = array()) {
+		
+		return self::fetch($url, $parameters, $options);
         
-        if (empty($url))
+        /*if (empty($url))
             return "";
         
         $parametersAsQuerystring = false;
@@ -204,7 +231,7 @@ class Utils {
             }
         }
         
-        return $headers;
+        return $headers;*/
     }
     
 }

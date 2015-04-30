@@ -53,3 +53,13 @@ if ($BR_DEBUGMODE === true) {
 \Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\FileStorage("$basePath/cache/pheal/");
 // Enable AccessMask Check
 \Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();
+
+// Take care of environments without curl support
+if (defined('BR_FETCH_METHOD')) {
+	if (strtolower(BR_FETCH_METHOD) == "file") {
+		// Set the killmail / sso fetcher to type "file"
+		Utils::setFetcher(new \Utils\Fetcher\File());
+		// Set PhealNG's fetcher to type "file"
+		\Pheal\Core\Config::getInstance()->fetcher = new \Pheal\Fetcher\Curl();
+	}
+}
