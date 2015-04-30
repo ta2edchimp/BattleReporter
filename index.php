@@ -1,6 +1,6 @@
 <?php
 
-define('BR_VERSION', '0.4.4');
+define('BR_VERSION', '0.4.5');
 
 require_once('vendor/autoload.php');
 
@@ -13,6 +13,9 @@ if (!function_exists('password_hash') || !function_exists('password_verify')
 require_once('classes/User.php');
 require_once('classes/Session.php');
 
+require_once('classes/Fetcher/Fetcher.php');
+require_once('classes/Fetcher/Curl.php');
+require_once('classes/Fetcher/File.php');
 require_once('classes/Utils.php');
 
 require_once('classes/KBFetch.php');

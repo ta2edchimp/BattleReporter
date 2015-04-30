@@ -129,7 +129,7 @@ class Slack {
 		
 		// Send Result to Slack Channel
 		try {
-			Utils::curl(
+			Utils::fetch(
 				$this->channelUrl,
 				array(
 					"payload" => json_encode($payload)

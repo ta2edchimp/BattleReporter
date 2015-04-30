@@ -1,3 +1,14 @@
+# Release 0.4.5
+
+- 3063938 Fixes #80
+- 4ef37a0 Merge branch 'feature/curl-alternative' into develop
+- a2a81bc Make use of new fetcher.
+- 1e9a34c Setup & initialize fetcher.
+- 81b8546 Include new fetcher.
+- 5f81a71 Impl. alternative to curl, closes #77
+- 54d7d62 Fixed variable to correctly point towards the current Slim instance.
+- fb195a6 Merge branch 'release/0.4.4' into develop
+
 # Release 0.4.4
 
 - 064fe64 "toJSON" Rework.

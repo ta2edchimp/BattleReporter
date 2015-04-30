@@ -159,6 +159,7 @@ class User {
 		if (BR_LOGINMETHOD_EVE_SSO !== true)
 			return false;
 		
+		$app = \Slim\Slim::getInstance();
 		$db = Db::getInstance();
 		
 		// Check if he's already in the database

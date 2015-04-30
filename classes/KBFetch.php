@@ -22,7 +22,7 @@ class KBFetch {
 				$parameters[$key] = $val;
 		}
 		
-		$fetchedResult = Utils::curl(
+		$fetchedResult = Utils::fetch(
 			BR_FETCH_SOURCE_URL . "api/combined",
 			$parameters,
 			array(
@@ -44,7 +44,7 @@ class KBFetch {
 		if (empty($killID) || $killID <= 0)
 			return;
 		
-		$fetchedResult = Utils::curl(
+		$fetchedResult = Utils::fetch(
 			BR_FETCH_SOURCE_URL . "api/kills",
 			array(
 				"killID" => $killID

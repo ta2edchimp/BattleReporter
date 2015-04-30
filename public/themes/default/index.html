@@ -67,7 +67,8 @@
 <script>
 	$('*[data-battle-report-id]').each(function () {
 		$(this).css({ cursor: 'pointer' });
-	}).click(function () {
+	}).click(function (event) {
+		if (event.target.nodeName == 'A' || $(event.target).parent().hasClass('br-inv-link')) return;
 		var id = $(this).attr('data-battle-report-id');
 		if (!id) return;
 		window.location.href = '/show/' + id;
