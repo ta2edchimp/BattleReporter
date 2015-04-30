@@ -158,6 +158,23 @@ if ($config["BR_FETCH_SOURCE_NAME"] == "2")
 	$config["BR_FETCH_SOURCE_URL"] = "https://beta.eve-kill.net/";
 
 
+// Specify the http communication method to use to fetch killmails etc.
+out();
+out("Please specify your preferred method to fetch data over networks." . PHP_EOL .
+	"Usually, you can stick with the default (curl). Switch to file if" . PHP_EOL .
+	"you encounter any problems." . PHP_EOL .
+	"|g|Enter [1] to use \"curl\", or [2] to use \"file\"." . PHP_EOL .
+	"Hit enter to choose [1] \"curl\".");
+$config["BR_FETCH_METHOD"] = "nope";
+$br_fetch_method_choices = array("", "1", "2");
+while (!in_array($config["BR_FETCH_METHOD"], $br_fetch_method_choices))
+	$config["BR_FETCH_METHOD"] = prompt("Select fetch method", "1");
+if ($config["BR_FETCH_METHOD"] == "2")
+	$config["BR_FETCH_METHOD"] = "file";
+else
+	$config["BR_FETCH_METHOD"] = "curl";
+
+
 // Specify database credentials
 out();
 $config["DB_HOST"] = prompt("Database host (use 127.0.0.1 if localhost causes issues)", "localhost");

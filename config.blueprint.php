@@ -49,6 +49,8 @@ define('BR_LOGINMETHOD_EVE_SSO_SECRET', '%BR_LOGINMETHOD_EVE_SSO_SECRET%');
  *	Advanced Functions
  */
 define('BR_COMMENTS_ENABLED', %BR_COMMENTS_ENABLED%);
+// Method for http communication / fetching killmails
+define('BR_FETCH_METHOD', '%BR_FETCH_METHOD%');	// either 'curl' or 'file'
 // Slack.com Integration
 define('BR_API_SLACK_ENABLED', false);		// true/false
 define('BR_API_SLACK_TOKEN', '');			// Slash Command Token provided by Slack
