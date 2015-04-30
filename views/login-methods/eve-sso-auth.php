@@ -10,7 +10,7 @@ $state	= $app->request->get('state');
 if (!isset($_SESSION['auth_state']) || $state === null || $_SESSION['auth_state'] != $state)
 	$app->redirect("/login");
 
-$tokenResult = Utils::curl(
+$tokenResult = Utils::fetch(
 	"https://login.eveonline.com/oauth/token",
 	array(
 		"grant_type" => "authorization_code",
@@ -32,7 +32,7 @@ if (empty($tokenResult) || $tokenResult === false) {
 $tokenResult	= json_decode($tokenResult);
 $authToken		= $tokenResult->access_token;
 
-$verifyResult = Utils::curl(
+$verifyResult = Utils::fetch(
 	"https://login.eveonline.com/oauth/verify",
 	array(),
 	array(
