@@ -1,3 +1,9 @@
+# Release 0.4.6
+
+- c09d3fc DB Updated for `Galatea`.
+- f4ec4c1 Adding multiple combatants at once implemented, closes #79
+- 533992e Merge branch 'release/0.4.5' into develop
+
 # Release 0.4.5
 
 - 3063938 Fixes #80
