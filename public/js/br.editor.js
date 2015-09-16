@@ -169,13 +169,16 @@
 				corp = tr.find('.combatant-corpname'),
 				corpName = corp.val(),
 				alli = tr.find('.combatant-alliname'),
-				alliName = alli.val();
+				alliName = alli.val(),
+				count = tr.find('.combatant-count'),
+				n = Math.max(parseInt(count.val() || 1, 10) || 1, 1);
 			alli.val('');
 			corp.val('');
 			ship.val('');
+			count.val('1');
 			if (!shipName)
 				return;
-			addCombatant(team, { shipTypeName: shipName, corporationName: corpName, allianceName: alliName });
+			while (n--) addCombatant(team, { shipTypeName: shipName, corporationName: corpName, allianceName: alliName });
 		});
 		$('#save-br').click(function () {
 			$('#battleReportChanges').val(JSON.stringify(changes));
