@@ -2,6 +2,8 @@
 
 namespace Utils\Fetcher;
 
+use Utils\Fetcher;
+
 class Curl extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
@@ -122,10 +124,10 @@ class Curl extends FetcherBase {
 			curl_close($curl);
 			
 			if ($httpCode >= 400)
-				throw new Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
+				throw new \Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
 			
 			if ($errno)
-				throw new Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
+				throw new \Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
 			
 			if ($caching === true && $cache !== null) {
 				if ($autoCaching === true && !empty($headers["Expires"])) {

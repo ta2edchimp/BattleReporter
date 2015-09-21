@@ -2,6 +2,8 @@
 
 namespace Utils\Fetcher;
 
+use Utils\Fetcher;
+
 class FetcherBase implements FetcherInterface {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {

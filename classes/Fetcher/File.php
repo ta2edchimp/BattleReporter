@@ -2,6 +2,8 @@
 
 namespace Utils\Fetcher;
 
+use Utils\Fetcher;
+
 class File extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
@@ -103,10 +105,10 @@ class File extends FetcherBase {
 			}
 			
 			if (is_numeric($httpCode) && $httpCode >= 400)
-				throw new Exception("HTTP ($httpVersion) Error #$httpCode with url \"$url\":\n$httpMsg\nResult:\n$result", $httpCode);
+				throw new \Exception("HTTP ($httpVersion) Error #$httpCode with url \"$url\":\n$httpMsg\nResult:\n$result", $httpCode);
 			
 			if ($result === false)
-				throw new Exception("Error while fetching url \"$url\":\n" . ($php_errormsg ? $php_errormsg : "HTTP Request Failed"), 666);
+				throw new \Exception("Error while fetching url \"$url\":\n" . ($php_errormsg ? $php_errormsg : "HTTP Request Failed"), 666);
 			
 			// reset "track_errors" setting
 			ini_set('track_errors', $oldTrackErrors);
