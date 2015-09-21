@@ -2,7 +2,7 @@
 
 namespace Utils\Fetcher;
 
-interface FetcherBase {
+interface FetcherInterface {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array());
 	
