@@ -15,6 +15,11 @@ class Slack {
 	
 	public function postBattleWithID($battleReportID = 0, array $options = array()) {
 		
+		if (!is_int(intval($battleReportID)))
+			return null;
+
+		$battleReportID = intval($battleReportID);
+
 		if ($battleReportID < 1)
 			return null;
 		
@@ -22,7 +27,7 @@ class Slack {
 			"onlyPublished" => (isset($options["onlyPublished"]) && is_bool($options["onlyPublished"]) ? $options["onlyPublished"] : true),
 			"id" => $battleReportID
 		));
-		if (!is_int($battleReportID) || $battleReportID < 1 || $result === NULL || $result === FALSE || count($result) < 1)
+		if ($result === NULL || $result === FALSE || count($result) < 1)
 			return null;
 		
 		$battleToShow = $result[0];
@@ -139,7 +144,7 @@ class Slack {
 				)
 			);
 		} catch (Exception $ex) {
-			$app->log->error("Exception caught while trying to post to Slack WebHook.\n" . $ex);
+			\Slim\Slim::getInstance()->log->error("Exception caught while trying to post to Slack WebHook.\n" . $ex);
 			return null;
 		}
 		
