@@ -93,7 +93,7 @@ class File extends FetcherBase {
 				$context = stream_context_create($opts);
 				$result = file_get_contents($url, false, $context);
 			} else {
-				$result = @file_get_contents($url);
+				$result = file_get_contents($url);
 			}
 			
 
