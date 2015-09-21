@@ -2,7 +2,7 @@
 
 namespace Utils\Fetcher;
 
-class Curl implements FetcherBase {
+class Curl extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
@@ -137,33 +137,6 @@ class Curl implements FetcherBase {
 		}
 		
 		return $result;
-		
-	}
-	
-	private static function transformParameters($parameters = array(), $parametersAsQuerystring = true) {
-		
-		if (!is_array($parameters) || empty($parameters))
-			return "";
-		
-		$queryps = array();
-		$keys = array_keys($parameters);
-		
-		if ($parametersAsQuerystring === true) {
-			foreach ($keys as $key) {
-				$queryps[] = $key . "=" . $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "?" . implode("&", $queryps);
-		} else {
-			foreach ($keys as $key) {
-				$queryps[] = $key;
-				$queryps[] = $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "/" . implode("/", $queryps) . "/";
-		}
-		
-		return "";
 		
 	}
 	
