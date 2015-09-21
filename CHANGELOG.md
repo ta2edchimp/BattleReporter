@@ -1,3 +1,18 @@
+# Release 0.4.7
+
+- 44f63fe Versionbump.
+- acc18bc Corrected namespaced class imports.
+- 8e450fd Do not suppress errors on `file_get_contents`, as we are even specifically change the php error settings to be able to catch possible errors.
+- 1a5374c Cleared up namespace uses.
+- 8959698 Auto-caching not implemented, therefore to reduce dead code, removed corresponding flags.
+- fc15ce4 ... and a bugfix for previously undefined variables from #2c5fc8e
+- 2c5fc8e Make use of existing information when receiving errors.
+- 8d02af5 Deleted commented out code.
+- 08b6b7d Changes due to modifications made to the Fetcher implementations.
+- 20290e8 Fetcher implementations now inherit from `FetcherBase` class. Duplicate code removed.
+- 01f3e7b Changed base implementation of `Fetcher` into `FetcherInterface` and a `FetcherBase` class, to store otherwise duplicate code of the concrete Fetcher implementations of `File` and `Curl`.
+- 94910e8 Merge branch 'release/0.4.6' into develop
+
 # Release 0.4.6
 
 - c09d3fc DB Updated for `Galatea`.

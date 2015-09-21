@@ -2,7 +2,9 @@
 
 namespace Utils\Fetcher;
 
-class File implements FetcherBase {
+use Utils\Fetcher\FetcherBase;
+
+class File extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
@@ -29,14 +31,10 @@ class File implements FetcherBase {
 		$opts["http"]["timeout"] = $timeout;
 		
 		$caching = false;
-		$autoCaching = false;
 		$cacheLifetime = 600;
 		if (isset($options["caching"])) {
-			if ($options["caching"] === true)
+			if ($options["caching"] === true || $options["caching"] == "auto") {
 				$caching = true;
-			elseif ($options["caching"] == "auto") {
-				$caching = true;
-				$autoCaching = true;
 			}
 		}
 		if (isset($options["cacheLifetime"])) {
@@ -95,19 +93,22 @@ class File implements FetcherBase {
 				$context = stream_context_create($opts);
 				$result = file_get_contents($url, false, $context);
 			} else {
-				$result = @file_get_contents($url);
+				$result = file_get_contents($url);
 			}
 			
+
 			$httpCode = 200;
+			$httpVersion = '';
+			$httpMsg = '';
 			if (isset($http_response_header[0])) {
 				list($httpVersion, $httpCode, $httpMsg) = explode(' ', $http_response_header[0], 3);
 			}
 			
 			if (is_numeric($httpCode) && $httpCode >= 400)
-				throw new Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
+				throw new \Exception("HTTP ($httpVersion) Error #$httpCode with url \"$url\":\n$httpMsg\nResult:\n$result", $httpCode);
 			
 			if ($result === false)
-				throw new Exception("Error while fetching url \"$url\":\n" . ($php_errormsg ? $php_errormsg : "HTTP Request Failed"), 666);
+				throw new \Exception("Error while fetching url \"$url\":\n" . ($php_errormsg ? $php_errormsg : "HTTP Request Failed"), 666);
 			
 			// reset "track_errors" setting
 			ini_set('track_errors', $oldTrackErrors);
@@ -118,33 +119,6 @@ class File implements FetcherBase {
 		}
 		
 		return $result;
-		
-	}
-	
-	private static function transformParameters($parameters = array(), $parametersAsQuerystring = true) {
-		
-		if (!is_array($parameters) || empty($parameters))
-			return "";
-		
-		$queryps = array();
-		$keys = array_keys($parameters);
-		
-		if ($parametersAsQuerystring === true) {
-			foreach ($keys as $key) {
-				$queryps[] = $key . "=" . $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "?" . implode("&", $queryps);
-		} else {
-			foreach ($keys as $key) {
-				$queryps[] = $key;
-				$queryps[] = $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "/" . implode("/", $queryps) . "/";
-		}
-		
-		return "";
 		
 	}
 	

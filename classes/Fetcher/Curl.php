@@ -2,7 +2,9 @@
 
 namespace Utils\Fetcher;
 
-class Curl implements FetcherBase {
+use Utils\Fetcher\FetcherBase;
+
+class Curl extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
@@ -122,10 +124,10 @@ class Curl implements FetcherBase {
 			curl_close($curl);
 			
 			if ($httpCode >= 400)
-				throw new Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
+				throw new \Exception("HTTP-Error #$httpCode with url \"$url\":\n$result", $httpCode);
 			
 			if ($errno)
-				throw new Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
+				throw new \Exception("Error #$errno while fetching url \"$url\":\n$error", $errno);
 			
 			if ($caching === true && $cache !== null) {
 				if ($autoCaching === true && !empty($headers["Expires"])) {
@@ -137,33 +139,6 @@ class Curl implements FetcherBase {
 		}
 		
 		return $result;
-		
-	}
-	
-	private static function transformParameters($parameters = array(), $parametersAsQuerystring = true) {
-		
-		if (!is_array($parameters) || empty($parameters))
-			return "";
-		
-		$queryps = array();
-		$keys = array_keys($parameters);
-		
-		if ($parametersAsQuerystring === true) {
-			foreach ($keys as $key) {
-				$queryps[] = $key . "=" . $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "?" . implode("&", $queryps);
-		} else {
-			foreach ($keys as $key) {
-				$queryps[] = $key;
-				$queryps[] = $parameters[$key];
-			}
-			if (count($queryps) > 0)
-				return "/" . implode("/", $queryps) . "/";
-		}
-		
-		return "";
 		
 	}
 	
