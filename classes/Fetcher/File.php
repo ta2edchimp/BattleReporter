@@ -98,7 +98,10 @@ class File extends FetcherBase {
 				$result = @file_get_contents($url);
 			}
 			
+
 			$httpCode = 200;
+			$httpVersion = '';
+			$httpMsg = '';
 			if (isset($http_response_header[0])) {
 				list($httpVersion, $httpCode, $httpMsg) = explode(' ', $http_response_header[0], 3);
 			}
