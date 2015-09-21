@@ -2,7 +2,7 @@
 
 Advanced editable BattleReport platform for EVE Online.
 
-- Current Version: `0.4`
+- Current Version: `0.4.7`
 - Download at [`Releases`](https://github.com/ta2edchimp/BattleReporter/releases)
 
 ## Setup
