@@ -29,14 +29,10 @@ class File extends FetcherBase {
 		$opts["http"]["timeout"] = $timeout;
 		
 		$caching = false;
-		$autoCaching = false;
 		$cacheLifetime = 600;
 		if (isset($options["caching"])) {
-			if ($options["caching"] === true)
+			if ($options["caching"] === true || $options["caching"] == "auto") {
 				$caching = true;
-			elseif ($options["caching"] == "auto") {
-				$caching = true;
-				$autoCaching = true;
 			}
 		}
 		if (isset($options["cacheLifetime"])) {
