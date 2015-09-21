@@ -2,7 +2,7 @@
 
 namespace Utils\Fetcher;
 
-use Utils\Fetcher;
+use Utils\Fetcher\FetcherBase;
 
 class Curl extends FetcherBase {
 	
