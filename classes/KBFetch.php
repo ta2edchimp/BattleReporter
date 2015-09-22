@@ -4,6 +4,11 @@ class KBFetch {
     
     private static $availableParams = array("corporationID", "solarSystemID", "startTime", "endTime");
     
+    /**
+     * Fetches combined kill mails from zKillboard and returns them as a new Battle instance
+     * @param  array  $params parameters for kill mail fetching (should be of `corporationID`, `solarSystemID`, `startTime`, `endTime`)
+     * @return Battle         a new Battle instance
+     */
     public static function fetchBattle(array $params = array()) {
         
         $battle = new Battle();
@@ -13,6 +18,11 @@ class KBFetch {
         
     }
 	
+	/**
+	 * Fetches combined kill mails from zKillboard
+	 * @param  array  $params parameters for kill mail fetching (should be of `corporationID`, `solarSystemID`, `startTime`, `endTime`)
+	 * @return array          fetched kill mails
+	 */
 	public static function fetchKills($params = array()) {
 		
 		$parameters = array();
@@ -39,6 +49,11 @@ class KBFetch {
 		
 	}
 	
+	/**
+	 * Fetches the kill mail specified by its id
+	 * @param  string $killID id of the fill to (re)fetch
+	 * @return object         the (re)fetched kill mail
+	 */
 	public static function fetchKill($killID = "") {
 		
 		if (empty($killID) || $killID <= 0)
