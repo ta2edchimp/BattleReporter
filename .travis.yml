@@ -10,6 +10,6 @@ env:
 before_install:
   - mysql -e 'create database brautoinstalldb;'
 
-install: php install.php
+install: php install.php --autoinstall
 
 script: ./vendor/bin/atoum -d tests
