@@ -11,7 +11,8 @@
         "zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",
         "phpfastcache/phpfastcache": "3.*",
-        "erusev/parsedown": "1.*"
+        "erusev/parsedown": "1.*",
+        "atoum/atoum": "~2.2"
     },
     "minimum-stability": "stable",
     "prefer-stable": true
