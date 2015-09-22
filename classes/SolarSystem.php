@@ -4,6 +4,11 @@ class SolarSystem {
     
     private static $nameIDs = array();
     
+    /**
+     * Returns the solar system object with the given name
+     * @param  string $name solar system name to lookup
+     * @return object       key value pair of solar system's name and id
+     */
     public static function getByName($name = "") {
         if (empty($name))
             return null;
@@ -25,6 +30,11 @@ class SolarSystem {
         return $system;
     }
     
+    /**
+     * Returns the solar system object with the given id
+     * @param  string $id solar system id to lookup
+     * @return object     key value pair of solar system's name and id
+     */
     public static function getByID($id = "") {
         if (empty($id))
             return "";
@@ -53,6 +63,11 @@ class SolarSystem {
         return $result;
     }
     
+    /**
+     * Returns all solar systems starting with or containing the given name part
+     * @param  string $namePart solar system name part to lookup
+     * @return array            array of objects corresponding to matching solar systems
+     */
     public static function getAllByPartialName($namePart = "") {
         if (empty($namePart))
             return array();
