@@ -4,6 +4,12 @@ php:
   - 5.5
   - nightly
 
+env:
+  - DB=mysql
+
+before_install:
+  - mysql -e 'create database brautoinstalldb;'
+
 install: php install.php
 
 script: ./vendor/bin/atoum -d tests

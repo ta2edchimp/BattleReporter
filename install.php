@@ -21,27 +21,34 @@ if (file_exists($basePath . "/config.php")) {
 	out("Please delete" . PHP_EOL . "$basePath/config.php" . PHP_EOL . "if you wish to reinstall.", true, true);
 }
 
+// Check for cli arguments
+$options = getopt("a", array("autoinstall"));
+$autoInstall = count($options > 0) && (isset($options["a"]) || isset($options["autoinstall"]));
 
 out(PHP_EOL . "|w|Welcome the the BattleReporter Installer" . PHP_EOL . "|w|========================================" . PHP_EOL);
 
-out("In order to install and setup you'll be asked a few questions." . PHP_EOL .
-	"Questions will always have a default answer specified in []'s." . PHP_EOL .
-	"Example: |g|What is 1+1? [2]" . PHP_EOL .
-	"|n|Hitting enter will let you select the default answer." . PHP_EOL);
+if ($autoInstall) {
+	out("Running automatic installation (with default values) ..." . PHP_EOL);
+} else {
+	out("In order to install and setup you'll be asked a few questions." . PHP_EOL .
+		"Questions will always have a default answer specified in []'s." . PHP_EOL .
+		"Example: |g|What is 1+1? [2]" . PHP_EOL .
+		"|n|Hitting enter will let you select the default answer." . PHP_EOL);
 
-prompt("Please hit enter to continue");
+	prompt("Please hit enter to continue");
+}
 $config = array();
 
 
 // Ask for some basics
 out();
 out("Please enter the BattleReporter owner's name." . PHP_EOL . "It will be used in page titles and headlines.");
-$config["BR_OWNER"] = prompt("BR Owner's name (can be empty)");
+$config["BR_OWNER"] = $autoInstall ? "Auto-Install" : prompt("BR Owner's name (can be empty)");
 
 out();
 out("Please enter the name of the corporation, BattleReporter will be assigned to." . PHP_EOL .
 	"It must be entered |r|exactly|n| as it spelled ingame!");
-$config["BR_OWNERCORP_NAME"] = "";
+$config["BR_OWNERCORP_NAME"] = $autoInstall ? "Auto-Install Corp." : "";
 while (empty($config["BR_OWNERCORP_NAME"]))
 	$config["BR_OWNERCORP_NAME"] = prompt("BR Corporation's name");
 
@@ -50,7 +57,7 @@ out("Please enter the ID of the entered corporation." . PHP_EOL .
 	"You can obtain it by searching for \"" . $config["BR_OWNERCORP_NAME"] . "\" on https://zkillboard.com or" . PHP_EOL .
 	"https://beta.eve-kill.net and take the result link's numerical part," . PHP_EOL .
 	"e.g. https://zkillboard.com/corporation/|w|98270080|n|/ when searching for |w|Bitslix");
-$config["BR_OWNERCORP_ID"] = "";
+$config["BR_OWNERCORP_ID"] = $autoInstall ? "123456" : "";
 while (empty($config["BR_OWNERCORP_ID"]))
 	$config["BR_OWNERCORP_ID"] = prompt($config["BR_OWNERCORP_NAME"] . "'s ID");
 
@@ -58,7 +65,7 @@ while (empty($config["BR_OWNERCORP_ID"]))
 // Ask for Login features
 out();
 out("Do you want to enable users to login with their EVE Online accounts?");
-$br_login_via_eve_sso = prompt("Hit return or enter \"yes\", else enter \"no\"", "yes");
+$br_login_via_eve_sso = $autoInstall ? "no" : prompt("Hit return or enter \"yes\", else enter \"no\"", "yes");
 $config["BR_LOGINMETHOD_EVE_SSO"] = "false";
 $config["BR_LOGINMETHOD_EVE_SSO_CLIENTID"] = "";
 $config["BR_LOGINMETHOD_EVE_SSO_SECRET"] = "";
@@ -91,7 +98,7 @@ out();
 out("Do you want to enable characters from other corporations to login, too?" . PHP_EOL .
 	"Being logged in is required to post comments." . PHP_EOL .
 	"Creating and editing battle reports still will be limited to corp members!");
-$br_login_othercorps = prompt("Enter \"yes\" if you want to enable other corps' members to login", "yes");
+$br_login_othercorps = $autoInstall ? "no" : prompt("Enter \"yes\" if you want to enable other corps' members to login", "yes");
 $config["BR_LOGIN_ONLY_OWNERCORP"] = "true";
 if (strtolower($br_login_othercorps) == "yes")
 	$config["BR_LOGIN_ONLY_OWNERCORP"] = "false";
@@ -105,7 +112,7 @@ out("If you wish, you may provide an API Key now." . PHP_EOL .
 $apiKeyID = "";
 $apiKeyvCode = "";
 $apiKeyActive = false;
-$apiSetup = strtolower(prompt("Would you like to set it up? Enter \"yes\" or \"no\"", "yes"));
+$apiSetup = $autoInstall ? "no" : strtolower(prompt("Would you like to set it up? Enter \"yes\" or \"no\"", "yes"));
 if ($apiSetup == "y" || $apiSetup == "yes") {
 	
 	out();
@@ -130,7 +137,7 @@ if ($apiSetup == "y" || $apiSetup == "yes") {
 // Ask for advanced functions
 out();
 out("Do you want to enable comments on BattleReports?");
-$enableComments = prompt("Enter \"yes\" or \"no\"", "yes");
+$enableComments = $autoInstall ? "yes" : prompt("Enter \"yes\" or \"no\"", "yes");
 if (strtolower($enableComments) == "yes")
 	$config["BR_COMMENTS_ENABLED"] = "true";
 else
@@ -144,7 +151,7 @@ out("BattleReporter can fetch the killmails to create its reports from either" .
 	"are identical and usually they are both equally up-to-date." . PHP_EOL .
 	"|g|Enter [1] to use zKillboard, or [2] to use Eve-Kill." . PHP_EOL .
 	"Hit enter to choose [1] zKillboard.");
-$config["BR_FETCH_SOURCE_NAME"] = "nope";
+$config["BR_FETCH_SOURCE_NAME"] = $autoInstall ? "1" : "nope";
 $br_fetch_source_choices = array("", "1", "2");
 while (!in_array($config["BR_FETCH_SOURCE_NAME"], $br_fetch_source_choices))
 	$config["BR_FETCH_SOURCE_NAME"] = prompt("Select killmail source", "1");
@@ -165,7 +172,7 @@ out("Please specify your preferred method to fetch data over networks." . PHP_EO
 	"you encounter any problems." . PHP_EOL .
 	"|g|Enter [1] to use \"curl\", or [2] to use \"file\"." . PHP_EOL .
 	"Hit enter to choose [1] \"curl\".");
-$config["BR_FETCH_METHOD"] = "nope";
+$config["BR_FETCH_METHOD"] = $autoInstall ? "1" : "nope";
 $br_fetch_method_choices = array("", "1", "2");
 while (!in_array($config["BR_FETCH_METHOD"], $br_fetch_method_choices))
 	$config["BR_FETCH_METHOD"] = prompt("Select fetch method", "1");
@@ -177,30 +184,32 @@ else
 
 // Specify database credentials
 out();
-$config["DB_HOST"] = prompt("Database host (use 127.0.0.1 if localhost causes issues)", "localhost");
-$config["DB_NAME"] = "";
-$config["DB_USER"] = "";
-$config["DB_PASS"] = "";
+$config["DB_HOST"] = $autoInstall ? "127.0.0.1" : prompt("Database host (use 127.0.0.1 if localhost causes issues)", "localhost");
+$config["DB_NAME"] = $autoInstall ? "brautoinstalldb" : "";
 while (empty($config["DB_NAME"]))
 	$config["DB_NAME"] = prompt("Database name");
+$config["DB_USER"] = $autoInstall ? "root" : "";
 while (empty($config["DB_USER"]))
 	$config["DB_USER"] = prompt("Database user's name");
-while (empty($config["DB_PASS"]))
-	$config["DB_PASS"] = prompt("Database user's password");
+$config["DB_PASS"] = "";
+if (!$autoInstall) {
+	while (empty($config["DB_PASS"]))
+		$config["DB_PASS"] = prompt("Database user's password");
+}
 
 
 // Ask for a customized theme
 out();
 out("If you have want to use a custom theme, please specify its name." . PHP_EOL .
 	"The theme's name equals is its directory name within the themes directory");
-$config["BR_THEME"] = prompt("Theme", "default");
+$config["BR_THEME"] = $autoInstall ? "default" : prompt("Theme", "default");
 
 
 // Ask for the initial administrator user's password
 out();
 out("By default, a user account named \"admin\" will be created." . PHP_EOL .
 	"Please enter its password. This must not be empty.");
-$adminPassword = "";
+$adminPassword = $autoInstall ? "adminpwd" : "";
 while (empty($adminPassword))
 	$adminPassword = prompt("Enter admin password", "");
 
