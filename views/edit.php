@@ -1,11 +1,11 @@
 <?php
 
 if (!User::can('edit'))
-    $app->redirect('/');
+	$app->redirect('/');
 
 if (empty($battleReportID) || $battleReportID == 0) {
-    $app->render("brNotFound.html");
-    $app->stop();
+	$app->render("brNotFound.html");
+	$app->stop();
 }
 
 $output = array(
@@ -15,8 +15,8 @@ $output = array(
 // Try to fetch the specified battle report
 $battleReport = new Battle();
 if ($battleReport->load($battleReportID, false, true) === false) {
-    $app->render("brNotFound.html");
-    $app->stop();
+	$app->render("brNotFound.html");
+	$app->stop();
 }
 
 // Admins may edit every battle report,
@@ -47,15 +47,15 @@ if ($userIsAdminOrDirector || $battleReport->creatorUserID == User::getUserID())
 
 // User posted changes to the current battle report
 if ($app->request->isPost()) {
-    
-    $success = true;
-    $parameters = $app->request->post();
-    
-    $brChanges = json_decode($parameters["battleReportChanges"]);
-    if ($brChanges !== null)
-        $success = $battleReport->applyChanges($brChanges);
-    
-    $battleReport->title = $parameters["battleTitle"];
+	
+	$success = true;
+	$parameters = $app->request->post();
+	
+	$brChanges = json_decode($parameters["battleReportChanges"]);
+	if ($brChanges !== null)
+		$success = $battleReport->applyChanges($brChanges);
+	
+	$battleReport->title = $parameters["battleTitle"];
 	$battleReport->summary = $parameters["battleSummary"];
 	
 	$videoUrls = $parameters["battleFootageUrl"];
@@ -134,7 +134,7 @@ if ($app->request->isPost()) {
 		$output["battleReportSavingError"] = true;
 		
 	}
-    
+	
 }
 
 $output["battleReport"] = $battleReport;

@@ -6,13 +6,13 @@
 */
 
 class Db {
-    
-    private $pdo;
-    
-    private $sQuery;
-    
-    private $bConnected = false;
-    
+	
+	private $pdo;
+	
+	private $sQuery;
+	
+	private $bConnected = false;
+	
 	private $dbname;
 	private $user;
 	private $password;

@@ -5,12 +5,12 @@
  */
 // 404 - File Not Found
 $app->notFound(function () use ($app) {
-    $app->render("404.html");
+	$app->render("404.html");
 });
 
 // Any Error ...
 $app->error(function (\Exception $e) use ($app) {
-    include("views/error.php");
+	include("views/error.php");
 });
 
 
@@ -19,37 +19,37 @@ $app->error(function (\Exception $e) use ($app) {
  */
 // Homepage
 $app->get('/', function () use ($app, $db) {
-    
-    include("views/index.php");
-    
+	
+	include("views/index.php");
+	
 });
 
 // Show certain battle report
 $app->get('/show/:battleReportID(/:battleReportDetail)', function($battleReportID, $battleReportDetail = "") use ($app) {
-    
-    include("views/show.php");
-    
+	
+	include("views/show.php");
+	
 });
 
 // Creating new battle reports
 $app->map('/create', function () use ($app) {
-    
-    include("views/create.php");
-    
+	
+	include("views/create.php");
+	
 })->via('GET', 'POST');
 
 // Editing existing (and newly created) battle reports
 $app->map('/edit/:battleReportID(/:editAction)', function ($battleReportID, $battleReportEditAction = "") use ($app, $basePath) {
-    
-    include("views/edit.php");
-    
+	
+	include("views/edit.php");
+	
 })->via('GET', 'POST');
 
 // Log in
 $app->map('/login', function () use ($app) {
-    
-    include("views/login.php");
-    
+	
+	include("views/login.php");
+	
 })->via('GET', 'POST');
 if (BR_LOGINMETHOD_EVE_SSO === true) {
 	$app->get('/login/eve-sso', function () use ($app) {
@@ -62,9 +62,9 @@ if (BR_LOGINMETHOD_EVE_SSO === true) {
 
 // Log out
 $app->get('/logout', function () use ($app, $basePath, $theme, $BR_DEBUGMODE) {
-    
-    include("views/logout.php");
-    
+	
+	include("views/logout.php");
+	
 });
 
 // Info pages
@@ -76,31 +76,31 @@ $app->get('/info(/:page)', function ($page = "about") use ($app, $basePath, $the
 
 // Autocomplete Suggestions:
 $app->group('/autocomplete', function () use ($app, $db) {
-    
-    // Fetching solar systems for input suggestions
-    $app->post('/solarSystems', function () use ($app, $db) {
-        include("views/autocomplete/solarSystems.php");
-    });
-    
-    // Fetching ship names for input suggestions
-    $app->post('/shipNames', function () use ($app, $db) {
-        include("views/autocomplete/shipNames.php");
-    });
-    
-    // Fetching known corporation and alliance names
-    $app->post('/corpNames', function () use ($app, $db) {
-        include("views/autocomplete/corpNames.php");
-    });
-    $app->post('/alliNames', function () use ($app, $db) {
-        include("views/autocomplete/alliNames.php");
-    });
+	
+	// Fetching solar systems for input suggestions
+	$app->post('/solarSystems', function () use ($app, $db) {
+		include("views/autocomplete/solarSystems.php");
+	});
+	
+	// Fetching ship names for input suggestions
+	$app->post('/shipNames', function () use ($app, $db) {
+		include("views/autocomplete/shipNames.php");
+	});
+	
+	// Fetching known corporation and alliance names
+	$app->post('/corpNames', function () use ($app, $db) {
+		include("views/autocomplete/corpNames.php");
+	});
+	$app->post('/alliNames', function () use ($app, $db) {
+		include("views/autocomplete/alliNames.php");
+	});
 	
 	// For associating a battle report's combatant
 	// to anything, e.g. pov-footage
 	$app->post('/combatants/:battleReportID', function ($battleReportID) use ($app, $db) {
 		include("views/autocomplete/combatants.php");
 	});
-    
+	
 });
 
 // Pages only for logged in users

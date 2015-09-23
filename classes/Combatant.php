@@ -1,100 +1,100 @@
 <?php
 
 class Combatant {
-    
-    public $brCombatantID = 0;
-    public $brHidden = false;
-    public $brDeleted = false;
-    public $brTeam = "";
-    public $brBattlePartyID = 0;
+	
+	public $brCombatantID = 0;
+	public $brHidden = false;
+	public $brDeleted = false;
+	public $brTeam = "";
+	public $brBattlePartyID = 0;
 	public $brManuallyAdded = false;
 	
 	public $brCyno = false;
-    
-    public $characterID;
-    public $characterName;
-    
-    public $corporationID;
-    public $corporationName;
-    
-    public $allianceID;
-    public $allianceName;
-    
-    public $shipTypeID = 0;
-    public $shipTypeName = "";
+	
+	public $characterID;
+	public $characterName;
+	
+	public $corporationID;
+	public $corporationName;
+	
+	public $allianceID;
+	public $allianceName;
+	
+	public $shipTypeID = 0;
+	public $shipTypeName = "";
 	public $shipTypeMass = 0;
 	
 	public $shipGroup = "DPS";
 	public $shipGroupOrderKey = 0;
 	public $shipIsPod = null;
-    
-    public $died = false;
-    public $killID = "";
-    public $killTime = 0;
-    public $priceTag = 0.0;
-    
+	
+	public $died = false;
+	public $killID = "";
+	public $killTime = 0;
+	public $priceTag = 0.0;
+	
 	public $assignedFootage = 0;
 	
 	private $hasBeenRemoved = false;
-    
-    private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-    private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage");
-    
-    public function __construct($props, $killID = "") {
-        
-        $props = Utils::arrayToObject($props);
-        
-        foreach ($this->requiredProps as $key) {
-            if (!isset($props->$key))
-                throw new Exception("Given properties do not meat a combatant's requirements (\"$key\" is missing)!");
-        }
-        
-        foreach ($this->availableProps as $key) {
-            if (isset($props->$key))
-                $this->$key = $props->$key;
-        }
-        
-        // If it's not from the db, it might have no internal combatant id
-        if ($this->brCombatantID == 0)
-            $this->brCombatantID = self::getNextCombatantID();
-        
-        if ($this->corporationID == -1 && !empty($this->corporationName) && $this->corporationName != "Unknown") {
-            $corp = self::getCorpInfoByName($this->corporationName);
-            if ($corp !== null) {
-                $this->corporationID = $corp["corporationID"];
+	
+	private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
+	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage");
+	
+	public function __construct($props, $killID = "") {
+		
+		$props = Utils::arrayToObject($props);
+		
+		foreach ($this->requiredProps as $key) {
+			if (!isset($props->$key))
+				throw new Exception("Given properties do not meat a combatant's requirements (\"$key\" is missing)!");
+		}
+		
+		foreach ($this->availableProps as $key) {
+			if (isset($props->$key))
+				$this->$key = $props->$key;
+		}
+		
+		// If it's not from the db, it might have no internal combatant id
+		if ($this->brCombatantID == 0)
+			$this->brCombatantID = self::getNextCombatantID();
+		
+		if ($this->corporationID == -1 && !empty($this->corporationName) && $this->corporationName != "Unknown") {
+			$corp = self::getCorpInfoByName($this->corporationName);
+			if ($corp !== null) {
+				$this->corporationID = $corp["corporationID"];
 				$this->corporationName = $corp["corporationName"];
 				if (isset($corp["allianceID"]) && isset($corp["allianceName"]) && !empty($corp["allianceID"]) && !empty($corp["allianceName"])) {
 					$this->allianceID = $corp["allianceID"];
 					$this->allianceName = $corp["allianceName"];
 				}
-            } else {
-                $this->corporationName = "Unknown";
+			} else {
+				$this->corporationName = "Unknown";
 			}
-        }
-        
-        if ($this->allianceID == -1 && !empty($this->allianceName)) {
-            $alli = self::getEntityByName($this->allianceName);
-            if ($alli !== null) {
-                $this->allianceID = $alli["entityID"];
+		}
+		
+		if ($this->allianceID == -1 && !empty($this->allianceName)) {
+			$alli = self::getEntityByName($this->allianceName);
+			if ($alli !== null) {
+				$this->allianceID = $alli["entityID"];
 				$this->allianceName = $alli["entityName"];
-            } else {
-                $this->allianceName = "";
+			} else {
+				$this->allianceName = "";
 			}
-        }
-        
-        // Detect ship name from its id, if not already delivered
-        if (empty($this->shipTypeName))
-            $this->shipTypeName = Item::getNameByID($this->shipTypeID);
-        else {
-            if (empty($this->shipTypeID) || $this->shipTypeID < 0)
-                $this->shipTypeID = Item::getIDByName($this->shipTypeName);
-        }
+		}
+		
+		// Detect ship name from its id, if not already delivered
+		if (empty($this->shipTypeName))
+			$this->shipTypeName = Item::getNameByID($this->shipTypeID);
+		else {
+			if (empty($this->shipTypeID) || $this->shipTypeID < 0)
+				$this->shipTypeID = Item::getIDByName($this->shipTypeName);
+		}
 		if ($this->shipTypeID == 0)
 			$this->shipTypeName = "Unknown";
 		if ($this->shipIsPod === null)
 			$this->shipIsPod = Item::isCapsule($this->shipTypeID);
-            
-        
+			
+		
 		if (!empty($killID)) {
 			$this->died = true;
 			$this->killID = $killID;
@@ -112,40 +112,40 @@ class Combatant {
 		if (!is_bool($this->died))
 			$this->died = ($this->died == 1);
 		
-    }
-    
-    
-    public function save($partyID = "") {
-        
+	}
+	
+	
+	public function save($partyID = "") {
+		
 		if (empty($partyID))
 			$partyID = $this->brBattlePartyID;
 		
-        if ($partyID <= 0)
-            throw new Exception("Houston, we got a problem: The database has absolutely no idea, where to put the pilot " . $this->characterName . " (" . $this->characterID . ").");
-        
-        // Not yet saved combatants that have been deleted
-        // are simply not saved ...
-        if ($this->brCombatantID <= 0 && $this->brDeleted === true)
-            return;
-        
-        $db = Db::getInstance();
-        
-        $params = array(
-            "characterID" => $this->characterID,
-            "characterName" => $this->characterName,
-            "corporationID" => $this->corporationID,
-            "allianceID" => $this->allianceID,
-            "brHidden" => $this->brHidden ? 1 : 0,
-            "brBattlePartyID" => $partyID,
-            "shipTypeID" => $this->shipTypeID,
-            "died" => $this->died ? 1 : 0,
-            "killID" => $this->killID,
-            "killTime" => $this->killTime,
-            "priceTag" => $this->priceTag,
+		if ($partyID <= 0)
+			throw new Exception("Houston, we got a problem: The database has absolutely no idea, where to put the pilot " . $this->characterName . " (" . $this->characterID . ").");
+		
+		// Not yet saved combatants that have been deleted
+		// are simply not saved ...
+		if ($this->brCombatantID <= 0 && $this->brDeleted === true)
+			return;
+		
+		$db = Db::getInstance();
+		
+		$params = array(
+			"characterID" => $this->characterID,
+			"characterName" => $this->characterName,
+			"corporationID" => $this->corporationID,
+			"allianceID" => $this->allianceID,
+			"brHidden" => $this->brHidden ? 1 : 0,
+			"brBattlePartyID" => $partyID,
+			"shipTypeID" => $this->shipTypeID,
+			"died" => $this->died ? 1 : 0,
+			"killID" => $this->killID,
+			"killTime" => $this->killTime,
+			"priceTag" => $this->priceTag,
 			"brManuallyAdded" => $this->brManuallyAdded ? 1 : 0,
 			"brDeleted" => $this->brDeleted ? 1 : 0,
 			"brCyno" => $this->brCyno ? 1 : 0
-        );
+		);
 		if ($this->brCombatantID <= 0) {
 			
 			// This case should not happen: Combatant has not been saved, but was removed due to a reimported battle.
@@ -166,7 +166,7 @@ class Combatant {
 			if ($result > 0)
 				$this->brCombatantID = $result;
 			// Else fail silently ...
-        } else {
+		} else {
 			
 			// In case this combatant has been removed, due to a reimported battle, delete it from the database
 			if ($this->hasBeenRemoved === true) {
@@ -179,15 +179,15 @@ class Combatant {
 				return;
 			}
 			
-            $params["brCombatantID"] = $this->brCombatantID;
-            $result = $db->query(
-                "update brCombatants " .
-                "set characterID = :characterID, characterName = :characterName, corporationID = :corporationID, allianceID = :allianceID, brHidden = :brHidden, brBattlePartyID = :brBattlePartyID, shipTypeID = :shipTypeID, died = :died, killID = :killID, killTime = :killTime, priceTag = :priceTag, brManuallyAdded = :brManuallyAdded, brDeleted = :brDeleted, brCyno = :brCyno " .
-                "where brCombatantID = :brCombatantID",
-                $params
-            );
+			$params["brCombatantID"] = $this->brCombatantID;
+			$result = $db->query(
+				"update brCombatants " .
+				"set characterID = :characterID, characterName = :characterName, corporationID = :corporationID, allianceID = :allianceID, brHidden = :brHidden, brBattlePartyID = :brBattlePartyID, shipTypeID = :shipTypeID, died = :died, killID = :killID, killTime = :killTime, priceTag = :priceTag, brManuallyAdded = :brManuallyAdded, brDeleted = :brDeleted, brCyno = :brCyno " .
+				"where brCombatantID = :brCombatantID",
+				$params
+			);
 			
-        }
+		}
 		
 		if ($this->corporationID > 0) {
 			if($db->row(
@@ -233,8 +233,8 @@ class Combatant {
 				);
 			}
 		}
-        
-    }
+		
+	}
 	
 	
 	public function removeFromDatabase() {
@@ -299,22 +299,22 @@ class Combatant {
 		return $a->shipGroupOrderKey < $b->shipGroupOrderKey ? 1 : -1;
 		
 	}
-    
-    private static $lastCombatantID = 0;
-    private static function getNextCombatantID() {
-        self::$lastCombatantID--;
-        return self::$lastCombatantID;
-    }
-    
-    
-    private static $fetchedEntityNameIds = array();
-    private static function getEntityByName($name = "") {
-        
-        if (empty($name))
-            return null;
-        
-        if (isset(self::$fetchedEntityNameIds["name#" . strtolower($name)]))
-            return self::$fetchedEntityNameIds["name#" . strtolower($name)];
+	
+	private static $lastCombatantID = 0;
+	private static function getNextCombatantID() {
+		self::$lastCombatantID--;
+		return self::$lastCombatantID;
+	}
+	
+	
+	private static $fetchedEntityNameIds = array();
+	private static function getEntityByName($name = "") {
+		
+		if (empty($name))
+			return null;
+		
+		if (isset(self::$fetchedEntityNameIds["name#" . strtolower($name)]))
+			return self::$fetchedEntityNameIds["name#" . strtolower($name)];
 		
 		try {
 			$pheal = new \Pheal\Pheal();
@@ -323,11 +323,11 @@ class Combatant {
 			\Slim\Slim::getInstance()->log->warn("Combatant::getEntityByName() - EVE API Fetch for \"" . json_encode($name) . "\" raised an Exception:\n" . $pex);
 			return null;
 		}
-        
-        if ($response !== null && $response->characters !== null) {
-            foreach ($response->characters as $row) {
-                if (strtolower($row->name) == strtolower($name)) {
-                    $result = intVal($row->characterID);
+		
+		if ($response !== null && $response->characters !== null) {
+			foreach ($response->characters as $row) {
+				if (strtolower($row->name) == strtolower($name)) {
+					$result = intVal($row->characterID);
 					if ($result <= 0)
 						return null;
 					self::$fetchedEntityNameIds["name#" . strtolower($name)] = array(
@@ -335,13 +335,13 @@ class Combatant {
 						"entityID" => $result
 					);
 					return self::$fetchedEntityNameIds["name#" . strtolower($name)];
-                }
-            }
-        }
-        
-        return null;
-        
-    }
+				}
+			}
+		}
+		
+		return null;
+		
+	}
 	
 	private static function getCorpInfoByName($name = "") {
 		
@@ -391,5 +391,5 @@ class Combatant {
 		return $result;
 		
 	}
-    
+	
 }
