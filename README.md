@@ -3,7 +3,6 @@
 [![Build](https://img.shields.io/travis/ta2edchimp/BattleReporter.svg?branch=master)](https://travis-ci.org/ta2edchimp/BattleReporter)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/264d2540-4350-4ffb-920c-1967e1db1df3.svg)](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3)
 [![Releases](https://img.shields.io/github/release/ta2edchimp/BattleReporter.svg)](https://github.com/ta2edchimp/BattleReporter/releases)
-[![Tag](https://img.shields.io/github/tag/ta2edchimp/BattleReporter.svg)](https://github.com/ta2edchimp/BattleReporter/tags)
 [![Issues](https://img.shields.io/github/issues-raw/ta2edchimp/BattleReporter.svg)](https://github.com/ta2edchimp/BattleReporter/issues)
 
 Advanced editable BattleReport platform for EVE Online.
