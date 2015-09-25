@@ -124,7 +124,7 @@ class Utils {
 	 */
 	public static function compareVersions($firstVersion = null, $secondVersion = null) {
 
-		if ($firstVersion == null || $secondVersion == null ||
+		if ($firstVersion === null || $secondVersion === null ||
 			!isset($firstVersion["valid"]) || !isset($secondVersion["valid"]) ||
 			$firstVersion["valid"] !== true || $secondVersion["valid"] !== true) {
 			return 0;
