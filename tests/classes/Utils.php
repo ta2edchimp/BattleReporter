@@ -112,4 +112,22 @@ class Utils extends atoum {
 
 	}
 
+	/**
+	 * @covers Utils::compareVersions
+	 */
+	public function testCompareVersions () {
+
+		$this
+			->if($firstVersion = \Utils::parseVersion("1.2.3"))
+			->and($secondVersion = \Utils::parseVersion("1.3.0"))
+			->then
+				->integer(\Utils::compareVersions($firstVersion, $secondVersion))
+					->isEqualTo(-1)
+				->integer(\Utils::compareVersions($secondVersion, $firstVersion))
+					->isEqualTo(1)
+				->integer(\Utils::compareVersions($firstVersion, $firstVersion))
+					->isEqualTo(0);
+
+	}
+
 }

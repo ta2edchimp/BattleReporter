@@ -115,5 +115,37 @@ class Utils {
 		return $version;
 
 	}
+
+	/**
+	 * Compares to version array and returs 1 / -1 if the first is greater / lesser than the second, or 0 if they are equal
+	 * @param  array $firstVersion  the first version
+	 * @param  array $secondVersion the second version
+	 * @return int                  1 = first > second, -1 = first < second, 0 = both equal
+	 */
+	public static function compareVersions($firstVersion = null, $secondVersion = null) {
+
+		if ($firstVersion == null || $secondVersion == null ||
+			!isset($firstVersion["valid"]) || !isset($secondVersion["valid"]) ||
+			$firstVersion["valid"] !== true || $secondVersion["valid"] !== true) {
+			return 0;
+		}
+
+		if ($firstVersion["major"] == $secondVersion["major"]) {
+
+			if ($firstVersion["minor"] == $secondVersion["minor"]) {
+
+				if ($firstVersion["patch"] == $secondVersion["patch"]) {
+					return 0;
+				}
+
+				return $firstVersion["patch"] > $secondVersion["patch"] ? 1 : -1;
+			}
+
+			return $firstVersion["minor"] > $secondVersion["minor"] ? 1 : -1;
+		}
+
+		return $firstVersion["major"] > $secondVersion["major"] ? 1 : -1;
+
+	}
 	
 }
