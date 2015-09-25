@@ -8,8 +8,6 @@ class Curl extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
-		\Slim\Slim::getInstance()->log->debug("Using cURL to fetch \"$url\".");
-		
 		if (empty($url))
 			return "";
 		
