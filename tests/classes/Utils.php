@@ -74,4 +74,42 @@ class Utils extends atoum {
 
 	}
 
+	/**
+	 * @covers Utils::parseVersion
+	 */
+	public function testParseVersion () {
+
+		$this
+			->given($parsedVersion = \Utils::parseVersion("any string."))
+				->array($parsedVersion)
+					->containsValues(
+						array(
+							"valid" => false
+						)
+					)
+
+			->given($parsedVersion = \Utils::parseVersion("1.2.3"))
+				->array($parsedVersion)
+					->containsValues(
+						array(
+							"major" => 1,
+							"minor" => 2,
+							"patch" => 3,
+							"valid" => true
+						)
+					)
+
+			->given($parsedVersion = \Utils::parseVersion("v4.5.67"))
+				->array($parsedVersion)
+					->containsValues(
+						array(
+							"major" => 4,
+							"minor" => 5,
+							"patch" => 67,
+							"valid" => true
+						)
+					);
+
+	}
+
 }

@@ -89,5 +89,31 @@ class Utils {
 		return self::fetch($url, $parameters, $options);
 		
 	}
+
+	/**
+	 * Parses a string for a version like [major].[minor].[patch] and returns a corresponding object.
+	 * The returned array contains the version parts as numerical items. Additionally it contains a boolean flag *valid*.
+	 * @param  string $versionString a string containing a version info, like '1.2.3' or 'v1.2.3', etc.
+	 * @return array                 an array containing the numerical version info
+	 */
+	public static function parseVersion($versionString = "") {
+
+		$version = array(
+			"major" => 0,
+			"minor" => 0,
+			"patch" => 0,
+			"valid" => false
+		);
+
+		if (!empty($versionString) && preg_match("/^.*?(?P<major>\d*)\.(?P<minor>\d*)\.(?P<patch>\d*)$/", $versionString, $results) === 1) {
+			$version["major"] = intval($results["major"]);
+			$version["minor"] = intval($results["minor"]);
+			$version["patch"] = intval($results["patch"]);
+			$version["valid"] = true;
+		}
+
+		return $version;
+
+	}
 	
 }

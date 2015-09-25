@@ -9,6 +9,7 @@ require_once("$basePath/classes/Admin.php");
 
 $output = array(
 	"adminMissingLossValues" => array()
+	"adminCurrentReleaseInfo" => array()
 );
 
 
@@ -21,7 +22,6 @@ switch ($adminAction) {
 	
 	case "refetchforlossvalues":
 		$output["adminMissingLossValues"]["action"] = Admin::refetchKillMailsForMissingLossValues();
-		break;
 	
 	default:
 		break;
@@ -31,7 +31,7 @@ switch ($adminAction) {
 
 
 // Battle reports with missing loss values
-$results = $db->row(
+$missingLossValuesResults = $db->row(
 	"select count(battleReportID) as brCount " .
 	"from brBattles " .
 	"where battleReportID in (" .
@@ -44,9 +44,30 @@ $results = $db->row(
 		")" .
 	")"
 );
-if ($results === NULL)
+if ($missingLossValuesResults === NULL)
 	$output["adminMissingLossValues"]["error"] = true;
 else
-	$output["adminMissingLossValues"]["battleReportsCount"] = $results["brCount"];
+	$output["adminMissingLossValues"]["battleReportsCount"] = $missingLossValuesResults["brCount"];
+
+$adminCurrentReleaseResult = \Utils::fetch(
+	"https://api.github.com/repos/ta2edchimp/BattleReporter/releases/latest",
+	null,
+	array(
+		"headers": array("User-Agent: ta2edchimp/BattleReporter-UpdateSearch"),
+		"queryParams" => false,
+		"caching" => "auto",
+		"cachePath" => __DIR__ . '/../cache'
+	)
+);
+if (!empty($adminCurrentReleaseResult)) {
+	$decodedInfo = json_decode($adminCurrentReleaseResult)
+	$encodedVersion = "";
+	if (isset($decodedInfo["tag_name"]) && !empty($decodedInfo["tag_name"])) {
+		$encodedVersion = $decodedInfo["tag_name"];
+	}
+	$output["adminCurrentReleaseInfo"]["raw"] = json_encode($decodedInfo, JSON_PRETTY_PRINT);
+	$output["adminCurrentReleaseInfo"]["currentVersion"] = \Utils::parseVersion($encodedVersion);
+	$output["adminCurrentReleaseInfo"]["installedVersion"] = \Utils::parseVersion(BR_VERSION);
+}
 
 $app->render("admin/admin.html", $output);
