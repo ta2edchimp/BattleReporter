@@ -707,7 +707,7 @@ class Battle {
 		
 		return $db->query(
 			"select br.battleReportID " .
-				($onlyIDs === true ? "" : (", br.brTitle as title, br.brStartTime as startTime, br.brEndTime as endTime, br.brPublished as published, " .
+				($onlyIDs === true ? "" : (", br.brTitle as title, br.brSummary as summary, br.brStartTime as startTime, br.brEndTime as endTime, br.brPublished as published, " .
 				"br.brCreatorUserID as creatorUserID, ifnull(u.userName, '') as creatorUserName, " .
 				"br.brUniquePilotsTeamA, br.brUniquePilotsTeamB, br.brUniquePilotsTeamC, " .
 				"ifnull((select sum(c.priceTag) from brCombatants as c where c.brHidden = 0 and c.brBattlePartyID = (" .
