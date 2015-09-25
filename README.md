@@ -89,7 +89,7 @@ Next, head over to your `config.php` file and change or add (if yet absent) the 
 // Enable Slack Integration
 define('BR_API_SLACK_ENABLED', true);
 // Set the designated destination for Posts to Slack
-define('BR_API_SLACK_CHANNEL', 'insert Webjook URL here');
+define('BR_API_SLACK_CHANNEL', 'insert Webhook URL here');
 ```
 
 That's it. Everytime you hit `Save and Publish BattleReport` on creation of a new report, it will instantly be posted in the specified channel.
