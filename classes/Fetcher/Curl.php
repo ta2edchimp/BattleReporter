@@ -105,7 +105,7 @@ class Curl extends FetcherBase {
 				curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
 			
 			
-			curl_setopt($curl, CURLOPT_VERBOSE, true);
+			curl_setopt($curl, CURLOPT_VERBOSE, false);
 			curl_setopt($curl, CURLOPT_HEADER, true);
 			
 			$totalResponse = curl_exec($curl);
