@@ -2,6 +2,8 @@
 
 namespace tests\units;
 
+require_once 'vendor/autoload.php';
+
 require_once 'classes/Fetcher/FetcherInterface.php';
 require_once 'classes/Fetcher/FetcherBase.php';
 require_once 'classes/Fetcher/Curl.php';
@@ -50,6 +52,19 @@ class Utils extends atoum {
 			->then
 				->object(\Utils::getFetcher())
 					->isIdenticalTo($curlFetcher)
+				->string(\Utils::fetch(
+					"https://api.github.com/repos/ta2edchimp/BattleReporter",
+					null,
+					array(
+						"headers" => array("User-Agent: ta2edchimp/BattleReporter Unit Test"),
+						"queryParams" => false,
+						"caching" => false
+					)
+				))
+					->isNotEmpty()
+					->matches("/\"name\":\s*\"BattleReporter\"/")
+					->matches("/\"full_name\":\s*\"ta2edchimp\/BattleReporter\"/")
+					->matches("/\"fork\":\s*false/")
 
 			->if($fileFetcher = new \Utils\Fetcher\File())
 			->and(\Utils::setFetcher($fileFetcher))
