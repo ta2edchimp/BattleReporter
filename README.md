@@ -121,9 +121,11 @@ You may proceed to configure the `Slash Command` in Slack. Recommended settings 
 
 Type `/battlereporter help` into the current channel's chat to get a list of options; Basically: enter `/battlereporter` (with or without appended `latest`) to post the latest created BattleReport, enter `/battlereporter list` to get a list of the 25 most recently created reports, or use `/battlereporter 123` to post the BattleReport with Id #123.
 
-## Acknowledgements & Legal Stuff
+## License, Acknowledgements & Legal Stuff
+
+BattleReporter is released unde the [Beerware License](https://tldrlegal.com/license/beerware-license); So, as long as you keep the included author information, feel free to do anything you want with the source codes.
 
 BattleReporter uses parts of [CCPs](http://www.ccpgames.com/) EVE Online SDE, specifically [Steve Ronuken/fuzzysteve's EVE SDE MySQL-port Dump](https://www.fuzzwork.co.uk/dump/latest/).
 
-
-_to be continued ..._
+**All EVE related materials are property of [CCP Games](http://ccpgames.com).**  
+EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to BattleReporter to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, BattleReporter. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
