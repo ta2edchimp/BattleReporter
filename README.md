@@ -22,7 +22,8 @@ Download the current version at [`Releases`](https://github.com/ta2edchimp/Battl
 4. Further Configuration
   1. Integrate with Slack
   2. Themeing BattleReporter
-5. License, Acknowledgements & Legal Stuff
+5. Contribution
+6. License, Acknowledgements & Legal Stuff
 
 ## What is BattleReporter
 
@@ -147,6 +148,12 @@ Type `/battlereporter help` into the current channel's chat to get a list of opt
 
 Currently, BattleReporter comes with only a default theme. You can easily create your own or modify the default theme by duplicating the `/public/themes/default` folder and making the necessary changes to the included html templates, css files or images.  
 BattleReporter uses `Twig` as its templating engine, so head over to [their excellent documentation](http://twig.sensiolabs.org/documentation) to see, what's possible.
+
+## Contribution
+
+Please [file an issue](https://github.com/ta2edchimp/BattleReporter/issues/new) if you have any feature request, ideas for improvements or found any bugs.
+
+Feel free to fork BattleReporter, commit some bug fixes, implement cool features or make a theme and make a pull request!
 
 ## License, Acknowledgements & Legal Stuff
 
