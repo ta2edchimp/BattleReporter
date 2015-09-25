@@ -21,7 +21,7 @@ Download the current version at [`Releases`](https://github.com/ta2edchimp/Battl
 3. Update
 4. Further Configuration
   1. Integrate with Slack
-  2. Themeing BattleReporter
+  2. Theming BattleReporter
 5. Contribution
 6. License, Acknowledgements & Legal Stuff
 
@@ -144,10 +144,19 @@ You may proceed to configure the `Slash Command` in Slack. Recommended settings 
 
 Type `/battlereporter help` into the current channel's chat to get a list of options; Basically: enter `/battlereporter` (with or without appended `latest`) to post the latest created BattleReport, enter `/battlereporter list` to get a list of the 25 most recently created reports, or use `/battlereporter 123` to post the BattleReport with Id #123.
 
-### Themeing BattleReporter
+### Theming BattleReporter
 
 Currently, BattleReporter comes with only a default theme. You can easily create your own or modify the default theme by duplicating the `/public/themes/default` folder and making the necessary changes to the included html templates, css files or images.  
 BattleReporter uses `Twig` as its templating engine, so head over to [their excellent documentation](http://twig.sensiolabs.org/documentation) to see, what's possible.
+
+To change the theme used by BattleReporter, just edit the following lines within `config.php` to your theme's folder name accordingly:
+
+```PHP
+/*
+ *  Styles Config
+ */
+define('BR_THEME', 'default'); // Change 'default' to your theme's folder name
+```
 
 ## Contribution
 
