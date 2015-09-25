@@ -12,18 +12,18 @@ Download the current version at [`Releases`](https://github.com/ta2edchimp/Battl
 
 ## Table of Contents
 
-1. What is BattleReporter
-2. Setup
-  1. Requirements
-  2. Installation
-  3. Enable Login via EVE-Online Single Sign On
-  4. User Permissions by Role in Corp
-3. Update
-4. Further Configuration
-  1. Integrate with Slack
-  2. Theming BattleReporter
-5. Contribution
-6. License, Acknowledgements & Legal Stuff
+1. [What is BattleReporter](#what-is-battlereporter)
+2. [Setup](#setup)
+  1. [Requirements](#requirements)
+  2. [Installation](#installation)
+  3. [Enable Login via EVE-Online Single Sign On](#enable-login-via-eve-online-single-sign-on)
+  4. [User Permissions by Role in Corp](#user-permissions-by-role-in-corp)
+3. [Update](#update)
+4. [Further Configuration](#further-configuration)
+  1. [Integrate with Slack](#integrate-with-slack)
+  2. [Theming BattleReporter](#theming-battlereporter)
+5. [Contributing](#contributing)
+6. [License, Acknowledgements & Legal Stuff](#license-acknowledgements--legal-stuff)
 
 ## What is BattleReporter
 
@@ -158,7 +158,7 @@ To change the theme used by BattleReporter, just edit the following lines within
 define('BR_THEME', 'default'); // Change 'default' to your theme's folder name
 ```
 
-## Contribution
+## Contributing
 
 Please [file an issue](https://github.com/ta2edchimp/BattleReporter/issues/new) if you have any feature request, ideas for improvements or found any bugs.
 
