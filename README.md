@@ -2,6 +2,7 @@
 
 [![Build](https://img.shields.io/travis/ta2edchimp/BattleReporter.svg?branch=master)](https://travis-ci.org/ta2edchimp/BattleReporter)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/264d2540-4350-4ffb-920c-1967e1db1df3.svg)](https://insight.sensiolabs.com/projects/264d2540-4350-4ffb-920c-1967e1db1df3)
+[![Coveralls.io](https://img.shields.io/coveralls/ta2edchimp/BattleReporter.svg)](https://coveralls.io/github/ta2edchimp/BattleReporter)
 [![Releases](https://img.shields.io/github/release/ta2edchimp/BattleReporter.svg)](https://github.com/ta2edchimp/BattleReporter/releases)
 [![Issues](https://img.shields.io/github/issues-raw/ta2edchimp/BattleReporter.svg)](https://github.com/ta2edchimp/BattleReporter/issues)
 
