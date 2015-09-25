@@ -11,9 +11,11 @@
         "zeuxisoo/slim-whoops": "0.*",
         "3rdpartyeve/phealng": "2.*",
         "phpfastcache/phpfastcache": "3.*",
-        "erusev/parsedown": "1.*",
-        "atoum/atoum": "~2.2"
+        "erusev/parsedown": "1.*"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "atoum/atoum": "~2.2"
+    }
 }
