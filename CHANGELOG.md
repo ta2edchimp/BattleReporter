@@ -1,5 +1,7 @@
 # Release 0.5.0
 
+- 42a7cec Versionbump.
+- bf9f584 Updated ...
 - 30aea83 Modified default theme to better fit mobile display (≤ 640 px width). Closes #14
 - be2a87d Added `br has an aar` hint icon on overview list. Closes #71
 - 4b7dfff Strict comparison.
