@@ -4,6 +4,36 @@
 
 {% block content %}
 	<h1>Administration</h1>
+	{% if adminCurrentReleaseInfo is defined %}
+	<div class="panel panel-default">
+		{% if adminCurrentReleaseInfo.installedVersionUpToDate == true %}
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<span class="text-success glyphicon glyphicon-ok"></span>
+				Your BattleReport installation is up to date
+			</h3>
+		</div>
+		<div class="panel-body">
+			<p>You have the latest release installed: <kbd>v{{ adminCurrentReleaseInfo.installedVersion.major }}.{{ adminCurrentReleaseInfo.installedVersion.minor }}.{{ adminCurrentReleaseInfo.installedVersion.patch }}</kbd>.</p>
+		</div>
+		{% else %}
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<span class="text-danger glyphicon glyphicon-remove"></span>
+				Your BattleReport installation is outdated!
+			</h3>
+		</div>
+		<div class="panel-body">
+			<p>Your installed version is: <kbd>v{{ adminCurrentReleaseInfo.installedVersion.major }}.{{ adminCurrentReleaseInfo.installedVersion.minor }}.{{ adminCurrentReleaseInfo.installedVersion.patch }}</kbd> the latest available release is version: <kbd>v{{ adminCurrentReleaseInfo.currentVersion.major }}.{{ adminCurrentReleaseInfo.currentVersion.minor }}.{{ adminCurrentReleaseInfo.currentVersion.patch }}</kbd></p>
+			<h4>{{ adminCurrentReleaseInfo.releaseTitle }}</h4>
+			{{ adminCurrentReleaseInfo.releaseInfo|raw }}
+		</div>
+		<div class="panel-footer text-right">
+			<a href="{{ adminCurrentReleaseInfo.releaseUrl }}" target="_blank" class="btn btn-xs btn-primary">Go To Releases Page</a>
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
 	{% if adminMissingLossValues is defined %}
 	<div class="panel panel-default">
 		<div class="panel-heading">

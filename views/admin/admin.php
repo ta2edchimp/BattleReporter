@@ -8,7 +8,7 @@ if (!User::isAdmin()) {
 require_once("$basePath/classes/Admin.php");
 
 $output = array(
-	"adminMissingLossValues" => array()
+	"adminMissingLossValues" => array(),
 	"adminCurrentReleaseInfo" => array()
 );
 
@@ -53,21 +53,28 @@ $adminCurrentReleaseResult = \Utils::fetch(
 	"https://api.github.com/repos/ta2edchimp/BattleReporter/releases/latest",
 	null,
 	array(
-		"headers": array("User-Agent: ta2edchimp/BattleReporter-UpdateSearch"),
+		"headers" => array("User-Agent: ta2edchimp/BattleReporter-UpdateSearch"),
 		"queryParams" => false,
 		"caching" => "auto",
 		"cachePath" => __DIR__ . '/../cache'
 	)
 );
 if (!empty($adminCurrentReleaseResult)) {
-	$decodedInfo = json_decode($adminCurrentReleaseResult)
+	$decodedInfo = json_decode($adminCurrentReleaseResult);
 	$encodedVersion = "";
-	if (isset($decodedInfo["tag_name"]) && !empty($decodedInfo["tag_name"])) {
-		$encodedVersion = $decodedInfo["tag_name"];
+	if (isset($decodedInfo->tag_name) && !empty($decodedInfo->tag_name)) {
+		$encodedVersion = $decodedInfo->tag_name;
 	}
-	$output["adminCurrentReleaseInfo"]["raw"] = json_encode($decodedInfo, JSON_PRETTY_PRINT);
-	$output["adminCurrentReleaseInfo"]["currentVersion"] = \Utils::parseVersion($encodedVersion);
-	$output["adminCurrentReleaseInfo"]["installedVersion"] = \Utils::parseVersion(BR_VERSION);
+
+	$decodedCurrentVersion = \Utils::parseVersion($encodedVersion);
+	$decodedInstalledVersion = \Utils::parseVersion(BR_VERSION);
+
+	$output["adminCurrentReleaseInfo"]["currentVersion"] = $decodedCurrentVersion;
+	$output["adminCurrentReleaseInfo"]["installedVersion"] = $decodedInstalledVersion;
+	$output["adminCurrentReleaseInfo"]["installedVersionUpToDate"] = (\Utils::compareVersions($decodedCurrentVersion, $decodedInstalledVersion) <= 0);
+	$output["adminCurrentReleaseInfo"]["releaseTitle"] = $decodedInfo->name;
+	$output["adminCurrentReleaseInfo"]["releaseInfo"] = (new Parsedown())->text($decodedInfo->body);
+	$output["adminCurrentReleaseInfo"]["releaseUrl"] = $decodedInfo->html_url;
 }
 
 $app->render("admin/admin.html", $output);
