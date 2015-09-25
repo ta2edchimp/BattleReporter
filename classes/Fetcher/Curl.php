@@ -8,8 +8,6 @@ class Curl extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
-		\Slim\Slim::getInstance()->log->debug("Using cURL to fetch \"$url\".");
-		
 		if (empty($url))
 			return "";
 		
@@ -105,7 +103,7 @@ class Curl extends FetcherBase {
 				curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
 			
 			
-			curl_setopt($curl, CURLOPT_VERBOSE, true);
+			curl_setopt($curl, CURLOPT_VERBOSE, false);
 			curl_setopt($curl, CURLOPT_HEADER, true);
 			
 			$totalResponse = curl_exec($curl);

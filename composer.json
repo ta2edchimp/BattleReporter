@@ -14,5 +14,8 @@
         "erusev/parsedown": "1.*"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "atoum/atoum": "~2.2"
+    }
 }

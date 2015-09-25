@@ -22,6 +22,7 @@
 				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
 				<td class="no-break hidden-xxs">{{ battle.creatorUserName }}</td>
 				<td class="hidden-sm hidden-xs hidden-xxs">&nbsp;</td>
+				<td class="no-break hidden-xxs">{% if battle.hasAAR %}<a class="direct-link" href="/show/{{ battle.battleReportID }}#summary"><span class="glyphicon glyphicon-align-left" title="BattleReport has an After Action Report"></span></a>{% endif %}</td>
 				<td class="no-break hidden-xxs">{% if battle.footageCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}#footage"><span class="glyphicon glyphicon-facetime-video" title="BattleReport has {{ battle.footageCount }} video{% if battle.footageCount > 1 %}s{% endif %}"></span><span class="hidden-xs"> {{ battle.footageCount }}</span></a>{% endif %}</td>
 				{% if BR_COMMENTS_ENABLED == true %}
 				<td class="no-break hidden-xxs">{% if battle.commentCount > 0 %}<a class="direct-link" href="/show/{{ battle.battleReportID }}/comments"><span class="glyphicon glyphicon-comment" title="BattleReport has {{ battle.commentCount }} comment{% if battle.commentCount > 1 %}s{% endif %}"></span><span class="hidden-xs"> {{ battle.commentCount }}</span></a>{% endif %}</td>

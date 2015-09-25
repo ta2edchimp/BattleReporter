@@ -1,6 +1,6 @@
 <?php
 
-define('BR_VERSION', '0.4.7');
+define('BR_VERSION', '0.5.0');
 
 require_once('vendor/autoload.php');
 
@@ -8,8 +8,8 @@ require_once('classes/Db.php');
 
 // PHP 5.5-like password hash functions in prior versions
 if (!function_exists('password_hash') || !function_exists('password_verify')
-    || !function_exists('password_needs_rehash') || !function_exists('password_get_info'))
-    require_once('classes/passwordLib.php');
+	|| !function_exists('password_needs_rehash') || !function_exists('password_get_info'))
+	require_once('classes/passwordLib.php');
 require_once('classes/User.php');
 require_once('classes/Session.php');
 
@@ -45,7 +45,7 @@ session_cache_limiter(false);
 session_start();
 
 if (!User::isLoggedIn())
-    User::checkAutoLogin();
+	User::checkAutoLogin();
 
 include('twig.php');
 

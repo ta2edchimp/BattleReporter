@@ -20,16 +20,16 @@ class Admin {
 		$refetchCount = 0;
 		
 		$combatants = $db->query(
-		    "select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
-		    "from invGroups as g right outer join invTypes as t " .
-		        "on g.groupID = t.groupID " .
-		    "right outer join brCombatants as c " .
-		        "on t.typeID = c.shipTypeID " .
-		    "left outer join brCorporations as cc " .
-		        "on c.corporationID = cc.corporationID " .
-		    "left outer join brAlliances as a " .
-		        "on c.allianceID = a.allianceID " .         
-		    "where c.died = 1 and c.priceTag <= 0"
+			"select c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, ifnull(a.allianceName, '') as allianceName " .
+			"from invGroups as g right outer join invTypes as t " .
+				"on g.groupID = t.groupID " .
+			"right outer join brCombatants as c " .
+				"on t.typeID = c.shipTypeID " .
+			"left outer join brCorporations as cc " .
+				"on c.corporationID = cc.corporationID " .
+			"left outer join brAlliances as a " .
+				"on c.allianceID = a.allianceID " .         
+			"where c.died = 1 and c.priceTag <= 0"
 		);
 		if ($combatants === NULL || $combatants === FALSE) {
 			return array(

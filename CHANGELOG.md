@@ -1,3 +1,39 @@
+# Release 0.5.0
+
+- 42a7cec Versionbump.
+- bf9f584 Updated ...
+- 30aea83 Modified default theme to better fit mobile display (≤ 640 px width). Closes #14
+- be2a87d Added `br has an aar` hint icon on overview list. Closes #71
+- 4b7dfff Strict comparison.
+- 670498f Added `Coveralls.io` badge, because BADGES!!
+- 5d888a2 Moved `atoum/atoum` from general requirements to development requirements (not necessary when only using BattleReporter). Closes #83
+- 89a5063 Added `.atoum.php` to create proper reports about the tests and deliver them to `coveralls.io`.
+- 3a5b78d Added update information when there are newer releases available.
+- abeacce Implemented method to compare versions.
+- 0b3f5dc Implemented utility method to parse versions from strings.
+- 0787fa6 Added test for `Fetcher\Curl::fetch`
+- b74b3eb Removed obsolete debug logging.
+- 0de8590 Removed obsolete debug logging.
+- 91a7c8b Prevent unnecessary curl output to stdout.
+- 37f7d64 Removed unnecessary `tag` badge.
+- 257399f Partial testing of classes/Utils.php
+- e3f1696 Added documentation.
+- fc2cde5 Fixed indentation.
+- a496605 Added documentation.
+- 0415bcb Completed documentation.
+- c148d4b Added documentation.
+- 59af016 Added partial tests for classes/KBFetch.php
+- 85f8e96 Added partial documentation.
+- ebf6b30 Tests for classes/Db.php
+- 53314c1 classes/SolarSystem.php fully covered by unit tests.
+- 0296922 Badges! Removed old sli badge.
+- 0846672 Updated for code quality analyses, tests, etc.
+- e0efa30 Use dedicated automatic installation procedure.
+- 6a5821e Updated for automation.
+- 6b160f9 Implement tests ...
+- a557f95 Bugfix for falsely interpreted numerical value in php strict mode.
+- d430757 Merge branch 'release/0.4.7' into develop
+
 # Release 0.4.7
 
 - 44f63fe Versionbump.

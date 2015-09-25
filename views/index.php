@@ -34,6 +34,8 @@ if ($battleList !== NULL && $battleList !== FALSE) {
 		
 		$previewISKdestroyed = $previewISKdestroyed + $totalLost;
 		$previewEfficiencyAvg = $previewEfficiencyAvg + $battle["efficiency"];
+
+		$battle["hasAAR"] = !empty($battle["summary"]);
 	
 	}
 	

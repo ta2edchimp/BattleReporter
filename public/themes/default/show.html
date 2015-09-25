@@ -156,7 +156,7 @@
 				{% set separator = '' %}
 				{% for comment in comments %}
 					{{ separator|raw }}
-					<div id="comment-{{ comment.commentID }}" class="comment"{% if comment.characterID is defined %} style="background-image:url(//image.eveonline.com/Character/{{ comment.characterID }}_128.jpg)"{% endif %}>
+					<div id="comment-{{ comment.commentID }}" class="comment"{% if comment.characterID is defined and comment.characterID != '' %} style="background-image:url(//image.eveonline.com/Character/{{ comment.characterID }}_64.jpg)"{% endif %}>
 						<p><strong>{{ comment.userName }}</strong><br>
 							<small>{{ comment.commentTime|time_ago }}</small></p>
 						<p>{{ comment.commentMessage|enable_urls }}</p>

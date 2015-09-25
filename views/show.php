@@ -1,16 +1,16 @@
 <?php
 
 if (empty($battleReportID) || $battleReportID == 0) {
-    $app->render("brNotFound.html");
-    $app->stop();
+	$app->render("brNotFound.html");
+	$app->stop();
 }
 
 // Try to fetch the specified battle report
 $battleReport = new Battle();
 
 if ($battleReport->load($battleReportID, false) === false) {
-    $app->render("brNotFound.html");
-    $app->stop();
+	$app->render("brNotFound.html");
+	$app->stop();
 }
 
 // If unpublished and/or no access ... yell "not found"
@@ -39,17 +39,17 @@ $availableDetails = array("timeline");
 if (BR_COMMENTS_ENABLED === true)
 	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {
-    $battleReportDetail = strtolower($battleReportDetail);
-    if (!in_array($battleReportDetail, $availableDetails))
-        $battleReportDetail = "overview";
+	$battleReportDetail = strtolower($battleReportDetail);
+	if (!in_array($battleReportDetail, $availableDetails))
+		$battleReportDetail = "overview";
 }
 if (empty($battleReportDetail))
-    $battleReportDetail = "overview";
+	$battleReportDetail = "overview";
 
 switch ($battleReportDetail) {
-    case "timeline":
-        $battleReportDetailTitle = "Battle Timeline";
-        break;
+	case "timeline":
+		$battleReportDetailTitle = "Battle Timeline";
+		break;
 	case "comments":
 		$battleReportDetailTitle = "Comments";
 		break;
@@ -81,7 +81,7 @@ $previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID .
 $app->render("show.html", array(
 	"BR_PAGE_SHOW" => true,
 	"previewMeta" => $previewMeta,
-    "battleReport" => $battleReport,
-    "battleReportDetail" => $battleReportDetail,
-    "battleReportDetailTitle" => $battleReportDetailTitle
+	"battleReport" => $battleReport,
+	"battleReportDetail" => $battleReportDetail,
+	"battleReportDetailTitle" => $battleReportDetailTitle
 ));

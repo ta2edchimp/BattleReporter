@@ -8,8 +8,6 @@ class File extends FetcherBase {
 	
 	public function fetch ($url = "", $parameters = array(), $options = array()) {
 		
-		\Slim\Slim::getInstance()->log->debug("Using File to fetch \"$url\".");
-		
 		if (empty($url))
 			return "";
 		

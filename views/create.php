@@ -2,7 +2,7 @@
 
 
 if (!User::can('create'))
-    $app->redirect('/');
+	$app->redirect('/');
 
 $output = array(
 	"BR_PAGE_CREATE" => true
@@ -12,56 +12,56 @@ $output = array(
 $parameters = $app->request->post();
 
 if ($parameters !== null) {
-    
-    $battleTimespan         = null;
-    $battleSolarSystem      = null;
-    
-    /*
-     *  Interpret specified timespan
-     */
-    if (isset($parameters["battleTimespan"])) {
-        $inputBattleTimespan = $parameters["battleTimespan"];
-        
-        $output["inputBattleTimespan"] = $inputBattleTimespan;
-        
-        if (KBFetch::testTimespanPattern($inputBattleTimespan)) {
-            $battleTimespan = $inputBattleTimespan;
-            $output["battleTimespan"] = $inputBattleTimespan;
-        } else {
-            $output["battleTimespanError"] = true;
-        }
-    }
-    
-    /*
-     *  Interpret specified system
-     */
-    if (isset($parameters["battleSolarSystemName"])) {
-        $inputBattleSolarSystemName = $parameters["battleSolarSystemName"];
-        
-        $battleSolarSystem = SolarSystem::getByName($inputBattleSolarSystemName);
-        
-        $output["inputBattleSolarSystemName"] = $inputBattleSolarSystemName;
-        
-        if ($battleSolarSystem === null) {
-            $output["battleSolarSystemError"] = true;
-        } else {
-            $output["battleSolarSystem"] = $battleSolarSystem;
-        }
-    }
-    
-    /*
-     *  Fetch corresponding kills ... if existing ...
-     */
-    if ($battleTimespan !== null && $battleSolarSystem !== null) {
-        try {
-            $battle = KBFetch::fetchBattle(
-                array(
-                    "corporationID" => BR_OWNERCORP_ID,
-                    "solarSystemID" => $battleSolarSystem["id"],
-                    "startTime"     => KBFetch::getZKBStartTime($battleTimespan),
-                    "endTime"       => KBFetch::getZKBEndTime($battleTimespan)
-                )
-            );
+	
+	$battleTimespan         = null;
+	$battleSolarSystem      = null;
+	
+	/*
+	 *  Interpret specified timespan
+	 */
+	if (isset($parameters["battleTimespan"])) {
+		$inputBattleTimespan = $parameters["battleTimespan"];
+		
+		$output["inputBattleTimespan"] = $inputBattleTimespan;
+		
+		if (KBFetch::testTimespanPattern($inputBattleTimespan)) {
+			$battleTimespan = $inputBattleTimespan;
+			$output["battleTimespan"] = $inputBattleTimespan;
+		} else {
+			$output["battleTimespanError"] = true;
+		}
+	}
+	
+	/*
+	 *  Interpret specified system
+	 */
+	if (isset($parameters["battleSolarSystemName"])) {
+		$inputBattleSolarSystemName = $parameters["battleSolarSystemName"];
+		
+		$battleSolarSystem = SolarSystem::getByName($inputBattleSolarSystemName);
+		
+		$output["inputBattleSolarSystemName"] = $inputBattleSolarSystemName;
+		
+		if ($battleSolarSystem === null) {
+			$output["battleSolarSystemError"] = true;
+		} else {
+			$output["battleSolarSystem"] = $battleSolarSystem;
+		}
+	}
+	
+	/*
+	 *  Fetch corresponding kills ... if existing ...
+	 */
+	if ($battleTimespan !== null && $battleSolarSystem !== null) {
+		try {
+			$battle = KBFetch::fetchBattle(
+				array(
+					"corporationID" => BR_OWNERCORP_ID,
+					"solarSystemID" => $battleSolarSystem["id"],
+					"startTime"     => KBFetch::getZKBStartTime($battleTimespan),
+					"endTime"       => KBFetch::getZKBEndTime($battleTimespan)
+				)
+			);
 			// If there are kills, save the prepared battle report ...
 			if ($battle->killsTotal > 0) {
 				$battle->savePreparation();
@@ -71,12 +71,12 @@ if ($parameters !== null) {
 				$battle = new Battle();
 				$battle->load($battleReportID, false, true);
 			}
-            
-            $output["battleReport"] = $battle;
-        } catch (Exception $e) {
-            $output["battleReportError"] = $e->getMessage();
-        }
-    }
+			
+			$output["battleReport"] = $battle;
+		} catch (Exception $e) {
+			$output["battleReportError"] = $e->getMessage();
+		}
+	}
 
 }
 
