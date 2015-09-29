@@ -74,7 +74,7 @@ if ($previewISKdestroyed < 1000000000000) {
 }
 
 $previewMeta['title'] = (empty($battleReport->title) ? ("Battle in " . $battleReport->solarSystemName) : $battleReport->title);
-$previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->efficiency * 100, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
+$previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->brEfficiency * 100, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
 $previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID . "_128.png";
 	
 
