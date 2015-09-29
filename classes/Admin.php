@@ -106,7 +106,7 @@ class Admin {
 				"on c.corporationID = cc.corporationID " .
 			"left outer join brAlliances as a " .
 				"on c.allianceID = a.allianceID " .         
-			"where c.died = 1 and c.brDamageReceived <= 0.0"
+			"where c.died = 1 and c.damageTaken <= 0.0"
 		);
 		if ($combatants === NULL || $combatants === FALSE) {
 			return array(
@@ -132,7 +132,7 @@ class Admin {
 					continue;
 				
 				// Set the received damage in db ...
-				$combatant->brDamageReceived = intval($kill->victim->damageTaken);
+				$combatant->damageTaken = intval($kill->victim->damageTaken);
 				$combatant->save();
 
 				// ... and dispatch the dealt damage values

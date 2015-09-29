@@ -94,7 +94,7 @@ $missingDamageValuesResults = $db->row(
 		"where brBattlePartyID in (" .
 			"select brBattlePartyID " .
 			"from brCombatants " .
-			"where died = 1 and brDamageReceived <= 0" .
+			"where died = 1 and damageTaken <= 0" .
 		")" .
 	")"
 );
