@@ -771,13 +771,13 @@ class Battle {
 						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
 						'where brReceivingCombatantID in (' .
 							'select brCombatantID from brCombatants ' .
-							'where brBattlePartyID = :receivingBattlePartyID and brDeleted = 0' .
+							'where brBattlePartyID = :receivingBattlePartyID and brDeleted = 0 and brHidden = 0' .
 						')' .
 					') as dmgReceived, (' .
 						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
 						'where brDealingCombatantID in (' .
 							'select brCombatantID from brCombatants ' .
-							'where brBattlePartyID = :dealingBattlePartyID and brDeleted = 0' .
+							'where brBattlePartyID = :dealingBattlePartyID and brDeleted = 0 and brHidden = 0' .
 						')' .
 					') as dmgDealt, (' .
 						'select ifNull(sum(priceTag), 0) from brCombatants ' .
@@ -785,12 +785,12 @@ class Battle {
 							'select brReceivingCombatantID from brDamageComposition ' .
 							'where brDealingCombatantID in (' .
 								'select brCombatantID from brCombatants ' .
-								'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0' .
+								'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0 and brHidden = 0' .
 							')' .
 						') and brDeleted = 0' .
 					') as iskDestroyed, (' .
 						'select ifNull(sum(priceTag), 0) from brCombatants ' .
-						'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0' .
+						'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0 and brHidden = 0' .
 					') as iskLost',
 				array(
 					"receivingBattlePartyID" => $battleParty["brBattlePartyID"],
