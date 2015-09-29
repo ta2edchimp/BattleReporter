@@ -67,7 +67,7 @@ class Admin {
 			return null;
 		
 		if ($refetchCount > 0) {
-			$result["message"] = "$refetchCount kills completed by adding the missing loss values.";
+			$result["message"] = "$refetchCount kills completed by adding the missing loss values. You should redo all the corresponding calculations!";
 		} else {
 			$result = array(
 				"success" => false,
@@ -192,7 +192,7 @@ class Admin {
 			return null;
 		
 		if ($refetchCount > 0) {
-			$result["message"] = "$refetchCount kills completed by adding the missing damage values.";
+			$result["message"] = "$refetchCount kills completed by adding the missing damage values. You should redo all the corresponding calculations!";
 		} else {
 			$result = array(
 				"success" => false,
@@ -202,6 +202,122 @@ class Admin {
 		
 		return $result;
 		
+	}
+
+	public static function repopulateStatistics() {
+
+		$result = array(
+			"error" => "Something went totally wrong. Sorry, but there's no further information available."
+		);
+
+		$resultPartialFailures = false;
+		$resultStatisticsRepopulated = false;
+
+		$db = \Db::getInstance();
+
+		// Fetch all battles from database
+		$battles = $db->query(
+			'select * from brBattles'
+		);
+
+		if ($battles === FALSE) {
+			return array(
+				"error" => "Could not find any battles."
+			);
+		}
+
+		// Loop through each battle ...
+		foreach ($battles as $battle) {
+			// ... and get its battle parties
+			$battleParties = $db->query(
+				'select * from brBattleParties where battleReportID = :battleReportID',
+				array(
+					"battleReportID" => $battle["battleReportID"]
+				)
+			);
+
+			// Oops, sth. went wrong
+			if ($battleParties === FALSE) {
+				$resultPartialFailures = true;
+				continue;
+			}
+
+			// ... and start over looping, this time through each battle party's memberlist
+			foreach ($battleParties as $battleParty) {
+				// Get the damage numbers, this battle party received ...
+				$stats = $db->row(
+					'select (' .
+							'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+							'where brReceivingCombatantID in (' .
+								'select brCombatantID from brCombatants ' .
+								'where brBattlePartyID = :receivingBattlePartyID and brDeleted = 0' .
+							')' .
+						') as dmgReceived, (' .
+							'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+							'where brDealingCombatantID in (' .
+								'select brCombatantID from brCombatants ' .
+								'where brBattlePartyID = :dealingBattlePartyID and brDeleted = 0' .
+							')' .
+						') as dmgDealt, (' .
+							'select ifNull(sum(priceTag), 0) from brCombatants ' .
+							'where brCombatantID in (' .
+								'select brReceivingCombatantID from brDamageComposition ' .
+								'where brDealingCombatantID in (' .
+									'select brCombatantID from brCombatants ' .
+									'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0' .
+								')' .
+							') and brDeleted = 0' .
+						') as iskDestroyed, (' .
+							'select ifNull(sum(priceTag), 0) from brCombatants ' .
+							'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0' .
+						') as iskLost',
+					array(
+						"receivingBattlePartyID" => $battleParty["brBattlePartyID"],
+						"dealingBattlePartyID" => $battleParty["brBattlePartyID"],
+						"destroyingBattlePartyID" => $battleParty["brBattlePartyID"],
+						"loosingBattlePartyID" => $battleParty["brBattlePartyID"]
+					)
+				);
+
+				// Oh noes ...
+				if ($stats === FALSE) {
+					$resultPartialFailures = true;
+					continue;
+				}
+
+				// UPDATE ALL THE STATS!
+				$db->query(
+					'update brBattleParties ' .
+					'set brDamageDealt = :damageDealt, brDamageReceived = :damageReceived, ' .
+						'brIskDestroyed = :iskDestroyed, brIskLost = :iskLost, ' .
+						'brEfficiency = :efficiency ' .
+					'where brBattlePartyID = :battlePartyID',
+					array(
+						"damageReceived" => $stats["dmgReceived"],
+						"damageDealt" => $stats["dmgDealt"],
+						"iskDestroyed" => $stats["iskDestroyed"],
+						"iskLost" => $stats["iskLost"],
+						"efficiency" => ($stats["iskDestroyed"] > 0 ? (100 * $stats["iskDestroyed"] / ($stats["iskDestroyed"] + $stats["iskLost"])) : 0.0),
+						"battlePartyID" => $battleParty["brBattlePartyID"]
+					)
+				);
+
+				$resultStatisticsRepopulated = true;
+			}
+		}
+
+		if ($resultStatisticsRepopulated === true) {
+			$result = array(
+				"success" => "Statistic fields have been repopulated."
+			);
+		}
+
+		if ($resultPartialFailures === true) {
+			$results["error"] = "Some statistics could not be repopulated.";
+		}
+
+		return $result;
+
 	}
 	
 }

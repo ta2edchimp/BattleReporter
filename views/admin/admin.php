@@ -13,7 +13,7 @@ $output = array(
 );
 
 
-$availableActions = array("", "refetchforlossvalues", "refetchfordamagevalues");
+$availableActions = array("", "refetchforlossvalues", "refetchfordamagevalues", "repopulatestatistics");
 $adminAction = strtolower($adminAction);
 if (!in_array($adminAction, $availableActions))
 	$adminAction = "";
@@ -22,9 +22,14 @@ switch ($adminAction) {
 	
 	case "refetchforlossvalues":
 		$output["adminMissingLossValues"]["action"] = Admin::refetchKillMailsForMissingLossValues();
+		break;
 
 	case "refetchfordamagevalues":
 		$output["adminMissingDamageValues"]["action"] = Admin::refetchKillMailsForMissingDamageValues();
+		break;
+
+	case "repopulatestatistics":
+		$output["Miscellanous"] = Admin::repopulateStatistics();
 	
 	default:
 		break;

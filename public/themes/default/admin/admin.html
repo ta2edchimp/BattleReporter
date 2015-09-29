@@ -77,13 +77,13 @@
 				{% else %}
 				<span class="text-success glyphicon glyphicon-ok"></span>
 				{% endif %}
-				BattleReports with missing DamageValues
+				Combatants within BattleReports with missing DamageValues
 			</h3>
 		</div>
 		<div class="panel-body">
 		{% if adminMissingDamageValues.error == true %}
 			<div class="alert alert-danger">
-				<strong>Error</strong> while searching for BattleReports with missing DamageValues.
+				<strong>Error</strong> while searching for Combatants with BattleReports with missing DamageValues.
 			</div>
 		{% endif %}
 		{% if adminMissingDamageValues.action is defined and adminMissingDamageValues.action.message != '' %}
@@ -102,6 +102,28 @@
 		</div>
 	</div>
 	{% endif %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Miscellanous
+			</h3>
+		</div>
+		<div class="panel-body">
+		{% if Miscellanous.error is defined and Miscellanous.error != '' %}
+			<div class="alert alert-danger">
+				<strong>Error:</strong> {{ Miscellanous.error }}
+			</div>
+		{% endif %}
+		{% if Miscellanous.success is defined and Miscellanous.success != '' %}
+			<div class="alert alert-success">
+				<strong>Success!</strong> {{ Miscellanous.success }}
+			</div>
+		{% endif %}
+			<div>
+				<p>If you refetched kill mails for missing loss or damage values, or if you just want to redo all the corresponding calculations, click <a href="/admin/repopulateStatistics" class="btn btn-sm btn-danger">Repopulate Statistics</a></p>
+			</div>
+		</div>
+	</div>
 	{% if adminSomethingFoo is defined %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
