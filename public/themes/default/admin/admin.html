@@ -68,6 +68,40 @@
 		</div>
 	</div>
 	{% endif %}
+	{% if adminMissingDamageValues is defined %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{% if adminMissingDamageValues.battleReportsCount > 0 %}
+				<span class="text-danger glyphicon glyphicon-remove"></span>
+				{% else %}
+				<span class="text-success glyphicon glyphicon-ok"></span>
+				{% endif %}
+				BattleReports with missing DamageValues
+			</h3>
+		</div>
+		<div class="panel-body">
+		{% if adminMissingDamageValues.error == true %}
+			<div class="alert alert-danger">
+				<strong>Error</strong> while searching for BattleReports with missing DamageValues.
+			</div>
+		{% endif %}
+		{% if adminMissingDamageValues.action is defined and adminMissingDamageValues.action.message != '' %}
+			<div class="alert alert-{% if adminMissingDamageValues.action.success == true %}info{% else %}danger{% endif %}">
+				{{ adminMissingDamageValues.action.message }}
+			</div>
+		{% endif %}
+		{% if adminMissingDamageValues.battleReportsCount is defined %}
+			<div>
+				There are <kbd>{{ adminMissingDamageValues.battleReportsCount }}</kbd> BattleReports with missing <strong>DamageValues</strong>.
+				{% if adminMissingDamageValues.battleReportsCount > 0 %}
+				<a href="/admin/refetchForDamageValues" class="btn btn-sm btn-danger">Refetch involved KillMails &amp; fix it!</a>
+				{% endif %}
+			</div>
+		{% endif %}
+		</div>
+	</div>
+	{% endif %}
 	{% if adminSomethingFoo is defined %}
 	<div class="panel panel-default">
 		<div class="panel-heading">

@@ -32,13 +32,15 @@ class Combatant {
 	public $killID = "";
 	public $killTime = 0;
 	public $priceTag = 0.0;
+
+	public $brDamageReceived = 0.0;
 	
 	public $assignedFootage = 0;
 	
 	private $hasBeenRemoved = false;
 	
 	private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage");
+	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage", "brDamageReceived");
 	
 	public function __construct($props, $killID = "") {
 		
@@ -144,7 +146,8 @@ class Combatant {
 			"priceTag" => $this->priceTag,
 			"brManuallyAdded" => $this->brManuallyAdded ? 1 : 0,
 			"brDeleted" => $this->brDeleted ? 1 : 0,
-			"brCyno" => $this->brCyno ? 1 : 0
+			"brCyno" => $this->brCyno ? 1 : 0,
+			"brDamageReceived" => $this->brDamageReceived
 		);
 		if ($this->brCombatantID <= 0) {
 			
@@ -156,9 +159,9 @@ class Combatant {
 			
 			$result = $db->query(
 				"insert into brCombatants ".
-				"(characterID, characterName, corporationID, allianceID, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag, brManuallyAdded, brDeleted, brCyno) " .
+				"(characterID, characterName, corporationID, allianceID, brHidden, brBattlePartyID, shipTypeID, died, killID, killTime, priceTag, brManuallyAdded, brDeleted, brCyno, brDamageReceived) " .
 				"values " .
-				"(:characterID, :characterName, :corporationID, :allianceID, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag, :brManuallyAdded, :brDeleted, :brCyno)",
+				"(:characterID, :characterName, :corporationID, :allianceID, :brHidden, :brBattlePartyID, :shipTypeID, :died, :killID, :killTime, :priceTag, :brManuallyAdded, :brDeleted, :brCyno, :brDamageReceived)",
 				$params,
 				true	// Return last inserted row's ID instead of affected rows' count
 			);
@@ -182,7 +185,7 @@ class Combatant {
 			$params["brCombatantID"] = $this->brCombatantID;
 			$result = $db->query(
 				"update brCombatants " .
-				"set characterID = :characterID, characterName = :characterName, corporationID = :corporationID, allianceID = :allianceID, brHidden = :brHidden, brBattlePartyID = :brBattlePartyID, shipTypeID = :shipTypeID, died = :died, killID = :killID, killTime = :killTime, priceTag = :priceTag, brManuallyAdded = :brManuallyAdded, brDeleted = :brDeleted, brCyno = :brCyno " .
+				"set characterID = :characterID, characterName = :characterName, corporationID = :corporationID, allianceID = :allianceID, brHidden = :brHidden, brBattlePartyID = :brBattlePartyID, shipTypeID = :shipTypeID, died = :died, killID = :killID, killTime = :killTime, priceTag = :priceTag, brManuallyAdded = :brManuallyAdded, brDeleted = :brDeleted, brCyno = :brCyno, brDamageReceived = :brDamageReceived " .
 				"where brCombatantID = :brCombatantID",
 				$params
 			);

@@ -79,4 +79,23 @@ if ($missingLossValuesResults === NULL)
 else
 	$output["adminMissingLossValues"]["battleReportsCount"] = $missingLossValuesResults["brCount"];
 
+// Battle reports with missing loss damage values
+$missingDamageValuesResults = $db->row(
+	"select count(battleReportID) as brCount " .
+	"from brBattles " .
+	"where battleReportID in (" .
+		"select battleReportID " .
+		"from brBattleParties " .
+		"where brBattlePartyID in (" .
+			"select brBattlePartyID " .
+			"from brCombatants " .
+			"where died = 1 and brDamageReceived <= 0" .
+		")" .
+	")"
+);
+if ($missingDamageValuesResults === NULL)
+	$output["adminMissingDamageValues"]["error"] = true;
+else
+	$output["adminMissingDamageValues"]["battleReportsCount"] = $missingDamageValuesResults["brCount"];
+
 $app->render("admin/admin.html", $output);
