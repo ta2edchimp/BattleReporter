@@ -170,6 +170,9 @@ class Battle {
 		$this->teamA->save($this->battleReportID);
 		$this->teamB->save($this->battleReportID);
 		$this->teamC->save($this->battleReportID);
+
+		// Update statistical values
+		$this::updateStats();
 		
 	}
 	
@@ -398,6 +401,8 @@ class Battle {
 		$this->teamC->sort();
 		
 		$this->updateDetails();
+
+		$this::updateStats();
 		
 	}
 	
@@ -734,6 +739,93 @@ class Battle {
 			$params
 		);
 		
+	}
+
+	public static function updateStats($battleReportID = 0) {
+		if ($battleReportID <= 0) {
+			return false;
+		}
+
+		$db = \Db::getInstance();
+
+		// ... and get its battle parties
+		$battleParties = $db->query(
+			'select * from brBattleParties where battleReportID = :battleReportID',
+			array(
+				"battleReportID" => $battleReportID
+			)
+		);
+
+		// Oops, sth. went wrong
+		if ($battleParties === FALSE) {
+			return false;
+		}
+
+		$return = false;
+
+		// ... and start over looping, this time through each battle party's memberlist
+		foreach ($battleParties as $battleParty) {
+			// Get the damage numbers, this battle party received ...
+			$stats = $db->row(
+				'select (' .
+						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+						'where brReceivingCombatantID in (' .
+							'select brCombatantID from brCombatants ' .
+							'where brBattlePartyID = :receivingBattlePartyID and brDeleted = 0' .
+						')' .
+					') as dmgReceived, (' .
+						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+						'where brDealingCombatantID in (' .
+							'select brCombatantID from brCombatants ' .
+							'where brBattlePartyID = :dealingBattlePartyID and brDeleted = 0' .
+						')' .
+					') as dmgDealt, (' .
+						'select ifNull(sum(priceTag), 0) from brCombatants ' .
+						'where brCombatantID in (' .
+							'select brReceivingCombatantID from brDamageComposition ' .
+							'where brDealingCombatantID in (' .
+								'select brCombatantID from brCombatants ' .
+								'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0' .
+							')' .
+						') and brDeleted = 0' .
+					') as iskDestroyed, (' .
+						'select ifNull(sum(priceTag), 0) from brCombatants ' .
+						'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0' .
+					') as iskLost',
+				array(
+					"receivingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"dealingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"destroyingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"loosingBattlePartyID" => $battleParty["brBattlePartyID"]
+				)
+			);
+
+			// Oh noes ...
+			if ($stats === FALSE) {
+				return false;
+			}
+
+			// UPDATE ALL THE STATS!
+			$db->query(
+				'update brBattleParties ' .
+				'set brDamageDealt = :damageDealt, brDamageReceived = :damageReceived, ' .
+					'brIskDestroyed = :iskDestroyed, brIskLost = :iskLost, ' .
+					'brEfficiency = :efficiency ' .
+				'where brBattlePartyID = :battlePartyID',
+				array(
+					"damageReceived" => $stats["dmgReceived"],
+					"damageDealt" => $stats["dmgDealt"],
+					"iskDestroyed" => $stats["iskDestroyed"],
+					"iskLost" => $stats["iskLost"],
+					"efficiency" => ($stats["iskDestroyed"] > 0 ? (100 * $stats["iskDestroyed"] / ($stats["iskDestroyed"] + $stats["iskLost"])) : 0.0),
+					"battlePartyID" => $battleParty["brBattlePartyID"]
+				)
+			);
+
+			$result = true;
+		}
+
+		return $result;
 	}
 	
 	private static function getEmbedVideoUrl($url = "") {
