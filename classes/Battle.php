@@ -200,9 +200,9 @@ class Battle {
 		else
 			$this->solarSystemName = "";
 		
-		$this->teamA->updateDetails(array($this->teamB, $this->teamC));
-		$this->teamB->updateDetails(array($this->teamA, $this->teamC));
-		$this->teamC->updateDetails(array($this->teamA, $this->teamB));
+		$this->teamA->updateDetails();
+		$this->teamB->updateDetails();
+		$this->teamC->updateDetails();
 		
 		$this->killsTotal = $this->teamA->losses + $this->teamB->losses + $this->teamC->losses;
 		
@@ -212,7 +212,7 @@ class Battle {
 			$this->timeSpan = "";
 		
 		$this->totalPilots = $this->teamA->uniquePilots + $this->teamB->uniquePilots + $this->teamC->uniquePilots;
-		$this->totalLost = $this->teamA->totalLost + $this->teamB->totalLost + $this->teamC->totalLost;
+		$this->totalLost = $this->teamA->brIskLost + $this->teamB->brIskLost + $this->teamC->brIskLost;
 		
 	}
 	
