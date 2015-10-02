@@ -32,7 +32,7 @@ $app = new \Slim\Slim(array(
 $app->config('debug', $BR_DEBUGMODE);
 
 // Theming ...
-if (!defined('BR_THEME'))
+if (defined('BR_THEME'))
 	$theme = BR_THEME;
 if(!isset($theme) || empty($theme))
 	$theme = "default";

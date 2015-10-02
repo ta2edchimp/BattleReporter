@@ -13,7 +13,7 @@ $output = array(
 );
 
 
-$availableActions = array("", "refetchforlossvalues");
+$availableActions = array("", "refetchforlossvalues", "refetchfordamagevalues", "repopulatestatistics");
 $adminAction = strtolower($adminAction);
 if (!in_array($adminAction, $availableActions))
 	$adminAction = "";
@@ -22,33 +22,21 @@ switch ($adminAction) {
 	
 	case "refetchforlossvalues":
 		$output["adminMissingLossValues"]["action"] = Admin::refetchKillMailsForMissingLossValues();
+		break;
+
+	case "refetchfordamagevalues":
+		$output["adminMissingDamageValues"]["action"] = Admin::refetchKillMailsForMissingDamageValues();
+		break;
+
+	case "repopulatestatistics":
+		$output["Miscellanous"] = Admin::repopulateStatistics();
 	
 	default:
 		break;
 	
 }
 
-
-
-// Battle reports with missing loss values
-$missingLossValuesResults = $db->row(
-	"select count(battleReportID) as brCount " .
-	"from brBattles " .
-	"where battleReportID in (" .
-		"select battleReportID " .
-		"from brBattleParties " .
-		"where brBattlePartyID in (" .
-			"select brBattlePartyID " .
-			"from brCombatants " .
-			"where died = 1 and priceTag <= 0" .
-		")" .
-	")"
-);
-if ($missingLossValuesResults === NULL)
-	$output["adminMissingLossValues"]["error"] = true;
-else
-	$output["adminMissingLossValues"]["battleReportsCount"] = $missingLossValuesResults["brCount"];
-
+// Compare the current installation's version to the latest available
 $adminCurrentReleaseResult = \Utils::fetch(
 	"https://api.github.com/repos/ta2edchimp/BattleReporter/releases/latest",
 	null,
@@ -76,5 +64,43 @@ if (!empty($adminCurrentReleaseResult)) {
 	$output["adminCurrentReleaseInfo"]["releaseInfo"] = (new Parsedown())->text($decodedInfo->body);
 	$output["adminCurrentReleaseInfo"]["releaseUrl"] = $decodedInfo->html_url;
 }
+
+// Battle reports with missing loss values
+$missingLossValuesResults = $db->row(
+	"select count(battleReportID) as brCount " .
+	"from brBattles " .
+	"where battleReportID in (" .
+		"select battleReportID " .
+		"from brBattleParties " .
+		"where brBattlePartyID in (" .
+			"select brBattlePartyID " .
+			"from brCombatants " .
+			"where died = 1 and priceTag <= 0" .
+		")" .
+	")"
+);
+if ($missingLossValuesResults === NULL)
+	$output["adminMissingLossValues"]["error"] = true;
+else
+	$output["adminMissingLossValues"]["battleReportsCount"] = $missingLossValuesResults["brCount"];
+
+// Battle reports with missing loss damage values
+$missingDamageValuesResults = $db->row(
+	"select count(battleReportID) as brCount " .
+	"from brBattles " .
+	"where battleReportID in (" .
+		"select battleReportID " .
+		"from brBattleParties " .
+		"where brBattlePartyID in (" .
+			"select brBattlePartyID " .
+			"from brCombatants " .
+			"where died = 1 and damageTaken <= 0" .
+		")" .
+	")"
+);
+if ($missingDamageValuesResults === NULL)
+	$output["adminMissingDamageValues"]["error"] = true;
+else
+	$output["adminMissingDamageValues"]["battleReportsCount"] = $missingDamageValuesResults["brCount"];
 
 $app->render("admin/admin.html", $output);

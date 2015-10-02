@@ -1,3 +1,34 @@
+# Release 0.5.1
+
+- 25cd71d Versionbump.
+- ee81179 Updated BR index to new prepopulated statistics.
+- d0654b5 Db tables updated for EVE SDE Vanguard.
+- f08d36e Merge branch 'feature/damage-numbers' into develop
+- 8627700 Updated database schemas.
+- e67ed73 Fixed case.
+- b13ec7f Update Combatatnts already added to a BattleParty, update all the stats when saving the Battle (down to the Combatant props).
+- d2324f9 Fill `Combatant` damageComposition property with fetched values.
+- 7a755e4 Add damageComposition property.
+- 0c25aa9 Take damage values into account on battle creation.
+- 620f152 Bugfix when checking successful instantiation of Combatant.
+- 5b03485 Changed property name to fit imported one.
+- e6c3744 Ignore deleted AND hidden combatants when calculating the statistics.
+- 619fa9d Moved battle dependent stats update method into `Battle` class.
+- 83ae13e Use prepopulated statistic fields.
+- 0d77839 Make use of new prepopulated statistic fields.
+- ca5aa9e Populate stat values up until battleparties.
+- 43ccc42 Refetch kill mails to get damage numbers and store them as received or dealt.
+- 5a719ef Rearranged code order to order to match corresponding parts on admin page.
+- 54642a1 Bugfix, to actually use any other than the `default` theme.
+- a470012 Linked ToC.
+- 65e2efa Concretized theming instructions.
+- 772e2fd Added "Contribution" section.
+- 2b1a271 Bugfix.
+- d91deaf Updated contents, esp. installation, update and customization instructions.
+- 017dfdc Completed legal stuff.
+- 7e6f6c2 Fixed typo.
+- 6adc937 Merge branch 'release/0.5.0' into develop
+
 # Release 0.5.0
 
 - 42a7cec Versionbump.
