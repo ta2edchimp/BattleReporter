@@ -34,6 +34,7 @@ class Combatant {
 	public $priceTag = 0.0;
 
 	public $damageTaken = 0.0;
+	public $damageDealt = 0.0;
 	public $damageComposition = null;
 	
 	public $assignedFootage = 0;
@@ -41,7 +42,7 @@ class Combatant {
 	private $hasBeenRemoved = false;
 	
 	private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage", "damageTaken", "damageComposition");
+	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage", "damageTaken", "damageDealt", "damageComposition");
 	
 	public function __construct($props, $killID = "") {
 		
@@ -96,7 +97,7 @@ class Combatant {
 			$this->shipTypeName = "Unknown";
 		if ($this->shipIsPod === null)
 			$this->shipIsPod = Item::isCapsule($this->shipTypeID);
-			
+
 		
 		if (!empty($killID)) {
 			$this->died = true;
