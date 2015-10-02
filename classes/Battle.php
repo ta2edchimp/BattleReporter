@@ -171,9 +171,18 @@ class Battle {
 		$this->teamB->save($this->battleReportID);
 		$this->teamC->save($this->battleReportID);
 
+		// Save additional data, that requires initial saving in before
+		$this->saveAdditionalData();
+
 		// Update statistical values
 		$this::updateStats();
 		
+	}
+
+	public function saveAdditionalData() {
+		$this->teamA->saveAdditionalData();
+		$this->teamB->saveAdditionalData();
+		$this->teamC->saveAdditionalData();
 	}
 	
 	public function publish() {
@@ -401,8 +410,6 @@ class Battle {
 		$this->teamC->sort();
 		
 		$this->updateDetails();
-
-		$this::updateStats();
 		
 	}
 	

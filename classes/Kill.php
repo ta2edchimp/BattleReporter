@@ -78,6 +78,10 @@ class Kill {
 		if (isset($kill->zkb) && isset($kill->zkb->totalValue)) {
 			$victim->priceTag = floatVal($kill->zkb->totalValue);
 		}
+
+		if (isset($kill->victim->damageTaken)) {
+			$victim->damageTaken = intval($kill->victim->damageTaken);
+		}
 		
 		if (isset($kill->items)) {
 			foreach ($kill->items as $item) {
@@ -94,6 +98,17 @@ class Kill {
 				return;
 
 			$attackers[] = $attacker;
+
+			if (empty($atk->damageDone))
+				continue;
+
+			if ($victim->damageComposition === null)
+				$victim->damageComposition = array();
+
+			$victim->damageComposition[] = array(
+				dealer => $attacker,
+				amount => $atk->damageDone
+			);
 		}
 		
 		if (isset($kill->killTime)) {

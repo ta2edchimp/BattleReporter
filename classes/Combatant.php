@@ -34,13 +34,14 @@ class Combatant {
 	public $priceTag = 0.0;
 
 	public $damageTaken = 0.0;
+	public $damageComposition = null;
 	
 	public $assignedFootage = 0;
 	
 	private $hasBeenRemoved = false;
 	
 	private $requiredProps = array("characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID");
-	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage", "damageTaken");
+	private $availableProps = array("brCombatantID", "brHidden", "brDeleted", "brTeam", "brBattlePartyID", "brManuallyAdded", "characterID", "characterName", "corporationID", "corporationName", "allianceID", "allianceName", "shipTypeID", "shipTypeName", "shipTypeMass", "shipGroup", "shipGroupOrderKey", "shipIsPod", "brCyno", "died", "killID", "killTime", "priceTag", "assignedFootage", "damageTaken", "damageComposition");
 	
 	public function __construct($props, $killID = "") {
 		
@@ -238,7 +239,38 @@ class Combatant {
 		}
 		
 	}
-	
+
+	public function saveAdditionalData() {
+
+		if ($this->damageComposition === null || count($this->damageComposition) == 0)
+			return;
+
+		$db = \Db::getInstance();
+
+		$db->query(
+			"delete from brDamageComposition where brReceivingCombatantID = :brCombatantID",
+			array(
+				"brCombatantID" => $this->brCombatantID
+			)
+		);
+
+		foreach ($this->damageComposition as $dmgPart) {
+			if ($dmgPart === null || empty($dmgPart["dealer"]) || empty($dmgPart["amount"]))
+				continue;
+			$db->query(
+				"insert into brDamageComposition " .
+				"(brReceivingCombatantID, brDealingCombatantID, brDamageDealt) " .
+				"values " .
+				"(:brReceivingCombatantID, :brDealingCombatantID, :brDamageDealt)", 
+				array(
+					"brReceivingCombatantID" => $this->brCombatantID,
+					"brDealingCombatantID" => $dmgPart["dealer"]->brCombatantID,
+					"brDamageDealt" => $dmgPart["amount"]
+				)
+			);
+		}
+
+	}
 	
 	public function removeFromDatabase() {
 		

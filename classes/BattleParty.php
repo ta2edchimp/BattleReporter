@@ -224,6 +224,11 @@ class BattleParty {
 			$combatant->save($this->brBattlePartyID);
 		
 	}
+
+	public function saveAdditionalData() {
+		foreach ($this->members as $combatant)
+			$combatant->saveAdditionalData();
+	}
 	
 	public function toArray() {
 		
