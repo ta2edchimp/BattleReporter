@@ -1,0 +1,44 @@
+{% if combatant is defined %}
+{% if not combatantDetailMode is defined or combatantDetailMode == 'normal' or combatantDetailMode == '' or (combatantDetailMode == 'damage' and (combatant.damageTaken > 0 or combatant.damageDealt > 0))  %}
+<tr class="combatant{% if combatant.died %} danger{% endif %}{% if combatant.brHidden %} hidden-on-br{% endif %}" data-combatant-id="{{ combatant.brCombatantID }}" data-kill-id="{{ combatant.killID }}" data-character-id="{{ combatant.characterID }}">
+	<td>
+		<div class="ship-icon-container">
+			<img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
+			{% if (combatant.shipGroup is defined and combatant.shipGroup != 'DPS') or combatant.brCyno == true %}
+			<div class="ship-type-icon">
+				{% if combatant.brCyno == true %}
+				<span class="glyphicon glyphicon-asterisk" title="Had a Cynosural Field Generator fitted."></span>
+				{% endif %}
+				{% if combatant.shipGroup is defined and combatant.shipGroup != 'DPS' %}
+				<span class="glyphicon {% if combatant.shipGroup == 'Capital' %}glyphicon-tower{% elseif combatant.shipGroup == 'Logistics' %}glyphicon-heart{% elseif combatant.shipGroup == 'Ewar' %}glyphicon-flash{% endif %}" title="{{ combatant.shipGroup }}"></span>
+				{% endif %}
+			</div>
+			{% endif %}
+		</div>
+	</td>
+	<td style="width:100%" class="hidden-xxs">
+		<div class="combatant-details">
+			{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
+			{% if not combatantDetailMode is defined or combatantDetailMode == 'normal' or combatantDetailMode == '' %}
+			<small>{{ combatant.corporationName }}
+				{% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
+			{% endif %}
+				{{ combatant.shipTypeName }}<br>
+			{% if not combatantDetailMode is defined or combatantDetailMode == 'normal' or combatantDetailMode == '' and combatant.priceTag > 0 %}
+				({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK)
+			{% else %}
+				&nbsp;
+			{% endif %}
+			{% if combatantDetailMode is defined and combatantDetailMode == 'damage' %}
+				{% if combatant.damageDealt > 0 %}<br>{{ combatant.damageDealt|number_format(0, '.', ',') }} dmg dealt{% endif %}
+				{% if combatant.damageTaken > 0 %}<br>{{ combatant.damageTaken|number_format(0, '.', ',') }} dmg taken{% endif %}
+			{% elseif BR_PAGE_SHOW == true and combatant.assignedFootage > 0 %}
+			<div class="combatant-info-container"><a href="#footage-panel-{{ combatant.assignedFootage }}" class="footage">
+				<span class="glyphicon glyphicon-facetime-video"></span></a>
+			</div>
+			{% endif %}
+		</div>
+	</td>
+</tr>
+{% endif %}
+{% endif %}

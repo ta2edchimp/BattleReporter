@@ -35,7 +35,7 @@ if (User::isLoggedIn() && ($userIsAdminOrDirector || $battleReport->creatorUserI
 
 $battleReportDetailTitle = "Battle Overview";
 
-$availableDetails = array("timeline");
+$availableDetails = array("timeline", "damage");
 if (BR_COMMENTS_ENABLED === true)
 	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {

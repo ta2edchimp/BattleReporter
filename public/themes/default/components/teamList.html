@@ -16,37 +16,7 @@
 					<table id="battlereport-{{ currentTeamID }}" class="table table-striped table-hover battlereport-combatants">
 						<tbody>
 						{% for combatant in currentTeam.members %}
-							<tr class="combatant{% if combatant.died %} danger{% endif %}{% if combatant.brHidden %} hidden-on-br{% endif %}" data-combatant-id="{{ combatant.brCombatantID }}" data-kill-id="{{ combatant.killID }}" data-character-id="{{ combatant.characterID }}">
-								<td>
-									<div class="ship-icon-container">
-										<img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
-										{% if (combatant.shipGroup is defined and combatant.shipGroup != 'DPS') or combatant.brCyno == true %}
-										<div class="ship-type-icon">
-											{% if combatant.brCyno == true %}
-											<span class="glyphicon glyphicon-asterisk" title="Had a Cynosural Field Generator fitted."></span>
-											{% endif %}
-											{% if combatant.shipGroup is defined and combatant.shipGroup != 'DPS' %}
-											<span class="glyphicon {% if combatant.shipGroup == 'Capital' %}glyphicon-tower{% elseif combatant.shipGroup == 'Logistics' %}glyphicon-heart{% elseif combatant.shipGroup == 'Ewar' %}glyphicon-flash{% endif %}" title="{{ combatant.shipGroup }}"></span>
-											{% endif %}
-										</div>
-										{% endif %}
-									</div>
-								</td>
-								<td style="width:100%" class="hidden-xxs">
-									<div class="combatant-details">
-										{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
-										<small>{{ combatant.corporationName }}
-											{% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
-										{{ combatant.shipTypeName }}<br>
-											{% if combatant.priceTag > 0 %}({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK){% else %}&nbsp;{% endif %}
-										{% if BR_PAGE_SHOW == true and combatant.assignedFootage > 0 %}
-										<div class="combatant-info-container"><a href="#footage-panel-{{ combatant.assignedFootage }}" class="footage">
-											<span class="glyphicon glyphicon-facetime-video"></span></a>
-										</div>
-										{% endif %}
-									</div>
-								</td>
-							</tr>
+						{% include 'components/brCombatant.html' %}
 						{% endfor %}
 						</tbody>
 						{% if BR_CAN_APPEND_COMBATANTS == true %}

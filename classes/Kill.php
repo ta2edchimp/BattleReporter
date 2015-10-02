@@ -106,8 +106,8 @@ class Kill {
 				$attacker->damageComposition = array();
 
 			$attacker->damageComposition[] = array(
-				receiver => $victim,
-				amount => $atk->damageDone
+				"receiver" => $victim,
+				"amount" => $atk->damageDone
 			);
 		}
 		

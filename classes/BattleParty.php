@@ -147,7 +147,9 @@ class BattleParty {
 		
 		// Fetch team members
 		$team = $db->query(
-			"select distinct c.*, ifnull(cc.corporationName, 'Unknown') as corporationName, " .
+			"select distinct c.*, " .
+				"ifnull((select sum(brDamageDealt) from brDamageComposition where brDealingCombatantID = c.brCombatantID), 0) as damageDealt, " .
+				"ifnull(cc.corporationName, 'Unknown') as corporationName, " .
 				"ifnull(a.allianceName, '') as allianceName, t.typeName as shipTypeName, t.mass as shipTypeMass, " .
 				"bpg.battlePartyGroupName as shipGroup, bpg.battlePartyGroupOrderKey as shipGroupOrderKey, " .
 				"(select videoID from brVideos where videoPoVCombatantID = c.brCombatantID order by videoID limit 1) as assignedFootage " .
@@ -239,6 +241,13 @@ class BattleParty {
 		foreach ($this->members as $combatant)
 			$combatant->saveAdditionalData();
 	}
+
+	public function getMembersByDamageDealt() {
+		$memberList = $this->members;
+		usort($memberList, 'BattleParty::membersByDamageSorter');
+		
+		return $memberList;
+	}
 	
 	public function toArray() {
 		
@@ -257,6 +266,19 @@ class BattleParty {
 	public function toJSON() {
 		
 		return json_encode($this->toArray());
+	}
+
+	public static function membersByDamageSorter($a, $b) {
+
+		if ($a->damageDealt == $b->damageDealt) {
+			if ($a->damageTaken == $b->damageTaken)
+				return 0;
+
+			return $a->damageTaken > $b->damageTaken ? -1 : 1;
+		}
+
+		return $a->damageDealt > $b->damageDealt ? -1 : 1;
+		
 	}
 	
 }
