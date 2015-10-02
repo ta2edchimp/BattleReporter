@@ -9,9 +9,14 @@ class BattleParty {
 	
 	public $uniquePilots = 0;
 	public $losses = 0;
-	public $totalLost = 0.0;
-	public $efficiency = 0.0;
-	
+	// public $totalLost = 0.0;
+	// public $efficiency = 0.0;
+
+	public $brDamageDealt = 0;
+	public $brDamageReceived = 0;
+	public $brIskDestroyed = 0;
+	public $brIskLost = 0;
+	public $brEfficiency = 0.0;
 	
 	public function __construct($name = "") {
 		if (!empty($name))
@@ -47,7 +52,7 @@ class BattleParty {
 		
 	}
 	
-	public function add(Combatant $combatant) {
+	public function add(Combatant $combatant, $updateOnExistence = false) {
 		
 		// Test, if combatant has not yet been added
 		// That is having reshipped counts as being another combatant
@@ -70,6 +75,12 @@ class BattleParty {
 							$this->updateDetails();
 						}
 						// Either way, he's already on the list
+						// So update his properties ...
+						if ($updateOnExistence === true) {
+							$member->update($combatant);
+							$this->updateDetails();
+						}
+						// ... or exit here if specified otherwise
 						return;
 					}
 				}
@@ -79,34 +90,24 @@ class BattleParty {
 		$this->members[] = $combatant;
 		$this->updateDetails();
 	}
+
+	public function addOrUpdate(Combatant $combatant) {
+		$this->add($combatant, true);
+	}
 	
-	public function updateDetails($otherParties = array()) {
+	public function updateDetails() {
 		$this->length = count($this->members);
 		
 		$pilots = array();
-		$this->totalLost = 0.0;
 		$this->losses = 0;
 		
 		foreach ($this->members as $member) {
 			if (!$member->brHidden && (!in_array($member->characterID, $pilots) || $member->characterID <= 0))
 				$pilots[] = $member->characterID;
-			$this->totalLost += $member->priceTag;
 			if ($member->died)
 				$this->losses++;
 		}
 		$this->uniquePilots = count($pilots);
-		
-		if (count($otherParties) == 0)
-			return;
-		
-		$totalLost = $this->totalLost;
-		foreach ($otherParties as $otherParty)
-			$totalLost += $otherParty->totalLost;
-		
-		if ($totalLost > 0.0 && $this->uniquePilots > 0)
-			$this->efficiency = 1.0 - $this->totalLost / $totalLost;
-		else
-			$this->efficiency = 0.0;
 	}
 	
 	
@@ -138,6 +139,11 @@ class BattleParty {
 		
 		// Assign battle party id
 		$this->brBattlePartyID = $result["brBattlePartyID"];
+		$this->brDamageDealt = $result["brDamageDealt"];
+		$this->brDamageReceived = $result["brDamageReceived"];
+		$this->brIskDestroyed = $result["brIskDestroyed"];
+		$this->brIskLost = $result["brIskLost"];
+		$this->brEfficiency = $result["brEfficiency"];
 		
 		// Fetch team members
 		$team = $db->query(
@@ -189,12 +195,17 @@ class BattleParty {
 		if ($this->brBattlePartyID <= 0) {
 			$result = $db->query(
 				"insert into brBattleParties ".
-				"(battleReportID, brTeamName) " .
+				"(battleReportID, brTeamName, brDamageDealt, brDamageReceived, brIskDestroyed, brIskLost, brEfficiency) " .
 				"values " .
-				"(:battleReportID, :brTeamName)",
+				"(:battleReportID, :brTeamName, :brDamageDealt, :brDamageReceived, :brIskDestroyed, :brIskLost, :brEfficiency)",
 				array(
 					"battleReportID" => $brID,
-					"brTeamName" => $this->name
+					"brTeamName" => $this->name,
+					"brDamageDealt" => $this->brDamageDealt,
+					"brDamageReceived" => $this->brDamageReceived,
+					"brIskDestroyed" => $this->brIskDestroyed,
+					"brIskLost" => $this->brIskLost,
+					"brEfficiency" => $this->brEfficiency
 				),
 				true	// Return last inserted row's ID instead of affected rows' count
 			);
@@ -203,11 +214,16 @@ class BattleParty {
 		} else {
 			$result = $db->query(
 				"update brBattleParties " .
-				"set battleReportID = :battleReportID, brTeamName = :brTeamName " .
+				"set battleReportID = :battleReportID, brTeamName = :brTeamName, brDamageDealt = :brDamageDealt, brDamageReceived = :brDamageReceived, brIskDestroyed = :brIskDestroyed, brIskLost = :brIskLost, brEfficiency = :brEfficiency " .
 				"where brBattlePartyID = :brBattlePartyID",
 				array(
 					"battleReportID" => $brID,
 					"brTeamName" => $this->name,
+					"brDamageDealt" => $this->brDamageDealt,
+					"brDamageReceived" => $this->brDamageReceived,
+					"brIskDestroyed" => $this->brIskDestroyed,
+					"brIskLost" => $this->brIskLost,
+					"brEfficiency" => $this->brEfficiency,
 					"brBattlePartyID" => $this->brBattlePartyID
 				)
 			);
@@ -217,6 +233,11 @@ class BattleParty {
 		foreach ($this->members as $combatant)
 			$combatant->save($this->brBattlePartyID);
 		
+	}
+
+	public function saveAdditionalData() {
+		foreach ($this->members as $combatant)
+			$combatant->saveAdditionalData();
 	}
 	
 	public function toArray() {

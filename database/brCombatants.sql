@@ -15,6 +15,7 @@ CREATE TABLE `brCombatants` (
   `brManuallyAdded` tinyint(1) DEFAULT '0',
   `brDeleted` tinyint(1) DEFAULT '0',
   `brCyno` tinyint(1) NOT NULL DEFAULT '0',
+  `damageTaken` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`brCombatantID`),
   KEY `brCombatants_IX_characterID` (`characterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

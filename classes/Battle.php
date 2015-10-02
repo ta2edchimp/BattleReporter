@@ -170,7 +170,19 @@ class Battle {
 		$this->teamA->save($this->battleReportID);
 		$this->teamB->save($this->battleReportID);
 		$this->teamC->save($this->battleReportID);
+
+		// Save additional data, that requires initial saving in before
+		$this->saveAdditionalData();
+
+		// Update statistical values
+		$this::updateStats($this->battleReportID);
 		
+	}
+
+	public function saveAdditionalData() {
+		$this->teamA->saveAdditionalData();
+		$this->teamB->saveAdditionalData();
+		$this->teamC->saveAdditionalData();
 	}
 	
 	public function publish() {
@@ -200,9 +212,9 @@ class Battle {
 		else
 			$this->solarSystemName = "";
 		
-		$this->teamA->updateDetails(array($this->teamB, $this->teamC));
-		$this->teamB->updateDetails(array($this->teamA, $this->teamC));
-		$this->teamC->updateDetails(array($this->teamA, $this->teamB));
+		$this->teamA->updateDetails();
+		$this->teamB->updateDetails();
+		$this->teamC->updateDetails();
 		
 		$this->killsTotal = $this->teamA->losses + $this->teamB->losses + $this->teamC->losses;
 		
@@ -212,7 +224,7 @@ class Battle {
 			$this->timeSpan = "";
 		
 		$this->totalPilots = $this->teamA->uniquePilots + $this->teamB->uniquePilots + $this->teamC->uniquePilots;
-		$this->totalLost = $this->teamA->totalLost + $this->teamB->totalLost + $this->teamC->totalLost;
+		$this->totalLost = $this->teamA->brIskLost + $this->teamB->brIskLost + $this->teamC->brIskLost;
 		
 	}
 	
@@ -338,7 +350,10 @@ class Battle {
 				if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
 					continue;
 				
-				$this->$tgt->add($kill->victim);
+				if ($importMode)
+					$this->$tgt->addOrUpdate($kill->victim);
+				else
+					$this->$tgt->add($kill->victim);
 				
 				foreach ($kill->attackers as $attacker) {
 					$tgt = "teamB";
@@ -349,7 +364,10 @@ class Battle {
 					if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
 						continue;
 					
-					$this->$tgt->add($attacker);
+					if ($importMode)
+						$this->$tgt->addOrUpdate($attacker);
+					else
+						$this->$tgt->add($attacker);
 				}
 				
 				if (isset($kill->killTime)) {
@@ -734,6 +752,94 @@ class Battle {
 			$params
 		);
 		
+	}
+
+	public static function updateStats($battleReportID = 0) {
+		if ($battleReportID <= 0) {
+			return false;
+		}
+
+		$db = \Db::getInstance();
+
+		// ... and get its battle parties
+		$battleParties = $db->query(
+			'select * from brBattleParties where battleReportID = :battleReportID',
+			array(
+				"battleReportID" => $battleReportID
+			)
+		);
+
+		// Oops, sth. went wrong
+		if ($battleParties === FALSE) {
+			return false;
+		}
+
+		$return = false;
+
+		// ... and start over looping, this time through each battle party's memberlist
+		foreach ($battleParties as $battleParty) {
+			// Get the damage numbers, this battle party received ...
+			$stats = $db->row(
+				'select (' .
+						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+						'where brReceivingCombatantID in (' .
+							'select brCombatantID from brCombatants ' .
+							'where brBattlePartyID = :receivingBattlePartyID and brDeleted = 0 and brHidden = 0' .
+						')' .
+					') as dmgReceived, (' .
+						'select ifNull(sum(brDamageDealt), 0) from brDamageComposition ' .
+						'where brDealingCombatantID in (' .
+							'select brCombatantID from brCombatants ' .
+							'where brBattlePartyID = :dealingBattlePartyID and brDeleted = 0 and brHidden = 0' .
+						')' .
+					') as dmgDealt, (' .
+						'select ifNull(sum(priceTag), 0) from brCombatants ' .
+						'where brCombatantID in (' .
+							'select brReceivingCombatantID from brDamageComposition ' .
+							'where brDealingCombatantID in (' .
+								'select brCombatantID from brCombatants ' .
+								'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0 and brHidden = 0' .
+							')' .
+						') and brDeleted = 0 and brBattlePartyID <> :excludedDestroyingBattlePartyID' .
+					') as iskDestroyed, (' .
+						'select ifNull(sum(priceTag), 0) from brCombatants ' .
+						'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0 and brHidden = 0' .
+					') as iskLost',
+				array(
+					"receivingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"dealingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"destroyingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"excludedDestroyingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"loosingBattlePartyID" => $battleParty["brBattlePartyID"]
+				)
+			);
+
+			// Oh noes ...
+			if ($stats === FALSE) {
+				return false;
+			}
+
+			// UPDATE ALL THE STATS!
+			$db->query(
+				'update brBattleParties ' .
+				'set brDamageDealt = :damageDealt, brDamageReceived = :damageReceived, ' .
+					'brIskDestroyed = :iskDestroyed, brIskLost = :iskLost, ' .
+					'brEfficiency = :efficiency ' .
+				'where brBattlePartyID = :battlePartyID',
+				array(
+					"damageReceived" => $stats["dmgReceived"],
+					"damageDealt" => $stats["dmgDealt"],
+					"iskDestroyed" => $stats["iskDestroyed"],
+					"iskLost" => $stats["iskLost"],
+					"efficiency" => ($stats["iskDestroyed"] > 0 ? (100 * $stats["iskDestroyed"] / ($stats["iskDestroyed"] + $stats["iskLost"])) : 0.0),
+					"battlePartyID" => $battleParty["brBattlePartyID"]
+				)
+			);
+
+			$result = true;
+		}
+
+		return $result;
 	}
 	
 	private static function getEmbedVideoUrl($url = "") {

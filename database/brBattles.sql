@@ -14,5 +14,7 @@ CREATE TABLE `brBattles` (
   `brUniquePilotsTeamA` smallint(6) NOT NULL DEFAULT '0',
   `brUniquePilotsTeamB` smallint(6) NOT NULL DEFAULT '0',
   `brUniquePilotsTeamC` smallint(6) NOT NULL DEFAULT '0',
+  `brDamageTotal` int(11) NOT NULL DEFAULT '0',
+  `brIskDestroyedTotal` decimal(17,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`battleReportID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
