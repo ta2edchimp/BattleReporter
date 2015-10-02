@@ -26,13 +26,6 @@ if ($battleList !== NULL && $battleList !== FALSE) {
 		if ($previewEndTime < $battle["endTime"])
 			$previewEndTime = $battle["endTime"];
 		
-		// $totalLost = $battle["iskLostTeamA"] + $battle["iskLostTeamB"] + $battle["iskLostTeamC"];
-		// if ($totalLost > 0.0)
-		// 	$battle["efficiency"] = 1.0 - $battle["iskLostTeamA"] / $totalLost;
-		// else
-		// 	$battle["efficiency"] = 0.0;
-		
-		// $previewISKdestroyed = $previewISKdestroyed + $totalLost;
 		$previewEfficiencyAvg = $previewEfficiencyAvg + $battle["efficiency"];
 
 		$battle["hasAAR"] = !empty($battle["summary"]);
