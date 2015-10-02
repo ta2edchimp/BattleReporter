@@ -243,7 +243,7 @@ class Admin {
 		}
 
 		if ($resultPartialFailures === true) {
-			$results["error"] = "Some statistics could not be repopulated.";
+			$result["error"] = "Some statistics could not be repopulated.";
 		}
 
 		return $result;
