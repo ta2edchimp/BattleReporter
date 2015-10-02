@@ -47,16 +47,16 @@
 				</td>
 				{% endif %}
 				<td class="hidden-sm hidden-xs hidden-xxs hidden-xxxs">&nbsp;</td>
-				{% if battle.efficiency == 1 %}
+				{% if battle.efficiency == 100 %}
 					{% set efficiencyClsName = 'text-success' %}
-				{% elseif battle.efficiency > 0.5 %}
+				{% elseif battle.efficiency > 50 %}
 					{% set efficiencyClsName = 'text-info' %}
-				{% elseif battle.efficiency > 0.1 %}
+				{% elseif battle.efficiency > 10 %}
 					{% set efficiencyClsName = 'text-warning' %}
 				{% else %}
 					{% set efficiencyClsName = 'text-danger' %}
 				{% endif %}
-				<td class="no-break text-right {{ efficiencyClsName }}"><strong>{{ (battle.efficiency * 100)|number_format(2, '.', ',')  }}%</strong></td>
+				<td class="no-break text-right {{ efficiencyClsName }}"><strong>{{ battle.efficiency|number_format(2, '.', ',')  }}%</strong></td>
 			</tr>
 		{% endfor %}
 		</tbody>
