@@ -773,7 +773,7 @@ class Battle {
 			return false;
 		}
 
-		$return = false;
+		$result = false;
 
 		// ... and start over looping, this time through each battle party's memberlist
 		foreach ($battleParties as $battleParty) {

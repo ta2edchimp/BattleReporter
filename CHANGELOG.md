@@ -1,3 +1,11 @@
+# Release 0.5.2
+
+- 04f9292 Versionbump.
+- d92ac7d Removed dead code.
+- d8aca80 NL at EOF added.
+- 50ef5dd Type fixed.
+- 80689e6 Merge branch 'release/0.5.1' into develop
+
 # Release 0.5.1
 
 - 25cd71d Versionbump.
