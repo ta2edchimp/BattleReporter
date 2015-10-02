@@ -10,7 +10,7 @@
 						{% else %}
 						{{ (currentTeam.brIskLost / 1000000000000)|number_format(2, '.', ',') }} trillion
 						{% endif %} ISK lost<br>
-						{{ currentTeam.brDamageDealt|number_format(0, '.', ',') }} Damage Dealt<br>
+						{{ currentTeam.brDamageDealt|number_format(0, '.', ',') }} damage dealt<br>
 						{{ currentTeam.brEfficiency|number_format(1, '.', ',') }}% efficiency</small></p>
 					{% endif %}
 					<table id="battlereport-{{ currentTeamID }}" class="table table-striped table-hover battlereport-combatants">
