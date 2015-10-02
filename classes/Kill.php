@@ -102,11 +102,11 @@ class Kill {
 			if (empty($atk->damageDone))
 				continue;
 
-			if ($victim->damageComposition === null)
-				$victim->damageComposition = array();
+			if ($attacker->damageComposition === null)
+				$attacker->damageComposition = array();
 
-			$victim->damageComposition[] = array(
-				dealer => $attacker,
+			$attacker->damageComposition[] = array(
+				receiver => $victim,
 				amount => $atk->damageDone
 			);
 		}
