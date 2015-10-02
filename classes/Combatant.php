@@ -242,20 +242,20 @@ class Combatant {
 
 	public function saveAdditionalData() {
 
-		if ($this->damageComposition === null || count($this->damageComposition) == 0)
+		if ($this->damageComposition === null || count($this->damageComposition) === 0)
 			return;
 
 		$db = \Db::getInstance();
 
 		$db->query(
-			"delete from brDamageComposition where brReceivingCombatantID = :brCombatantID",
+			"delete from brDamageComposition where brDealingCombatantID = :brCombatantID",
 			array(
 				"brCombatantID" => $this->brCombatantID
 			)
 		);
 
 		foreach ($this->damageComposition as $dmgPart) {
-			if ($dmgPart === null || empty($dmgPart["dealer"]) || empty($dmgPart["amount"]))
+			if ($dmgPart === null || empty($dmgPart["receiver"]) || empty($dmgPart["amount"]))
 				continue;
 			$db->query(
 				"insert into brDamageComposition " .
@@ -263,11 +263,30 @@ class Combatant {
 				"values " .
 				"(:brReceivingCombatantID, :brDealingCombatantID, :brDamageDealt)", 
 				array(
-					"brReceivingCombatantID" => $this->brCombatantID,
-					"brDealingCombatantID" => $dmgPart["dealer"]->brCombatantID,
+					"brReceivingCombatantID" => $dmgPart["receiver"]->brCombatantID,
+					"brDealingCombatantID" => $this->brCombatantID,
 					"brDamageDealt" => $dmgPart["amount"]
 				)
 			);
+		}
+
+	}
+
+	public function update($props = null) {
+
+		if ($props === null)
+			return;
+
+		$props = \Utils::arrayToObject($props);
+
+		if (!empty($props->damageComposition)) {
+			if ($this->damageComposition === 0)
+				$this->damageComposition = array();
+			if (count($this->damageComposition) === 0) {
+				$this->damageComposition = $props->damageComposition;
+			} else {
+				$this->damageComposition = array_merge($this->damageComposition, $props->damageComposition);
+			}
 		}
 
 	}
