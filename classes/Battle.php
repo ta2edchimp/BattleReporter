@@ -175,7 +175,7 @@ class Battle {
 		$this->saveAdditionalData();
 
 		// Update statistical values
-		$this::updateStats();
+		$this::updateStats($this->battleReportID);
 		
 	}
 
@@ -350,7 +350,10 @@ class Battle {
 				if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
 					continue;
 				
-				$this->$tgt->add($kill->victim);
+				if ($importMode)
+					$this->$tgt->addOrUpdate($kill->victim);
+				else
+					$this->$tgt->add($kill->victim);
 				
 				foreach ($kill->attackers as $attacker) {
 					$tgt = "teamB";
@@ -361,7 +364,10 @@ class Battle {
 					if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
 						continue;
 					
-					$this->$tgt->add($attacker);
+					if ($importMode)
+						$this->$tgt->addOrUpdate($attacker);
+					else
+						$this->$tgt->add($attacker);
 				}
 				
 				if (isset($kill->killTime)) {
@@ -794,7 +800,7 @@ class Battle {
 								'select brCombatantID from brCombatants ' .
 								'where brBattlePartyID = :destroyingBattlePartyID and brDeleted = 0 and brHidden = 0' .
 							')' .
-						') and brDeleted = 0' .
+						') and brDeleted = 0 and brBattlePartyID <> :excludedDestroyingBattlePartyID' .
 					') as iskDestroyed, (' .
 						'select ifNull(sum(priceTag), 0) from brCombatants ' .
 						'where brBattlePartyID = :loosingBattlePartyID and brDeleted = 0 and brHidden = 0' .
@@ -803,6 +809,7 @@ class Battle {
 					"receivingBattlePartyID" => $battleParty["brBattlePartyID"],
 					"dealingBattlePartyID" => $battleParty["brBattlePartyID"],
 					"destroyingBattlePartyID" => $battleParty["brBattlePartyID"],
+					"excludedDestroyingBattlePartyID" => $battleParty["brBattlePartyID"],
 					"loosingBattlePartyID" => $battleParty["brBattlePartyID"]
 				)
 			);

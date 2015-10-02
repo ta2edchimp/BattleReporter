@@ -52,7 +52,7 @@ class BattleParty {
 		
 	}
 	
-	public function add(Combatant $combatant) {
+	public function add(Combatant $combatant, $updateOnExistence = false) {
 		
 		// Test, if combatant has not yet been added
 		// That is having reshipped counts as being another combatant
@@ -75,6 +75,12 @@ class BattleParty {
 							$this->updateDetails();
 						}
 						// Either way, he's already on the list
+						// So update his properties ...
+						if ($updateOnExistence === true) {
+							$member->update($combatant);
+							$this->updateDetails();
+						}
+						// ... or exit here if specified otherwise
 						return;
 					}
 				}
@@ -83,6 +89,10 @@ class BattleParty {
 		
 		$this->members[] = $combatant;
 		$this->updateDetails();
+	}
+
+	public function addOrUpdate(Combatant $combatant) {
+		$this->add($combatant, true);
 	}
 	
 	public function updateDetails() {
