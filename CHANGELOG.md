@@ -1,3 +1,13 @@
+# Release 0.5.3
+
+- c703842 Versionbump
+- a9ea146 Merge branch 'feature/damage-overview' into develop
+- d486d36 Display damage overview, closes #9
+- a25fed2 Adding damage statistics.
+- 19fd6a1 Added an index for each possible query to speed things up a bit when saving battle reports, closes #87
+- 163c088 Bugfix... darn
+- 747b46d Merge branch 'release/0.5.2' into develop
+
 # Release 0.5.2
 
 - 04f9292 Versionbump.
