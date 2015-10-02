@@ -89,8 +89,11 @@ class Kill {
 		$attackers = array();
 		foreach ($kill->attackers as $atk) {
 			$attacker = new Combatant($atk);
-			if ($atk !== null)
-				$attackers[] = $attacker;
+			
+			if ($attacker === null)
+				return;
+
+			$attackers[] = $attacker;
 		}
 		
 		if (isset($kill->killTime)) {
