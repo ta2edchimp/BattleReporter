@@ -1,3 +1,11 @@
+# Release 0.5.4
+
+- 66726cb Versionbump
+- 19c2f97 Hide non-existent loss values. Closes #90
+- 8cea944 Bugfix: correctly update already existing battleparty members, if died in the meanwhile. Closes #92
+- a5bc17d Bugfix: correctly check for existing array property.
+- b0a3dc4 Merge branch 'release/0.5.3' into develop
+
 # Release 0.5.3
 
 - c703842 Versionbump
