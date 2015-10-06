@@ -24,7 +24,7 @@
 				{% if combatant.allianceID > 0 %}<br>{{ combatant.allianceName }}{% endif %}</small><br>
 			{% endif %}
 				{{ combatant.shipTypeName }}<br>
-			{% if not combatantDetailMode is defined or combatantDetailMode == 'normal' or combatantDetailMode == '' and combatant.priceTag > 0 %}
+			{% if (not combatantDetailMode is defined or combatantDetailMode == 'normal' or combatantDetailMode == '') and combatant.priceTag > 0 %}
 				({{ (combatant.priceTag / 1000000)|number_format(2, '.', ',') }} million ISK)
 			{% else %}
 				&nbsp;

@@ -64,7 +64,8 @@ class BattleParty {
 						// If this char is already on the list in the same ship,
 						// but this time is the victim, replace him.
 						if ($member->died === false && $combatant->died === true) {
-							// Replace the existing member
+							// Update newer combatant object with exising member's props
+							$combatant->update($member);
 							$member = $combatant;
 							return;
 						}

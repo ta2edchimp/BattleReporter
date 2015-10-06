@@ -346,28 +346,47 @@ class Battle {
 				if ($kill->victim->corporationID == BR_OWNERCORP_ID)
 					$tgt = "teamA";
 				
-				// To be sure: If in "append mode", the victim must NOT be in any of the teams already
-				if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
-					continue;
-				
-				if ($importMode)
+				if ($importMode) {
+					// In import mode, simply append victim as combatant to the designated battle party ...
 					$this->$tgt->addOrUpdate($kill->victim);
-				else
-					$this->$tgt->add($kill->victim);
+				} else {
+					// When just appending, first check whether to update a battle party's existing member ...
+					$tempMember = $this->teamA->getMember($kill->victim);
+					if ($tempMember === null) {
+						$tempMember = $this->teamB->getMember($kill->victim);
+						if ($tempMember === null) {
+							$tempMember = $this->teamC->getMember($kill->victim);
+						}
+					}
+					if ($tempMember === null) {
+						$this->$tgt->add($kill->victim);
+					} else {
+						$tempMember->update($kill->victim);
+					}
+				}
 				
 				foreach ($kill->attackers as $attacker) {
 					$tgt = "teamB";
 					if ($attacker->corporationID == BR_OWNERCORP_ID)
 						$tgt = "teamA";
 					
-					// Again, be sure to not readd a combatant in *append mode*
-					if ($importMode === false && ($this->teamA->getMember($kill->victim) !== null || $this->teamB->getMember($kill->victim) !== null || $this->teamC->getMember($kill->victim) !== null))
-						continue;
-					
-					if ($importMode)
+					// Same distinguishing of import / append mode as above, but for the attacking combatants
+					if ($importMode) {
 						$this->$tgt->addOrUpdate($attacker);
-					else
-						$this->$tgt->add($attacker);
+					} else {
+						$tempMember = $this->teamA->getMember($attacker);
+						if ($tempMember === null) {
+							$tempMember = $this->teamB->getMember($attacker);
+							if ($tempMember === null) {
+								$tempMember = $this->teamC->getMember($attacker);
+							}
+						}
+						if ($tempMember === null) {
+							$this->$tgt->add($attacker);
+						} else {
+							$tempMember->update($attacker);
+						}
+					}
 				}
 				
 				if (isset($kill->killTime)) {
