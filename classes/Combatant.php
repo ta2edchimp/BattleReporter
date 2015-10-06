@@ -281,7 +281,7 @@ class Combatant {
 		$props = \Utils::arrayToObject($props);
 
 		if (!empty($props->damageComposition)) {
-			if ($this->damageComposition === 0)
+			if ($this->damageComposition === null)
 				$this->damageComposition = array();
 			if (count($this->damageComposition) === 0) {
 				$this->damageComposition = $props->damageComposition;
