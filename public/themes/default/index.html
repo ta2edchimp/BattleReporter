@@ -7,7 +7,11 @@
 	{% if battleList|length == 0 %}
 	<div class="panel">
 		<div class="panel-body">
+		{% if currentPage <= 1 %}
 			<strong>No Battles</strong> stored in {{ BR_OWNER }}'s BattleReporter yet.
+		{% else %}
+			There are <strong>no Battles</strong> stored from this far ago ...
+		{% endif %}
 		</div>
 	</div>
 	{% else %}
@@ -61,6 +65,25 @@
 		{% endfor %}
 		</tbody>
 	</table>
+	{% endif %}
+	{% if totalPages > 1 %}
+	<div style="text-align:center">
+		<ul class="pagination">
+			{% if currentPage > 4 %}
+			<li><a href="/page/1">&laquo; First</a></li>
+			{% endif %}
+			{% for i in range(currentPage - 3, currentPage - 1) if (i > 0) %}
+			<li><a href="/page/{{ i }}">{{ i }}</a></li>
+			{% endfor %}
+			<li class="active"><a href="/page/{{ currentPage }}">{{ currentPage }}</a></li>
+			{% for i in range(currentPage + 1, currentPage + 3) if (i <= totalPages) %}
+			<li><a href="/page/{{ i }}">{{ i }}</a></li>
+			{% endfor %}
+			{% if currentPage < (totalPages - 4) %}
+			<li><a href="/page/{{ totalPages }}">Last &raquo;</a></li>
+			{% endif %}
+		</ul>
+	</div>
 	{% endif %}
 {% endblock %}
 

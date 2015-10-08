@@ -18,8 +18,14 @@ $app->error(function (\Exception $e) use ($app) {
  *  Default routings
  */
 // Homepage
-$app->get('/', function () use ($app, $db) {
+$app->get('/(page/:currentPage)', function ($currentPage = 0) use ($app, $db) {
 	
+	if (empty($currentPage) || !is_numeric($currentPage)) {
+		$currentPage = 1;
+	} else {
+		$currentPage = intval($currentPage);
+	}
+
 	include("views/index.php");
 	
 });

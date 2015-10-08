@@ -1,10 +1,26 @@
 <?php
 
+/**
+ * Comes from routes:
+ * ==================
+ *
+ * int	$currentPage	currently requested page (default: 1)
+ */
+
 $output = array();
+
+$battlesCountTotal = Battle::getBattlesCount(array(
+	"onlyPublished" => !(User::isLoggedIn() && User::can("edit"))
+));
+
+$output["currentPage"] = $currentPage;
+$output["totalPages"] = intval(floor($battlesCountTotal / 20) + 1);
 
 $params = array();
 
 $battleList = Battle::getList(array(
+	"page" => $currentPage,
+	"count" => 20,
 	"onlyPublished" => !(User::isLoggedIn() && User::can("edit"))
 ));
 
@@ -34,17 +50,17 @@ if ($battleList !== NULL && $battleList !== FALSE) {
 	
 	$output["battleList"] = $battleList;
 	
-	$previewEfficiencyAvg = ($previewEfficiencyAvg * 100) / $previewBattlesTotal;
+	// $previewEfficiencyAvg = ($previewEfficiencyAvg * 100) / $previewBattlesTotal;
 	
-	if ($previewISKdestroyed < 1000000000000) {
-		if ($previewISKdestroyed < 1000000000) {
-			$previewISKdestroyed = number_format($previewISKdestroyed / 1000000, 2, '.', ',') . " million";
-		} else {
-			$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000, 2, '.', ',') . " billion";
-		}
-	} else {
-		$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000000, 2, '.', ',') . " trillion";
-	}
+	// if ($previewISKdestroyed < 1000000000000) {
+	// 	if ($previewISKdestroyed < 1000000000) {
+	// 		$previewISKdestroyed = number_format($previewISKdestroyed / 1000000, 2, '.', ',') . " million";
+	// 	} else {
+	// 		$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000, 2, '.', ',') . " billion";
+	// 	}
+	// } else {
+	// 	$previewISKdestroyed = number_format($previewISKdestroyed / 1000000000000, 2, '.', ',') . " trillion";
+	// }
 	
 }
 
