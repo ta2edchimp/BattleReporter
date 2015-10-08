@@ -3,7 +3,7 @@
 <tr class="combatant{% if combatant.died %} danger{% endif %}{% if combatant.brHidden %} hidden-on-br{% endif %}" data-combatant-id="{{ combatant.brCombatantID }}" data-kill-id="{{ combatant.killID }}" data-character-id="{{ combatant.characterID }}">
 	<td>
 		<div class="ship-icon-container">
-			<img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
+			<img src="//imageserver.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png">
 			{% if (combatant.shipGroup is defined and combatant.shipGroup != 'DPS') or combatant.brCyno == true %}
 			<div class="ship-type-icon">
 				{% if combatant.brCyno == true %}
