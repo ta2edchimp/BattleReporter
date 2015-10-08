@@ -159,7 +159,7 @@
 					<tr>
 						{% if event.occurredToTeamA %}
 						{% set combatant = event.combatantEventOccuredTo %}
-						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//imageserver.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
 						<td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
 							<div class="combatant-details">
 								{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
@@ -175,7 +175,7 @@
 						<td class="text-center">{{ event.timeStampString }}</td>
 						{% if event.occurredToTeamB %}
 						{% set combatant = event.combatantEventOccuredTo %}
-						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//imageserver.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
 						<td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
 							<div class="combatant-details">
 								{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
@@ -192,7 +192,7 @@
 						<td class="text-center">{{ event.timeStampString }}</td>
 						{% if event.occurredToTeamC %}
 						{% set combatant = event.combatantEventOccuredTo %}
-						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//image.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
+						<td class="danger combatant" data-kill-id="{{ event.killID }}"><img src="//imageserver.eveonline.com/InventoryType/{{ combatant.shipTypeID }}_64.png"></td>
 						<td class="danger combatant" data-kill-id="{{ event.killID }}" style="width:{{ pilotColWidth }}">
 							<div class="combatant-details">
 								{% if combatant.characterName != '' %}<strong>{{ combatant.characterName }}</strong><br>{% endif %}
@@ -220,7 +220,7 @@
 				{% set separator = '' %}
 				{% for comment in comments %}
 					{{ separator|raw }}
-					<div id="comment-{{ comment.commentID }}" class="comment"{% if comment.characterID is defined and comment.characterID != '' %} style="background-image:url(//image.eveonline.com/Character/{{ comment.characterID }}_64.jpg)"{% endif %}>
+					<div id="comment-{{ comment.commentID }}" class="comment"{% if comment.characterID is defined and comment.characterID != '' %} style="background-image:url(//imageserver.eveonline.com/Character/{{ comment.characterID }}_64.jpg)"{% endif %}>
 						<p><strong>{{ comment.userName }}</strong><br>
 							<small>{{ comment.commentTime|time_ago }}</small></p>
 						<p>{{ comment.commentMessage|enable_urls }}</p>
@@ -248,7 +248,7 @@
 			{% else %}
 				{% if BR_USER_LOGGEDIN %}
 					<form action="/comment/{{ battleReport.battleReportID }}" method="post">
-						<div class="form-group"{% if BR_USER_CHARACTERID is defined %} style="background-image:url(//image.eveonline.com/Character/{{ BR_USER_CHARACTERID }}_128.jpg);background-position:100% 0;background-size:contain;background-repeat:no-repeat"{% endif %}>
+						<div class="form-group"{% if BR_USER_CHARACTERID is defined %} style="background-image:url(//imageserver.eveonline.com/Character/{{ BR_USER_CHARACTERID }}_128.jpg);background-position:100% 0;background-size:contain;background-repeat:no-repeat"{% endif %}>
 							<label class="control-label">Comment as:</label>
 							<div>
 								{{ BR_USER_NAME }}

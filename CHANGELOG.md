@@ -1,3 +1,10 @@
+# Release 0.5.5
+
+- a72e7e2 Versionbump.
+- 00f0a5e Change imageserver links. Closes #93
+- 3bde826 Implemented pagination of BattleReports Overview. Closes #86
+- 6a2fd18 Merge branch 'release/0.5.4' into develop
+
 # Release 0.5.4
 
 - 66726cb Versionbump

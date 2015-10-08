@@ -738,6 +738,13 @@ class Battle {
 				$limit = " limit :limit";
 				$params["limit"] = intval($options["count"]);
 			}
+			if (isset($options["page"]) && is_int($options["page"])) {
+				if (!isset($options["count"]) || empty($options["count"])) {
+					$params["limit"] = 10;
+				}
+				$limit = " limit :offset, :limit";
+				$params["offset"] = (intval($options["page"]) - 1) * $params["limit"];
+			}
 		}
 		
 		$db = Db::getInstance();
@@ -770,6 +777,29 @@ class Battle {
 			$params
 		);
 		
+	}
+
+	public static function getBattlesCount(array $options = array()) {
+
+		$battlesCount = 0;
+
+		$onlyPublished	= isset($options["onlyPublished"]) && is_bool($options["onlyPublished"]) ? $options["onlyPublished"] : true;
+
+		$db = \Db::getInstance();
+
+		$result = $db->single(
+			"select count(battleReportID) as battlesCount " .
+			"from brBattles " .
+			"where brDeleteTime is NULL " .
+			($onlyPublished ? "and brPublished = 1 " : "")
+		);
+
+		if ($result !== NULL && $result !== FALSE) {
+			$battlesCount = $result;
+		}
+
+		return $battlesCount;
+
 	}
 
 	public static function updateStats($battleReportID = 0) {
