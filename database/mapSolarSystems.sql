@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.6.12, for Linux (x86_64)
 --
--- Host: localhost    Database: sdevanguard1
+-- Host: localhost    Database: sdeyc1181
 -- ------------------------------------------------------
 -- Server version	5.6.12
 
@@ -50,8 +50,8 @@ CREATE TABLE `mapSolarSystems` (
   `sunTypeID` int(11) DEFAULT NULL,
   `securityClass` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`solarSystemID`),
-  KEY `mapSolarSystems_IX_region` (`regionID`),
   KEY `mapSolarSystems_IX_constellation` (`constellationID`),
+  KEY `mapSolarSystems_IX_region` (`regionID`),
   KEY `mapSolarSystems_IX_security` (`security`),
   KEY `mss_name` (`solarSystemName`(40))
 ) ENGINE=InnoDB AUTO_INCREMENT=31002605 DEFAULT CHARSET=utf8;
@@ -78,4 +78,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-29 17:45:33
+-- Dump completed on 2016-01-12 16:56:17

@@ -158,6 +158,9 @@ To change the theme used by BattleReporter, just edit the following lines within
 define('BR_THEME', 'default'); // Change 'default' to your theme's folder name
 ```
 
+**Note**  
+Please note, that some placeholder names, structural makeup of objects passed to the templates, the default theme's directory structure, etc. may change until the release of a 1.x version.
+
 ## Contributing
 
 Please [file an issue](https://github.com/ta2edchimp/BattleReporter/issues/new) if you have any feature request, ideas for improvements or found any bugs.
