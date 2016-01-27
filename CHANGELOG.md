@@ -1,3 +1,9 @@
+# Release 0.5.7
+
+- b818222 Versionbump.
+- 322fa38 Updated BattlePartyGroups with new T2 Logistics Frigates and new Ewar Faction Frigates.
+- 6f77382 Merge branch 'release/0.5.6' into develop
+
 # Release 0.5.6
 
 - 019bfa7 Versionbump.
