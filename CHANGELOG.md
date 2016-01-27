@@ -1,3 +1,11 @@
+# Release 0.5.6
+
+- 019bfa7 Versionbump.
+- 10f8e09 Database update for Frostline.
+- c7ba7ad Fixed miscalculated efficiency in description meta.
+- a9b972c Included a note on theming until v1.0
+- cf0bdff Merge branch 'release/0.5.5' into develop
+
 # Release 0.5.5
 
 - a72e7e2 Versionbump.
