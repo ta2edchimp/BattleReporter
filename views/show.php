@@ -15,15 +15,15 @@ if ($battleReport->load($battleReportID, false) === false) {
 
 // If unpublished and/or no access ... yell "not found"
 if ($battleReport->published === false) {
-	
+
 	// Users with general "edit" permission may see an unpublished battle report
 	if (!User::isLoggedIn() || !User::can("edit")) {
 		$app->render("brNotFound.html");
 		$app->stop();
 	}
-	
+
 }
-	
+
 // ... but only admins and owners may actually edit this one.
 $userIsAdminOrDirector = User::isAdmin() || User::is("Director");
 if (User::isLoggedIn() && ($userIsAdminOrDirector || $battleReport->creatorUserID == User::getUserID())) {
@@ -74,9 +74,9 @@ if ($previewISKdestroyed < 1000000000000) {
 }
 
 $previewMeta['title'] = (empty($battleReport->title) ? ("Battle in " . $battleReport->solarSystemName) : $battleReport->title);
-$previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->brEfficiency * 100, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
+$previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->brEfficiency, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
 $previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID . "_128.png";
-	
+
 
 $app->render("show.html", array(
 	"BR_PAGE_SHOW" => true,
