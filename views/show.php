@@ -35,7 +35,7 @@ if (User::isLoggedIn() && ($userIsAdminOrDirector || $battleReport->creatorUserI
 
 $battleReportDetailTitle = "Battle Overview";
 
-$availableDetails = array("timeline", "damage");
+$availableDetails = array("timeline", "damage", "json");
 if (BR_COMMENTS_ENABLED === true)
 	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {
@@ -77,11 +77,18 @@ $previewMeta['title'] = (empty($battleReport->title) ? ("Battle in " . $battleRe
 $previewMeta["description"] = $previewNumberOfPilots . ", " . $previewISKdestroyed . " at " . number_format($battleReport->teamA->brEfficiency, 2, ".", ",") . "% efficiency in " . $battleReport->solarSystemName . " on " . date('Y-m-d H:i', $battleReport->startTime) . " - " . date('H:i', $battleReport->endTime);
 $previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID . "_128.png";
 
+if ($battleReportDetail === "json") {
 
-$app->render("show.html", array(
-	"BR_PAGE_SHOW" => true,
-	"previewMeta" => $previewMeta,
-	"battleReport" => $battleReport,
-	"battleReportDetail" => $battleReportDetail,
-	"battleReportDetailTitle" => $battleReportDetailTitle
-));
+	Utils::renderJSON($app, array( "previewMeta" => $previewMeta, "battleReport" => $battleReport ));
+
+} else {
+
+	$app->render("show.html", array(
+		"BR_PAGE_SHOW" => true,
+		"previewMeta" => $previewMeta,
+		"battleReport" => $battleReport,
+		"battleReportDetail" => $battleReportDetail,
+		"battleReportDetailTitle" => $battleReportDetailTitle
+	));
+
+}
