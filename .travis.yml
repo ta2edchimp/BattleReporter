@@ -8,6 +8,11 @@ php:
   - hhvm
   - hhvm-nightly
 
+matrix:
+    allow_failures:
+        - php: nightly
+        - php: hhvm
+        - php: hhvm-nightly
 env:
   - DB=mysql
 
