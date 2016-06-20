@@ -1,3 +1,14 @@
+# Release 0.5.8
+
+- 08cc7dc Database update for Citadel
+- 1b657d9 Update CI Test Environment(s) #97
+  - Allow Travis Builds on PHP nightlies to fail without failing the entire build
+  - Require PHP at v5.4 min.
+  - Include PHP 5.4-5.6, 7.0 and nightlies in CI builds
+  - Update test framework
+- d008d5a Implement JSON output for BattleReports
+- 9d8830e Avoid `ZERO_DATE` for user session validity
+
 # Release 0.5.7
 
 - b818222 Versionbump.
