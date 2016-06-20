@@ -3,6 +3,7 @@
     "description": "Advanced editable BattleReport platform for EVE Online.",
     "license": "Beerware",
     "require": {
+        "php": ">=5.4",
         "twig/twig": "~1.0",
         "slim/slim": "2.*",
         "slim/views": "0.1.*",
