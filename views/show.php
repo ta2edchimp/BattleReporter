@@ -35,7 +35,7 @@ if (User::isLoggedIn() && ($userIsAdminOrDirector || $battleReport->creatorUserI
 
 $battleReportDetailTitle = "Battle Overview";
 
-$availableDetails = array("timeline", "damage", "json");
+$availableDetails = array("timeline", "damage", "json", "jsonp");
 if (BR_COMMENTS_ENABLED === true)
 	$availableDetails[] = "comments";
 if (!empty($battleReportDetail)) {
@@ -79,7 +79,11 @@ $previewMeta['image'] = "//image.eveonline.com/corporation/" . BR_OWNERCORP_ID .
 
 if ($battleReportDetail === "json") {
 
-	Utils::renderJSON($app, array( "previewMeta" => $previewMeta, "battleReport" => $battleReport ));
+	Utils::renderJSON(array( "previewMeta" => $previewMeta, "battleReport" => $battleReport ));
+
+} else if ($battleReportDetail === "jsonp") {
+
+	Utils::renderJSONP(array( "previewMeta" => $previewMeta, "battleReport" => $battleReport ), $app->request->get('callback'));
 
 } else {
 

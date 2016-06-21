@@ -150,13 +150,32 @@ class Utils {
 
 	/**
 	 * Returns JSON as the app's response
-	 * @param  Slim $app     A Slim Application instance
-	 * @param  Any $content An object of any kind to be output as JSON
+	 * @param  array $content An object of any kind to be output as JSON
 	 */
-	public static function renderJSON($app = null, $content = null) {
+	public static function renderJSON($content = array()) {
+		$app = \Slim\Slim::getInstance();
 		$response = $app->response;
+
 		$response['Content-Type'] = 'application/json';
 		$response->body(json_encode($content));
+	}
+
+	/**
+	 * Returns a "padded JSON" as the app's response
+	 * @param  array  $content   An object of any kind to be output as JSON
+	 * @param  string $callback  Name of the callback function to be called with $content
+	 */
+	public static function renderJSONP($content = array(), $callback = "") {
+		$app = \Slim\Slim::getInstance();
+		$response = $app->response;
+
+		$cbName = $callback;
+		if (empty($cbName)) {
+			$cbName = "callback";
+		}
+
+		$response['Content-Type'] = 'application/javascript';
+		$response->body("$cbName(". json_encode($content) .")");
 	}
 
 }
